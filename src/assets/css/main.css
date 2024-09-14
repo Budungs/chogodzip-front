@@ -1,0 +1,54 @@
+* {
+  font-family: 'Pretendard';
+}
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+div {
+  display: flex;
+}
+.container {
+  display: flex;
+  /* background-color: white; */
+  border-radius: 10px;
+  margin-top: 20px;
+  padding: 10px;
+}
+.container-shadow {
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+.amount {
+  align-items: center;
+  /* color */
+}
+#app {
+  display: flex;
+  flex-direction: column;
+}
+.bi {
+  font-size: 3rem;
+}
+span {
+  font-size: 50px;
+  font-weight: 700;
+}
+p {
+  font-size: 1.8rem;
+}
+p2 {
+  font-size: 2rem;
+  font-weight: 800;
+}
+p3 {
+  font-size: 2rem;
+  font-weight: 800;
+}
+p4 {
+  font-size: 1.8rem;
+}
