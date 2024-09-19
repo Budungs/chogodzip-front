@@ -53,7 +53,7 @@
                     </div>
             </router-link>
             
-            <router-link class="option" to="/subscriptions/calendars">
+            <router-link class="option" to="/lottos/calendars">
                     <img src="../assets/img/chungyak.png" alt="청약 Icon">
                     <div>
                         <strong>청약</strong>
