@@ -14944,7 +14944,7 @@ html:not([dir=rtl]) .range-slider-ui.noUi-horizontal .noUi-handle {
 }
 
 .btn-translucent-primary {
-  background-color: rgba(253, 86, 49, 0.1);
+  background-color: rgba(119, 71, 181, 0.9);
 }
 
 .btn-translucent-accent {
@@ -14976,10 +14976,10 @@ html:not([dir=rtl]) .range-slider-ui.noUi-horizontal .noUi-handle {
 }
 
 .btn-translucent-primary {
-  color: #fd5631;
+  color: white;
 }
 .btn-translucent-primary:hover, .btn-translucent-primary:focus, .btn-translucent-primary:active, .btn-translucent-primary.active, .btn-translucent-primary.show {
-  background-color: #fd5631;
+  background-color: var(--main1);
 }
 
 .btn-translucent-accent {
