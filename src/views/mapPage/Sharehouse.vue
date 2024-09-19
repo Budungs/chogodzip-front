@@ -3,7 +3,7 @@
     <hr />
     <div class="tab-navigation d-flex">
       <a
-        href="#"
+        
         class="tab-item"
         :class="{ active: activeTab === 'shareHouse' }"
         @click.prevent="setTab('shareHouse')"
@@ -25,7 +25,7 @@
     </div>
 
     <hr />
-    
+
     <!-- 모달 컴포넌트 -->
     <FilterModal
       v-if="showModal"
@@ -35,12 +35,11 @@
       @close="closeModal"
     />
 
-    <!-- 지도 및 매물 목록을 좌우로 나열하는 컨테이너 -->
+    <!-- 매물 목록 및 지도 -->
     <div class="map-list-container">
-      <!-- 매물 목록 표시 -->
       <div class="property-list">
         <p>매물 목록</p>
-        <div v-for="(property, index) in propertyList" :key="index" class="card">
+        <div v-for="(property, index) in filteredProperties" :key="index" class="card">
           <img src="https://via.placeholder.com/150" class="card-img-top" alt="Property Image">
           <div class="card-body">
             <h5 class="card-title">{{ property.name }}</h5>
@@ -50,56 +49,49 @@
         </div>
       </div>
 
-      <!-- Kakao 지도 컴포넌트 -->
-      <KakaoMap />
+      <!-- Kakao 지도 -->
+      <div id="map" class="map"></div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'; // reactive 추가
-import KakaoMap from './KakaoMap.vue'; // Kakao 지도 컴포넌트
 import FilterModal from './PriceFilterModal.vue'; // 필터 모달 컴포넌트
+import { ref, reactive, computed, onMounted } from 'vue';
+
+
 
 // 탭 상태 관리
 const activeTab = ref('shareHouse');
 
-// 매물 목록 (더미 데이터)
-const propertyList = ref([
+// 쉐어하우스와 공유주택 매물 목록
+const shareHouseProperties = ref([
   { name: '서울대입구 쉐어하우스', price: 500 },
   { name: '관악구 쉐어하우스', price: 600 },
   { name: '낙성대 쉐어하우스', price: 550 },
 ]);
 
-// 모달 상태 관리
+const sharedHouseProperties = ref([
+  { name: '강남 공유주택', price: 1000 },
+  { name: '서초 공유주택', price: 950 },
+]);
+
+// 모달 상태 및 필터 관리
 const showModal = ref(false);
 const currentFilterType = ref(null);
-
-// 필터 상태
 const filters = reactive({
-  gender: null,
-  rooms: null,
+  gender: ['unisex', 'male', 'female'],
+  rooms: ['oneRoom','twoRoom','threeRoom'],
   price: {
     deposit: 10000,
     rent: 60,
   },
 });
 
-const defaultFilters = reactive({
-  gender: null,
-  rooms: null,
-  price: {
-    deposit: 10000,
-    rent: 60,
-  },
-});
-
-// 탭 전환 시 필터 초기화
+// 탭 전환 시 필터 초기화 및 탭 변경 처리
 const setTab = (tab) => {
-  if (activeTab.value !== tab) {
-    resetFilters(); // 탭이 변경될 때 필터 초기화
-  }
   activeTab.value = tab;
+  resetFilters();
 };
 
 // 모달 열기
@@ -123,17 +115,61 @@ const updateFilters = (updatedFilters) => {
   showModal.value = false;
 };
 
+// 필터 적용된 매물 목록 계산
+const filteredProperties = computed(() => {
+  const properties =
+    activeTab.value === 'shareHouse' ? shareHouseProperties.value : sharedHouseProperties.value;
+
+  return properties.filter((property) => {
+    const matchesPrice = property.price >= filters.price.rent;
+    return matchesPrice;
+  });
+});
+
 // 필터 초기화
 const resetFilters = () => {
-  filters.gender = defaultFilters.gender;
-  filters.rooms = defaultFilters.rooms;
-  filters.price.deposit = defaultFilters.price.deposit;
-  filters.price.rent = defaultFilters.price.rent;
+  filters.gender = [];
+  filters.rooms = [];
+  filters.price.deposit = 10000;
+  filters.price.rent = 60;
 };
+
+// Kakao 지도 설정 및 마커 데이터 관리
+const map = ref(null);
+const markers = ref([]);
+
+onMounted(() => {
+  const container = document.getElementById('map');
+  const options = {
+    center: new kakao.maps.LatLng(37.5665, 126.9780), // 서울 시청 좌표
+    level: 5, // 맵 줌 레벨
+  };
+
+  map.value = new kakao.maps.Map(container, options);
+
+  const clusterer = new kakao.maps.MarkerClusterer({
+    map: map.value,
+    averageCenter: true,
+    minLevel: 7,
+  });
+
+  const markerData = [
+    { lat: 37.5665, lng: 126.9780, title: 'Marker 1' },
+    { lat: 37.5655, lng: 126.9760, title: 'Marker 2' },
+    { lat: 37.5645, lng: 126.9750, title: 'Marker 3' },
+  ];
+
+  markers.value = markerData.map(({ lat, lng, title }) => {
+    const markerPosition = new kakao.maps.LatLng(lat, lng);
+    const marker = new kakao.maps.Marker({ position: markerPosition, title });
+    return marker;
+  });
+
+  clusterer.addMarkers(markers.value);
+});
 </script>
 
 <style scoped>
-
 /* 탭 네비게이션 */
 .tab-navigation {
   font-weight: bold;
@@ -171,19 +207,20 @@ const resetFilters = () => {
 /* 지도와 매물 목록을 나란히 배치하는 컨테이너 */
 .map-list-container {
   display: flex;
-  flex-direction: row; /* 매물 목록을 왼쪽, 지도를 오른쪽에 배치 */
+  flex-direction: row;
+  height: 1200px; /* 페이지가 길어지도록 설정 */
 }
 
 /* 매물 목록 스타일 */
 .property-list {
-  width: 35%; /* 매물 목록을 35% 너비로 설정 */
+  width: 25%; /* 매물 목록을 25% 너비로 설정 */
   background-color: #f9f9f9;
   border-radius: 8px;
   padding: 20px;
-  overflow-y: auto; /* 목록이 많을 때 스크롤 가능하게 설정 */
-  height: 500px; /* 목록 높이 고정 */
-  scrollbar-width: thin; /* 스크롤바 스타일을 얇게 */
-  scrollbar-color: #6b2e9b #f9f9f9; /* 스크롤바 색상 설정 */
+  overflow-y: auto;
+  height: 100%; /* 높이를 100%로 설정 */
+  scrollbar-width: thin;
+  scrollbar-color: #6b2e9b #f9f9f9;
 }
 
 /* 카드 스타일 */
@@ -216,7 +253,7 @@ const resetFilters = () => {
 }
 
 .btn-primary {
-  background-color: #6b2e9b;
+  background-color: var(--main1);
   border: none;
 }
 
@@ -225,9 +262,9 @@ const resetFilters = () => {
 }
 
 /* 지도 스타일 */
-#map {
-  width: 60%; /* 지도의 너비를 60%로 설정 */
-  height: 500px;
+.map {
+  width: 75%;
+  height: 100%; /* 지도의 높이를 100%로 설정 */
   border-radius: 8px;
 }
 
@@ -237,7 +274,7 @@ const resetFilters = () => {
 }
 
 .property-list::-webkit-scrollbar-thumb {
-  background-color: #6b2e9b;
+  background-color: var(--main1);
   border-radius: 10px;
 }
 
