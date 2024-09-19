@@ -18,7 +18,7 @@
           <div class="col"><a class="icon-box card card-body h-100 border-0 shadow-sm card-hover h-100 text-center" href="/houses/maps/sharehouses">
               <div class="icon-box-media bg-faded-primary text-primary rounded-circle mb-3 mx-auto"><i class="fi-shop"></i></div>
               <h3 class="icon-box-title fs-base mb-0">공유 주거 공간</h3></a></div>
-          <div class="col"><a class="icon-box card card-body h-100 border-0 shadow-sm card-hover h-100 text-center" href="/subscriptions/calendars">
+          <div class="col"><a class="icon-box card card-body h-100 border-0 shadow-sm card-hover h-100 text-center" href="/lottos/calendars">
               <div class="icon-box-media bg-faded-primary text-primary rounded-circle mb-3 mx-auto"><i class="fi-rent"></i></div>
               <h3 class="icon-box-title fs-base mb-0">청약</h3></a></div>
           </div>
