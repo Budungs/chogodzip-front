@@ -3106,14 +3106,14 @@ textarea.form-control-lg {
 
 .btn-primary {
   color: #000;
-  background-color: #fd5631;
-  border-color: #fd5631;
+  background-color: var(--main1);
+  border-color: var(--main1);
   box-shadow: unset;
 }
 .btn-primary:hover {
-  color: #000;
-  background-color: #fd6f50;
-  border-color: #fd6746;
+  color: white;
+  background-color: var(--main1);
+  border-color: var(--main1);
 }
 .btn-check:focus + .btn-primary, .btn-primary:focus {
   color: #000;
@@ -3130,9 +3130,9 @@ textarea.form-control-lg {
   box-shadow: unset, 0 0 0 0 rgba(215, 73, 42, 0.5);
 }
 .btn-primary:disabled, .btn-primary.disabled {
-  color: #000;
-  background-color: #fd5631;
-  border-color: #fd5631;
+  color: var(--gray1);
+  background-color: var(--main1);
+  border-color: var(--main1);
 }
 
 .btn-accent {
@@ -14804,7 +14804,7 @@ html:not([dir=rtl]) .range-slider-ui.noUi-horizontal .noUi-handle {
   background-color: #fd390e;
   border-color: #fd390e;
   color: #fff;
-  box-shadow: 0 0.25rem 0.25rem 0.125rem rgba(253, 86, 49, 0.1), 0 0.375rem 0.75rem -0.125rem rgba(253, 86, 49, 0.4);
+  box-shadow: 0 0.25rem 0.25rem 0.125rem rgba(119, 71, 181, 0.1), 0 0.375rem 0.75rem -0.125rem rgba(119, 71, 181, 0.4);
 }
 .btn-primary:disabled, .btn-primary.disabled {
   color: #fff;
