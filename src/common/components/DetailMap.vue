@@ -74,7 +74,7 @@ onMounted(() => {
         var marker = new kakao.maps.Marker({
             map: map,
             position: new kakao.maps.LatLng(place.y, place.x),
-            image: new kakao.maps.MarkerImage(markerImage, new kakao.maps.Size(24, 35)) // 마커 이미지 설정
+            image: new kakao.maps.MarkerImage(markerImage, new kakao.maps.Size(40, 40)) // 마커 이미지 설정
         });
 
         // 마커에 클릭이벤트를 등록합니다
