@@ -139,7 +139,8 @@
         <!-- 매물 등록 버튼 -->
         <br><br>
         <div class="register-button-container">
-          <button class="register-button">매물 등록</button>
+          <!-- <button class="register-button">매물 등록</button> -->
+          <button type="button" class="btn btn-light">Info</button>
         </div>
       </div>
     </div>
@@ -251,12 +252,12 @@
     }
   
     /* 매물 등록 버튼 */
-    .register-button {
+    /* .register-button {
       background-color:#a28cd1;
       color: white;
       width: 200px;
       height: 70px;
-    }
+    } */
     .register-button:hover {
       background-color:#dfcef7;
     }

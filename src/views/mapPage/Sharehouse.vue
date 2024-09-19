@@ -172,6 +172,8 @@ onMounted(() => {
 <style scoped>
 /* 탭 네비게이션 */
 .tab-navigation {
+  margin-top: 10px;
+  margin-bottom: 10px;
   font-weight: bold;
   font-size: 22px;
   margin-left: 26px;

@@ -3,7 +3,7 @@
         
         <header class="d-flex justify-content-between align-items-center py-3 flex-wrap">
             <div class="logo">
-                <img src="../../assets/images/logo1.png" alt="CHOGAdZIP 로고" class="logo-img">
+                <a href="/"><img src="../../assets/images/logo1.png" alt="CHOGAdZIP 로고" class="logo-img"></a>
             </div>
             <div class="header-links d-flex ms-auto"> 
                 <a href="#" class="nav-link px-3">관심목록</a>
