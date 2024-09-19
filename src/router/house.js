@@ -10,9 +10,9 @@ export default [
     component: () => import("../views/House.vue"),
   },
   {
-    path: "/houses/maps/sharehouses",
-    name: "houses/maps/sharehouses",
-    component: () => import("../views/House.vue"),
+    path: '/houses/maps/sharehouses',
+    name: 'houses/maps/sharehouses',
+    component: () => import('../views/mapPage/Sharehouse.vue'),
   },
   {
     path: "/houses/:id",

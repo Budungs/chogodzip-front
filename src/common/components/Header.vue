@@ -22,7 +22,7 @@
             </button>
             <input type="text" name="query" placeholder="검색어를 입력하세요">
         </form>
-        <br>
+        
     </div>
 </template>
 
