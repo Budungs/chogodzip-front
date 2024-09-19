@@ -49,7 +49,7 @@
   --bs-white: #fff;
   --bs-gray: #9691a4;
   --bs-gray-dark: #454056;
-  --bs-gray-100: #f9f8fa;
+  --bs-gray-100: #7747B5;
   --bs-gray-200: #f5f4f8;
   --bs-gray-300: #efecf3;
   --bs-gray-400: #d5d2dc;
@@ -2167,7 +2167,7 @@ progress {
 }
 
 .table-secondary {
-  --bs-table-bg: #f9f8fa;
+  --bs-table-bg: #7747B5;
   --bs-table-striped-bg: #f0eff1;
   --bs-table-striped-color: #000;
   --bs-table-active-bg: #edecee;
@@ -5670,7 +5670,7 @@ fieldset:disabled .btn {
 .page-item.active .page-link {
   z-index: 3;
   color: #fff;
-  background-color: #fd5631;
+  background-color: #9D7AC3;
   border-color: transparent;
 }
 
@@ -16862,7 +16862,7 @@ h6.text-white .nav-link.disabled,
 
 .nav-tabs .nav-link.disabled,
 .nav-tabs .nav-link[disabled] {
-  background-color: #f9f8fa;
+  background-color: #7747B5;
 }
 
 .nav-tabs .nav-link>i {
@@ -16884,7 +16884,7 @@ h6.text-white .nav-link.disabled,
 }
 
 .nav-tabs-light .nav-item.show .nav-link {
-  color: #fd5631;
+  color: #7747B5;
 }
 
 .nav-tabs-light .nav-link {
@@ -16900,7 +16900,7 @@ h6.text-white .nav-link.disabled,
 
 .nav-tabs-light .nav-link.active {
   background-color: #fff;
-  color: #fd5631;
+  color: #7747B5;
 }
 
 .nav-pills .nav-link {
@@ -16947,7 +16947,7 @@ h6.text-white .nav-link.disabled,
 
 .nav-pills.nav-pills-light .nav-link.active {
   background-color: #fff;
-  color: #fd5631;
+  color: #7747B5;
   box-shadow: none;
 }
 
