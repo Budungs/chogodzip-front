@@ -25,5 +25,11 @@ export default [
     name: "DetailPage",
     component: () => import("../views/DetailPage.vue"),
   },
+
+  {
+    path: "/houses/sharehouses/reviews/:id",
+    name: "ReviewPage",
+    component: () => import("../views/Review.vue"),
+  },
 ];
 
