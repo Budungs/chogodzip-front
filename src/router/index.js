@@ -3,7 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Home from '@/views/Home.vue';
 
 import houseRoutes from './house';
-import subscriptionRoutes from './subscription';
+import lottoRoutes from './lotto';
 import registRoom from './registroom';
 
 const router = createRouter({
@@ -11,7 +11,7 @@ const router = createRouter({
   routes: [
     { path: '/', name: 'home', component: Home },
       ...houseRoutes,
-      ...subscriptionRoutes,
+      ...lottoRoutes,
       ...registRoom,
     ],
   });
