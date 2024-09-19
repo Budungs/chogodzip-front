@@ -7,7 +7,7 @@
             </div>
             <div class="header-links d-flex ms-auto"> 
                 <a href="#" class="nav-link px-3">관심목록</a>
-                <a href="#" class="nav-link px-3">방내놓기</a>
+                <a href="/regist/room" class="nav-link px-3">방내놓기</a>
             </div>
             <div class="header-buttons d-flex">
                 <a href="#" class="btn btn-outline-secondary mx-2">로그인</a>
@@ -22,7 +22,7 @@
             </button>
             <input type="text" name="query" placeholder="검색어를 입력하세요">
         </form>
-        <br>
+        
     </div>
 </template>
 
