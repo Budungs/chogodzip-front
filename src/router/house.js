@@ -19,6 +19,7 @@ export default [
     name: 'houses/maps/room',
     component: () => import('../views/mapPage/RoomHouse.vue'),
   },
+
   {
     path: "/houses/sharehouses/:id",
     name: "DetailPage",
