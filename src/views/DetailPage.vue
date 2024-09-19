@@ -2,17 +2,15 @@
   <div class="container">
     <!-- Page content-->
     <!-- Page header-->
-    <section class="container">
-      <!-- Nav pills-->
-      <ul class="nav nav-pills border-bottom pb-3">
-        <li class="nav-item">
-          <a class="nav-link d-flex align-items-center active">상세페이지</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link d-flex align-items-center">리뷰</a>
-        </li>
-      </ul>
-    </section>
+    <!-- Nav pills-->
+    <ul class="nav nav-pills border-bottom pb-3 ml-2" style="margin:25px;">
+      <li class="nav-item">
+        <a class="nav-link d-flex align-items-center active">상세페이지</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link d-flex align-items-center">리뷰</a>
+      </li>
+    </ul>
     <!-- Page content -->
     <section class="container pb-5 mb-md-4">
       <div class="row">
@@ -21,11 +19,7 @@
           <img :src="house.TITLE_IMAGE" alt="House Image" class="house-image" />
 
           <div class="mb-4 pb-md-3 mt-4">
-            <h2
-              class="h4"
-              v-for="subway in house.nearSubways[0]"
-              :key="subway.NAME"
-            >
+            <h2 class="h4" v-for="subway in house.nearSubways[0]" :key="subway.NAME">
               🚉 {{ subway.FULL_NAME }}
             </h2>
             <ul class="list-unstyled d-flex flex-wrap mb-2">
@@ -51,37 +45,17 @@
               </div>
 
               <!-- Place contacts-->
-              <div
-                class="mb-3 pb-3 pt-3 border-bottom d-flex justify-content-around"
-              >
+              <div class="mb-3 pb-3 pt-3 border-bottom d-flex justify-content-around">
                 <div class="text-center">
-                  <img
-                    width="70"
-                    height="70"
-                    :src="floorImage"
-                    alt="Floor Image"
-                    class="pb-2"
-                  />
+                  <img width="70" height="70" :src="floorImage" alt="Floor Image" class="pb-2" />
                   <h6>총 {{ house.FLOOR }}층</h6>
                 </div>
                 <div class="text-center">
-                  <img
-                    width="70"
-                    height="70"
-                    :src="roomImage"
-                    alt="Room Image"
-                    class="pb-2"
-                  />
+                  <img width="70" height="70" :src="roomImage" alt="Room Image" class="pb-2" />
                   <h6>총 {{ house.ROOM_CNT }}개의 방</h6>
                 </div>
                 <div class="text-center">
-                  <img
-                    width="70"
-                    height="70"
-                    :src="laughImage"
-                    alt="Laugh Image"
-                    class="pb-2"
-                  />
+                  <img width="70" height="70" :src="laughImage" alt="Laugh Image" class="pb-2" />
                   <h6>{{ house.GENDER_TYPE_NM }}</h6>
                 </div>
               </div>
@@ -91,21 +65,17 @@
                   <div class="col">
                     <h6 class="h5 mb-2">
                       <span class="fs-4">보증금&nbsp;</span>
-                      <span class="fs-4 main1"
-                        >{{ house.DEPOSIT_MIN }}-{{
-                          house.DEPOSIT_MAX
-                        }}&nbsp;</span
-                      >
+                      <span class="fs-4 main1">{{ house.DEPOSIT_MIN }}-{{
+                        house.DEPOSIT_MAX
+                      }}&nbsp;</span>
                       <span class="fs-4">만원&nbsp;</span>
                     </h6>
                     <h6 class="h5 mb-0">
                       <span class="fs-4">월세&nbsp;</span>
-                      <span class="fs-4 main1"
-                        >{{ house.PRICE_MIN }}-{{
-                          house.PRICE_MAX
-                        }}
-                        &nbsp;</span
-                      >
+                      <span class="fs-4 main1">{{ house.PRICE_MIN }}-{{
+                        house.PRICE_MAX
+                      }}
+                        &nbsp;</span>
                       <span class="fs-4">만원&nbsp;</span>
                     </h6>
                   </div>
@@ -117,20 +87,10 @@
               </div>
             </div>
           </div>
+
           <!-- Location (Map)-->
           <div class="position-relative">
-            <img class="rounded-3" alt="Map" :src="mapImage" />
-            <div
-              class="d-flex w-100 h-100 flex-column align-items-center justify-content-center position-absolute top-0 start-0"
-            >
-              <!-- <a
-                class="btn btn-primary rounded-pill stretched-link"
-                href="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2423.924340088787!2d13.428504251724927!3d52.58906113876177!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47a85284201593ab%3A0x28af69e02ce0e2fc!2sBusinesshotel%20Berlin!5e0!3m2!1sru!2sua!4v1618908622013!5m2!1sru!2sua"
-                data-iframe="true"
-                data-bs-toggle="lightbox"
-                ><i class="fi-route me-2"></i>Get directions</a
-              > -->
-            </div>
+            <DetailMap class="rounded-3" :latitude="house.LATITUDE" :longitude="house.LONGITUDE" />
           </div>
         </aside>
       </div>
@@ -139,12 +99,16 @@
 </template>
 
 <script>
-import floorImage from "../assets/img/floor.png";
-import laughImage from "../assets/img/laugh.png";
-import roomImage from "../assets/img/room.png";
-import mapImage from "../assets/img/map.png";
+import floorImage from "@/assets/img/floor.png";
+import laughImage from "@/assets/img/laugh.png";
+import roomImage from "@/assets/img/room.png";
+import mapImage from "@/assets/img/map.png";
+import DetailMap from '@/common/components/DetailMap.vue';
 
 export default {
+  components: {
+    DetailMap
+  },
   data() {
     const tagsString =
       "관리비 7~52#FIXED|여성전용#FIXED|청소업체|신용카드|현금영수증|개인에어컨|개인화장실";
@@ -196,10 +160,6 @@ export default {
 </script>
 
 <style>
-.container {
-  padding: 20px;
-}
-
 .border-20 {
   border-radius: 20px;
 }
