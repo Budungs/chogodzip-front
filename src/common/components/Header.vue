@@ -16,12 +16,12 @@
             </div>
         </header>
         
-        <form class="search-bar" action="/search" method="GET">
+        <!-- <form class="search-bar" action="/search" method="GET">
             <button type="submit">
                 <img src="../../assets/img/search.png" alt="검색 Icon">
             </button>
             <input type="text" name="query" placeholder="검색어를 입력하세요">
-        </form>
+        </form> -->
         
     </div>
 </template>
