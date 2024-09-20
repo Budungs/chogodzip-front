@@ -6,14 +6,14 @@
             <div class="con-lotto-search-list">
                 <LottoListSearch />
 
-                <div style="width:100%; display:flex; flex-direction: row; justify-content: space-between;">
-                    <div class="txt-list-count-page" style="width:300px">
-                        전체 1020건 1/N페이지
+                <div class="con-total">
+                    <div class="txt-list-count-page">
+                        전체 <span id="num-total-count">1020</span>건 <span id="num-now-page">1</span>/<span id="num-total-pages">N</span>페이지
                     </div>
                     
                     <!-- Sorting-->
-                    <div class="d-flex align-items-center mb-4">
-                    <label class="d-inline-block me-2 pe-1 text-muted text-nowrap" for="sort"><i class="fi-arrows-sort mt-n1 me-1 align-middle opacity-80"></i></label>
+                    <div class="d-flex align-items-center" style="width:150px">
+                    <label class="d-inline-block me-2 pe-1 text-muted text-nowrap" for="sort"><i class="fas fa-sort-amount-down mt-n1 me-1 align-middle opacity-80"></i></label>
                     <select class="form-select" id="sort">
                         <option>10건</option>
                         <option>20건</option>
@@ -51,6 +51,24 @@ const handlePageChange = (page) => {
 </script>
 
 <style scoped>
+.con-total {
+    width:100%; height:60px; 
+    display:flex; flex-direction: row; justify-content: end; align-items: end;
+    margin-bottom:5px;
+}
+
+.txt-list-count-page {
+    width:100%;
+    height: 40px;
+    display:flex; align-items: end;
+    gap:4px;
+}
+
+#num-total-count, #num-now-page {
+    font-weight: bold;
+    color: var(--main1);
+}
+
 .con-lotto-list {
     width: 100%;
     display: flex;
