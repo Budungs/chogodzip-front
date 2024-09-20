@@ -21,7 +21,7 @@ export default [
   },
 
   {
-    path: "/houses/sharehouses/:id",
+    path: "/houses/sharehouses/info/:id",
     name: "DetailPage",
     component: () => import("../views/DetailPage.vue"),
   },
