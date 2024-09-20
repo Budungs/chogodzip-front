@@ -1,3 +1,4 @@
+<!-- 방 내놓기 페이지 -->
 <template>
     <div class="container">
       <div class="property-info">

@@ -9,7 +9,7 @@
                 <span class="highlight">초갓집</span>과 함께 방 찾기 여정을 떠나보세요!
             </div>
             <br>
-
+            <!-- 여기 수정 필요 -->
             <a href="registUser.html"><img src="../../assets/img/kakaoLogo.png" alt="Kakao Icon"></a>
 
         </div>

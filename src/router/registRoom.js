@@ -1,7 +1,7 @@
 export default [
     {
-        path : '/regist/room',
-        name : '/regist/room',
+        path : '/registroom',
+        name : '/registroom',
         component : () => import('../views/Postroom.vue'),
     },
 ];
