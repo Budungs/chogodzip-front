@@ -18,6 +18,10 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
+      "/v1": {
+        target: "https://openapi.naver.com/",
+        changeOrigin: true,
+      },
     },
   },
 });
