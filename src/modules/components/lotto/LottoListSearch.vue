@@ -7,7 +7,7 @@
             <input type="text" class="form-control" placeholder="Search query...">
         </div>
         
-        <select class="form-select" aria-label="Default select example" style="width:100px">
+        <select class="form-select" aria-label="Default select example" style="flex:2">
             <option selected>주관</option>
             <option value="1">공공</option>
             <option value="3">민간</option>
@@ -40,5 +40,7 @@
         </div> -->
 
         <button type="button" class="btn btn-translucent-primary ms-auto" style="width:25%; height:80%">검색</button>
+
+        
     </form>
 </template>

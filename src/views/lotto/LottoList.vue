@@ -10,13 +10,19 @@
                     <div class="txt-list-count-page" style="width:300px">
                         전체 1020건 1/N페이지
                     </div>
-                    <select class="form-select" aria-label="Default select example"  style="width:100px">
-                        <option selected>10건</option>
-                        <option value="1">10건</option>
-                        <option value="2">20건</option>
-                        <option value="3">30건</option>
+                    
+                    <!-- Sorting-->
+                    <div class="d-flex align-items-center mb-4">
+                    <label class="d-inline-block me-2 pe-1 text-muted text-nowrap" for="sort"><i class="fi-arrows-sort mt-n1 me-1 align-middle opacity-80"></i></label>
+                    <select class="form-select" id="sort">
+                        <option>10건</option>
+                        <option>20건</option>
+                        <option>30건</option>
                     </select>
+                    </div>
                 </div>
+
+                <LottoList />
             </div>
         </div>
     </div>
@@ -26,6 +32,7 @@
 import LottoListSearch from '@/modules/components/lotto/LottoListSearch.vue';
 import LottoListTab from '@/modules/components/lotto/LottoListTab.vue';
 import LottoTab from '@/modules/components/lotto/LottoTab.vue';
+import LottoList from '@/modules/components/lotto/LottoList.vue';
 </script>
 
 <style scoped>
