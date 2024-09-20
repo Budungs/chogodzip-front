@@ -39,19 +39,19 @@
                   <div class="checkbox-group vertical">
                     <label>
                       <input type="checkbox" value="LH" v-model="filters.loan" />
-                      LH
+                      &nbsp LH
                     </label>
                     <label>
                       <input type="checkbox" value="버팀목" v-model="filters.loan" />
-                      버팀목
+                      &nbsp 버팀목
                     </label>
                     <label>
                       <input type="checkbox" value="중기청80" v-model="filters.loan" />
-                      중기청80
+                      &nbsp 중기청80
                     </label>
                     <label>
                       <input type="checkbox" value="중기청100" v-model="filters.loan" />
-                      중기청100
+                      &nbsp 중기청100
                     </label>
                   </div>
                 </div>
@@ -60,16 +60,16 @@
                   <h5>층수</h5>
                   <div class="checkbox-group vertical">
                     <label>
-                      <input type="checkbox" value="under"/>
-                      지하
+                      <input type="checkbox" value="under" v-model="filters.floor"/>
+                      &nbsp 지하
                     </label>
                     <label>
-                      <input type="checkbox" value="1floor"/>
-                      1층
+                      <input type="checkbox" value="1floor" v-model="filters.floor"/>
+                      &nbsp 1층
                     </label>
                     <label>
-                      <input type="checkbox" value="2floor"/>
-                      2층 이상
+                      <input type="checkbox" value="2floor" v-model="filters.floor"/>
+                      &nbsp 2층 이상
                     </label>
                   </div>
                 </div>
@@ -81,12 +81,12 @@
                   <h5>전/월세</h5>
                   <div class="checkbox-group horizontal">
                     <label>
-                      <input type="checkbox" value="junse"/>
-                      전세
+                      <input type="checkbox" value="junse" v-model="filters.type"/>
+                      &nbsp 전세
                     </label>
                     <label>
-                      <input type="checkbox" value="month"/>
-                      월세
+                      <input type="checkbox" value="month" v-model="filters.type"/>
+                      &nbsp 월세
                     </label>
                   </div>
                 </div>
@@ -153,29 +153,30 @@ import { ref, reactive, computed, onMounted } from 'vue';
 const activeTab = ref('oneRoom');
 const showFilters = ref(true); 
 
-// 매물 데이터 설정 (필요에 따라 추가 가능)
+// 매물 데이터 설정: 전세/월세와 층수 정보를 추가
 const propertiesData = {
   oneRoom: [
-    { name: '서울 용산구 위례성대로 8길 28', price: 500, loan: '원룸' },
-    { name: '관악구 원룸', price: 600, loan: '삼성전자' },
-    { name: '낙성대 원룸', price: 550, loan: '레노버' },
+    { name: '서울 용산구 위례성대로 8길 28', price: 500, loan: 'LH', type: 'junse', floor: '2floor' },
+    { name: '관악구 원룸', price: 600, loan: '버팀목', type: 'month', floor: '1floor' },
+    { name: '낙성대 원룸', price: 550, loan: '중기청80', type: 'month', floor: 'under' },
   ],
   villa: [
-    { name: '강남 빌라', price: 1000, loan: 'LG전자' },
-    { name: '서초 빌라', price: 950, loan: '삼성전자' },
+    { name: '강남 빌라', price: 1000, loan: '중기청100', type: 'junse', floor: '2floor' },
+    { name: '서초 빌라', price: 950, loan: 'LH', type: 'month', floor: '1floor' },
   ],
   opistel: [
-    { name: '서울대 오피스텔', price: 850, loan: '레노버' },
-    { name: '강남 오피스텔', price: 1200, loan: '삼성전자' },
+    { name: '서울대 오피스텔', price: 850, loan: '중기청100', type: 'junse', floor: '2floor' },
+    { name: '강남 오피스텔', price: 1200, loan: '버팀목', type: 'month', floor: 'under' },
   ],
 };
 
-// 필터 관리
+// 필터 관리: 기본값을 모두 선택된 상태로 설정
 const filters = reactive({
-  loan: [], 
-  rent: 0,
-  deposit: 0,
-  price: { rent: 0 },
+  loan: ['LH', '버팀목', '중기청80', '중기청100'], // 모든 대출 옵션 선택
+  floor: ['under', '1floor', '2floor'], // 모든 층수 옵션 선택
+  type: ['junse', 'month'], // 전세와 월세 모두 선택
+  rent: 5000000, // 월세 슬라이더를 최대로 설정
+  deposit: 200000000, // 보증금 슬라이더를 최대로 설정
 });
 
 // 필터 값 형식 처리
@@ -187,8 +188,13 @@ const formattedRent = computed(() => {
   return `${(filters.rent / 10000).toFixed(1)}만원`;
 });
 
-const toggleFilters = () => {
-  showFilters.value = !showFilters.value;
+// 필터 초기화: 전체 선택으로 되돌리기
+const resetFilters = () => {
+  filters.loan = ['LH', '버팀목', '중기청80', '중기청100'];
+  filters.floor = ['under', '1floor', '2floor'];
+  filters.type = ['junse', 'month'];
+  filters.deposit = 200000000;
+  filters.rent = 5000000;
 };
 
 // 탭 전환 시 필터 초기화 및 탭 변경 처리
@@ -197,21 +203,17 @@ const setTab = (tab) => {
   resetFilters();
 };
 
-// 필터 초기화
-const resetFilters = () => {
-  filters.loan = [];
-  filters.price.rent = 0;
-};
-
 // 필터 적용된 매물 목록 계산
 const filteredProperties = computed(() => {
   const properties = propertiesData[activeTab.value];
 
   return properties.filter((property) => {
-    const matchesPrice = property.price >= filters.price.rent;
-    const matchesManufacturer =
-      filters.loan.length === 0 || filters.loan.includes(property.loan);
-    return matchesPrice && matchesManufacturer;
+    const matchesLoan = filters.loan.length === 0 || filters.loan.includes(property.loan);
+    const matchesFloor = filters.floor.length === 0 || filters.floor.includes(property.floor);
+    const matchesType = filters.type.length === 0 || filters.type.includes(property.type);
+    const matchesRent = property.price <= filters.rent;
+    const matchesDeposit = property.price <= filters.deposit || filters.deposit === 0;
+    return matchesLoan && matchesFloor && matchesType && matchesRent && matchesDeposit;
   });
 });
 
@@ -249,6 +251,7 @@ onMounted(() => {
   clusterer.addMarkers(markers.value);
 });
 </script>
+
 
 <style scoped>
 /* 필터 섹션 */
@@ -304,7 +307,7 @@ onMounted(() => {
 /* 탭 네비게이션 */
 .tab-navigation {
   font-weight: bold;
-  font-size: 22px;
+  font-size: 24px; /* 탭 네비게이션의 기본 폰트 크기 */
   margin-left: 26px;
 }
 
@@ -315,10 +318,13 @@ onMounted(() => {
   color: gray;
   text-decoration: none;
   position: relative;
+  font-size: 28px; /* 탭 아이템의 폰트 크기를 증가 */
+  cursor: pointer;
 }
 
 .tab-item.active {
   color: #6b2e9b;
+  font-size: 28px; /* 활성화된 탭의 폰트 크기를 더 크게 설정 */
 }
 
 /* checkbox-group 클래스를 가로 배치 */
@@ -469,5 +475,11 @@ onMounted(() => {
   border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 14px;
+}
+
+hr {
+  border: 0;
+  height: 3px; /* 원하는 굵기로 설정 */
+  background-color: var(--main-gray1); /* 진한 색상으로 설정 */
 }
 </style>
