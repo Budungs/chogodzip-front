@@ -23,6 +23,10 @@
                 </div>
 
                 <LottoList />
+
+                <div class="con-paging">
+                    <Pagination :currentPage="currentPage" :totalPages="totalPages" @update:page="handlePageChange" />
+                </div>
             </div>
         </div>
     </div>
@@ -33,6 +37,17 @@ import LottoListSearch from '@/modules/components/lotto/LottoListSearch.vue';
 import LottoListTab from '@/modules/components/lotto/LottoListTab.vue';
 import LottoTab from '@/modules/components/lotto/LottoTab.vue';
 import LottoList from '@/modules/components/lotto/LottoList.vue';
+import Pagination from '@/common/components/Pagination.vue';
+
+import { ref } from 'vue';
+
+const totalPages = 10;
+const currentPage = ref(1); // 현재 페이지
+
+// 페이지 변경 처리
+const handlePageChange = (page) => {
+    currentPage.value = page;
+};
 </script>
 
 <style scoped>
@@ -51,5 +66,9 @@ import LottoList from '@/modules/components/lotto/LottoList.vue';
 .con-lotto-search-list {
     flex: 9;
     display: flex; flex-direction: column;
+}
+
+.con-paging {
+    width:100%; height:100px; display:flex; justify-content: center; align-items: end;
 }
 </style>

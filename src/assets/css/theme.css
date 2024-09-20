@@ -5650,14 +5650,14 @@ fieldset:disabled .btn {
 
 .page-link:hover {
   z-index: 2;
-  color: #7747B5;
+  color: var(--main1);
   background-color: transparent;
   border-color: transparent;
 }
 
 .page-link:focus {
   z-index: 3;
-  color: #fd3509;
+  color: var(--main1);
   background-color: transparent;
   outline: 0;
   box-shadow: none;
@@ -18692,12 +18692,12 @@ h6 .dropdown-toggle::after,
 }
 
 .page-link.page-link-static:hover {
-  color: #454056;
+  color: var(--main1);
 }
 
 .pagination-light .page-item.active .page-link {
   background-color: #fff;
-  color: #7747B5;
+  color: var(--main1);
   border-color: transparent;
 }
 
