@@ -35,7 +35,7 @@
 </template>
   
 <script setup>
-import { computed, defineProps, defineEmits } from 'vue';
+import { computed } from 'vue';
 
 // 부모로부터 props로 데이터 전달 받기
 const props = defineProps({
