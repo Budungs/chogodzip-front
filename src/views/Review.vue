@@ -50,6 +50,53 @@
                         <!-- Reviews about you tab-->
                         <div class="tab-pane fade show active" id="reviews-about-you" role="tabpanel">
                             <!--ai요약-->
+                            <div class="ai-card">
+                                <h3 class="title">
+                                    <span class="emoji mb-4">👾</span>
+                                    <span class="h4" style="font-weight:700;">한눈에 보는 장단점 </span>
+                                </h3>
+                                <div class="toggle-bar">
+                                    <button :class="{ active: activeTab === 'pros' }"
+                                        @click="activeTab = 'pros'">장점</button>
+                                    <button :class="{ active: activeTab === 'cons' }"
+                                        @click="activeTab = 'cons'">단점</button>
+                                </div>
+
+                                <transition name="fade" mode="out-in">
+                                    <div v-if="activeTab === 'pros'" key="pros" class="content">
+                                        <ul>
+                                            <li>
+                                                <h5>지하철과 버스 정류장이 매우 가까워 대중교통 이용이 편리합니다.</h5>
+                                                <hr>
+                                            </li>
+                                            <li>
+                                                <h5>근처 1분 거리에 편의점이 있습니다.</h5>
+                                                <hr>
+                                            </li>
+                                            <li>
+                                                <h5>주차장 공간이 넓습니다.</h5>
+                                                <hr>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div v-else key="cons" class="content">
+                                        <ul>
+                                            <li>
+                                                <h5>지하철과 버스 정류장이 매우 가까워 대중교통 이용이 편리합니다.</h5>
+                                                <hr>
+                                            </li>
+                                            <li>
+                                                <h5>근처 1분 거리에 편의점이 있습니다.</h5>
+                                                <hr>
+                                            </li>
+                                            <li>
+                                                <h5>주차장 공간이 넓습니다.</h5>
+                                                <hr>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </transition>
+                            </div>
                             <!-- Normal input -->
                             <div class="mb-3 position-relative pt-2 pb-2">
                                 <input style="height: 100px; width: 100%;" class="form-control" id="input-normal"
@@ -103,6 +150,7 @@
 export default {
 
     data() {
+
         const tagsString =
             "관리비 7~52#FIXED|여성전용#FIXED|청소업체|신용카드|현금영수증|개인에어컨|개인화장실";
 
@@ -112,6 +160,7 @@ export default {
             .filter((tag) => tag)
             .map((tag) => `#${tag}`);
         return {
+            activeTab: 'pros',
             house: {
                 ROOM_CNT: "39",
                 nearSubways: [
@@ -149,6 +198,112 @@ export default {
 </script>
 
 <style scoped>
+.ai-card {
+    background-color: #f7f2fc;
+    padding: 35px;
+    border-radius: 8px;
+    width: 100%;
+    margin-bottom: 12px;
+}
+
+.title {
+    font-size: 18px;
+    color: black;
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.emoji {
+    margin-right: 8px;
+}
+
+/* Toggle button bar */
+.toggle-bar {
+    display: flex;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 30px;
+}
+
+button {
+    flex: 1;
+    /* Allow buttons to take equal width */
+    padding: 5px;
+    border: none;
+    cursor: pointer;
+    font-weight: 800;
+    font-size: 20px;
+    background-color: #f0f0f0;
+    color: #333;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+button.active {
+    background-color: #a88cdb;
+    color: white;
+}
+
+button:not(.active):hover {
+    background-color: #ddd;
+}
+
+.content {
+    font-size: 14px;
+    color: #333;
+}
+
+ul {
+    list-style: none;
+}
+
+li {
+    font-size: medium;
+    margin-bottom: 20px;
+}
+
+/* Simple fade animation */
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.5s ease;
+}
+
+.fade-enter,
+.fade-leave-to {
+    opacity: 0;
+}
+
+
+button {
+    background-color: #ddd;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button.active {
+    background-color: #a88cdb;
+}
+
+.content {
+    font-size: 14px;
+    color: #333;
+}
+
+
+/* Simple fade animation */
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.5s ease;
+}
+
+.fade-enter,
+.fade-leave-to {
+    opacity: 0;
+}
+
 .border-20 {
     border-radius: 20px;
 }
