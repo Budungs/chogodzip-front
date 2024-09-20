@@ -2,7 +2,7 @@ export default [
   {
     path: "/houses/maps/gosiwons",
     name: "houses/maps/gosiwons",
-    component: () => import("../views/House.vue"),
+    component: () => import("../views/mapPage/gosiwon.vue"),
   },
   {
     path: "/houses/maps/onerooms",
@@ -21,7 +21,7 @@ export default [
   },
 
   {
-    path: "/houses/sharehouses/:id",
+    path: "/houses/sharehouses/info/:id",
     name: "DetailPage",
     component: () => import("../views/DetailPage.vue"),
   },
