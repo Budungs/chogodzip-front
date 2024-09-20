@@ -10,12 +10,22 @@
                     <div class="txt-list-count-page" style="width:300px">
                         전체 1020건 1/N페이지
                     </div>
-                    <select class="form-select" aria-label="Default select example"  style="width:100px">
-                        <option selected>10건</option>
-                        <option value="1">10건</option>
-                        <option value="2">20건</option>
-                        <option value="3">30건</option>
+                    
+                    <!-- Sorting-->
+                    <div class="d-flex align-items-center mb-4">
+                    <label class="d-inline-block me-2 pe-1 text-muted text-nowrap" for="sort"><i class="fi-arrows-sort mt-n1 me-1 align-middle opacity-80"></i></label>
+                    <select class="form-select" id="sort">
+                        <option>10건</option>
+                        <option>20건</option>
+                        <option>30건</option>
                     </select>
+                    </div>
+                </div>
+
+                <LottoList />
+
+                <div class="con-paging">
+                    <Pagination :currentPage="currentPage" :totalPages="totalPages" @update:page="handlePageChange" />
                 </div>
             </div>
         </div>
@@ -26,6 +36,18 @@
 import LottoListSearch from '@/modules/components/lotto/LottoListSearch.vue';
 import LottoListTab from '@/modules/components/lotto/LottoListTab.vue';
 import LottoTab from '@/modules/components/lotto/LottoTab.vue';
+import LottoList from '@/modules/components/lotto/LottoList.vue';
+import Pagination from '@/common/components/Pagination.vue';
+
+import { ref } from 'vue';
+
+const totalPages = 10;
+const currentPage = ref(1); // 현재 페이지
+
+// 페이지 변경 처리
+const handlePageChange = (page) => {
+    currentPage.value = page;
+};
 </script>
 
 <style scoped>
@@ -44,5 +66,9 @@ import LottoTab from '@/modules/components/lotto/LottoTab.vue';
 .con-lotto-search-list {
     flex: 9;
     display: flex; flex-direction: column;
+}
+
+.con-paging {
+    width:100%; height:100px; display:flex; justify-content: center; align-items: end;
 }
 </style>
