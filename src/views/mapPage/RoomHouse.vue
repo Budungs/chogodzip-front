@@ -136,6 +136,14 @@
             <h5 class="card-title">{{ property.name }}</h5>
             <p class="card-text fs-sm">{{ property.price }}만원</p>
             <a href="#" class="btn btn-sm btn-primary">상세보기</a>
+
+            <!-- 관심매물 아이콘 -->
+            <div class="interest-icon">
+              <i 
+                :class="property.interested ? 'fas fa-heart active' : 'far fa-heart'"
+                @click="toggleInterest(property)"
+              ></i>
+            </div>
           </div>
         </div>
       </div>
@@ -481,5 +489,22 @@ hr {
   border: 0;
   height: 3px; /* 원하는 굵기로 설정 */
   background-color: var(--main-gray1); /* 진한 색상으로 설정 */
+}
+
+/* 카드 하단에 관심매물 아이콘을 배치 */
+.interest-icon {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  cursor: pointer;
+}
+
+.interest-icon i {
+  font-size: 24px;
+  color: #888;
+}
+
+.interest-icon i.active {
+  color: red;
 }
 </style>
