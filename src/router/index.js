@@ -10,7 +10,10 @@ import addinfo from '../views/login_regist/AddInfo.vue';
 import kakaoLogin from '../views/login_regist/KakaoLogin.vue';
 import registUser from '../views/login_regist/RegistUser.vue';
 import registComplete from '../views/login_regist/RegistComplete.vue';
+
 import CommunityMain from '@/views/community/CommunityMain.vue';
+
+import helpRoutes from './help';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -25,6 +28,8 @@ const router = createRouter({
       ...lottoRoutes,
       ...registRoom,
       ...registMember,
+      ...helpRoutes,
+
     ],
   });
 
