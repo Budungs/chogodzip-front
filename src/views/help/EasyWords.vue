@@ -164,6 +164,14 @@ const setTab = (tab) => {
   }
 };
 
+const toggleAccordion = (index) => {
+  if (activeAccordion.value === index) {
+    activeAccordion.value = null;
+  } else {
+    activeAccordion.value = index;
+  }
+}
+
 // 첫 번째 차트 그리기 함수 (세로 막대 차트)
 const drawChart = () => {
   const ctx = document.getElementById('myChart').getContext('2d');
