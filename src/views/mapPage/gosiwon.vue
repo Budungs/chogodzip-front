@@ -80,21 +80,30 @@
       <div class="property-list">
         <p>매물 목록</p>
         <div v-for="(property, index) in filteredProperties" :key="index" class="card">
-          <img src="https://via.placeholder.com/150" class="card-img-top" alt="Property Image">
+          <!-- 이미지와 판매완료 오버레이 -->
+          <div class="image-container">
+            <img src="https://via.placeholder.com/150" class="card-img-top" alt="Property Image">
+            
+            <!-- 판매완료 오버레이 (isSale이 false일 때만 표시) -->
+            <div v-if="!property.isSale" class="sold-overlay">
+              <i class="bi bi-check-circle"></i>
+              <p>판매완료</p>
+            </div>
+          </div>
+          
           <div class="card-body">
             <h5 class="card-title">{{ property.name }}</h5>
             <p class="card-text fs-sm">{{ property.price }}만원</p>
             <a href="#" class="btn btn-sm btn-primary">상세보기</a>
-
+        
             <!-- 관심매물 아이콘 -->
-            <div class="interest-icon">
-              <i
-                :class="heartIcons[index]"
-                @click="toggleHeartIcon(index)"
-              ></i>
+            <div class="interest-icon mt-2">
+              <i :class="heartIcons[index]" @click="toggleHeartIcon(index)"></i>
             </div>
           </div>
         </div>
+        
+        
       </div>
 
       <div id="map" class="map">
@@ -149,9 +158,9 @@ const showFilters = ref(true);
 // 고시원 매물 데이터 설정
 const propertiesData = {
   gosiwon: [
-    { name: '건대 고시원', price: 500, gender: '남성' },
-    { name: '관악구 고시원', price: 600, gender: '여성' },
-    { name: '낙성대 고시원', price: 550, gender: '남녀공용' },
+    { name: '건대 고시원', price: 500, gender: '남성', isSale: true },
+    { name: '관악구 고시원', price: 600, gender: '여성', isSale: false },
+    { name: '낙성대 고시원', price: 550, gender: '남녀공용', isSale: true },
   ],
 };
 

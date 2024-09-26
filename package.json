@@ -17,6 +17,7 @@
     "@lottiefiles/lottie-player": "^1.6.2",
     "axios": "^1.7.7",
     "bootstrap": "^5.3.3",
+    "chart.js": "^4.4.4",
     "cleave.js": "^1.6.0",
     "express": "^4.21.0",
     "filepond": "^4.30.4",
