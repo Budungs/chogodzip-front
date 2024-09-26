@@ -126,3 +126,71 @@
 .nav-tabs .nav-link:hover {
   color: #68C9CB; /* 민트색으로 변경 */
 }
+
+.first-chart {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+.fc-chart {
+  justify-content: center;
+  width: 50%;
+  margin-right: 3rem;
+  margin : 10px;
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 20px;
+}
+
+.sd-chart {
+  justify-content: center;
+  width: 50%;
+  margin : 10px;
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 20px;
+}
+
+.td-chart {
+  display: flex;
+  flex-direction: column; /* 수직 정렬을 위한 설정 */
+  justify-content: center; /* 수직 중앙 정렬 */
+  align-items: center; /* 수평 중앙 정렬 */
+  width: 90%;
+  margin: 10px;
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 20px;
+}
+
+.second-chart {
+  display: flex;
+  justify-content: center; /* 가로 중앙 정렬 */
+  align-items: center; /* 세로 중앙 정렬 */
+  height: 500px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.third-chart {
+  justify-content: center;
+  display: flex;
+  
+}
+
+.sk-chart {
+  justify-content: center;
+  width: 50%;
+  margin : 10px;
+  /* border: 1px solid black; */
+  border-radius: 5px;
+ 
+
+}
+
+.divide-cht {
+    border: 1px solid black;
+    border-radius: 5px;
+  padding: 20px;
+}
