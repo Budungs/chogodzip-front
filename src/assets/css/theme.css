@@ -18516,7 +18516,6 @@ a.card {
 
 .dropdown-toggle::after {
   margin-left: 0.5rem;
-  content: "\e950";
 }
 
 .dropdown-toggle::before {
