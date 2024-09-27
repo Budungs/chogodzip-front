@@ -5,7 +5,9 @@
     />
     <div id="app">
       <Header></Header>
-      <router-view></router-view>
+      <div style="padding-top:6rem">
+        <router-view></router-view>
+      </div>
       <Footer></Footer>
     </div>
 </template>
