@@ -7,4 +7,11 @@ import "@/assets/css/colors.css"; // color
 import router from "./router"; // router
 import "bootstrap/dist/css/bootstrap.css"; // bootstrap
 import "@/assets/css/theme.css";
+
+
+
+
+
 createApp(App).use(createPinia()).use(router).mount("#app");
+
+
