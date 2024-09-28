@@ -15,8 +15,6 @@
       </div>
     </div>
 
-   
-
     <div class="accordion" id="exampleAccordion">
       <hr>
       <div class="accordion-item">
@@ -50,7 +48,7 @@
                   <div class="price-slider-group">
                     <div class="price-slider">
                       <label for="depositRange">보증금(전세금)</label>
-                      <input type="range" id="depositRange" v-model="filters.deposit" min="0" max="200000000" step="1000000">
+                      <input type="range" id="depositRange" v-model="filters.deposit" min="0" max="10000000" step="1000000">
                       <span>{{ formattedDeposit }}</span>
                     </div>
                     <div class="price-slider">
@@ -176,7 +174,7 @@ const toggleHeartIcon = (index) => {
 // 필터 관리
 const filters = reactive({
   gender: ['남성', '여성', '남녀공용'],
-  deposit: 200000000,
+  deposit: 10000000,
   rent: 5000000,
 });
 
@@ -198,7 +196,7 @@ const setTab = (tab) => {
 // 필터 초기화
 const resetFilters = () => {
   filters.gender = ['남성', '여성', '남녀공용'];
-  filters.deposit = 200000000;
+  filters.deposit = 100000000;
   filters.rent = 5000000;
 };
 
