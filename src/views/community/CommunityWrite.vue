@@ -81,6 +81,8 @@ const selectedType = ref('쉐어하우스');
 // 매물 유형을 선택하는 함수
 function selectType(type) {
   selectedType.value = type;
+  console.log("뭔가 클릭은 해서 바뀌었음");
+  console.log(selectedType.value);
 }
 
 // summernote
@@ -152,13 +154,13 @@ button + button {
   margin-left : 30px;
 }
 
-.choose-info button:hover,
-.choose-review button:hover {
+.out-choose-info button:hover,
+.in-choose-info button:hover {
   background-color: #e0e0e0;
 }
 
-.choose-info button.active,
-.choose-review button.active {
+.out-choose-info button.active,
+.in-choose-info button.active {
   background-color: #a28cd1 !important;
   color: white !important;
 }
