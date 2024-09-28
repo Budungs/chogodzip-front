@@ -13,7 +13,7 @@
       <div class="row">
         <!-- Left column-->
         <div class="col-md-5 mb-md-0 mb-4 pb-md-0 pb-2">
-          <div class="row g-2 g-md-3 gallery" data-thumbnails="true" style="min-width: 30rem;">
+          <div class="row g-2 g-md-3 gallery" data-thumbnails="true" style="min-width: 30rem; min-height: 30rem;">
             <div class="col-12">
               <a class="gallery-item rounded rounded-md-3" :href="house.TITLE_IMAGE"
                 data-sub-html="&lt;h6 class=&quot;fs-sm text-light&quot;&gt;Bathroom&lt;/h6&gt;">
@@ -34,18 +34,13 @@
               </a>
             </div>
           </div>
-          <div class="pb-md-3 mt-5">
-            <h2 class="h2 mb-5" v-for="subway in house.nearSubways[0]" :key="subway.NAME">
-              🚉 {{ subway.FULL_NAME }}
-            </h2>
-
-          </div>
         </div>
         <!-- Sidebar-->
         <aside class="col-md-7">
           <!-- Place card-->
           <div>
-            <div class="card-body" style="padding: 1.5em 3.0rem; border: 1px solid gainsboro; border-radius:25px">
+            <div class="card-body"
+              style="padding: 1.5em 3.0rem; border: 1px solid gainsboro; border-radius:25px; min-height: 30rem;">
               <!--가격-->
               <div class="pb-2 pt-3 border-bottom" style="padding-left: 25px;">
                 <div class="row">
@@ -87,7 +82,7 @@
                 </div>
               </div>
               <ul class="list-unstyled d-flex flex-wrap justify-content-center mb-2">
-                <li v-for="(tag, index) in tagsArray.slice(0, 5)" :key="index" class="fs-8" style="margin-right:8px;">
+                <li v-for="(tag, index) in tagsArray" :key="index" class="fs-8" style="margin-right:8px;">
                   <span class="tag">{{ tag }}</span>
                 </li>
               </ul>
@@ -116,20 +111,17 @@
             </div>
 
           </div>
-
-
-
-          <!-- Location (Map)-->
-          <div class="position-relative">
-            <DetailMap class="rounded-3" :latitude="house.LATITUDE" :longitude="house.LONGITUDE" />
-          </div>
         </aside>
+      </div>
+      <!-- 카카오 지도 -->
+      <div class="position-relative mt-4">
+        <DetailMap class="rounded-3" :latitude="house.LATITUDE" :longitude="house.LONGITUDE" />
       </div>
     </section>
     <div>
-      <div class="button-container">
-        <button type="button" class="btn btn-1" id="backButton">목록으로 돌아가기</button>
-        <button type="button" class="btn btn-1" id="saveButton">관심매물 저장</button>
+      <div class="button-container d-flex justify-content-center" style="gap: 1rem;">
+        <button type="button" class="btn btn-1 mt-5" id="backButton">목록으로 돌아가기</button>
+        <button type="button" class="btn btn-1 mt-5" id="saveButton">관심매물 저장</button>
       </div>
     </div>
     <!-- Content-->
@@ -142,9 +134,9 @@
           <div class="ai-card">
             <h3 class="title">
               <span class="emoji mb-4">👾</span>
-              <span class="h4" style="font-weight:700;">한눈에 보는 장단점 </span>
+              <span class="h5">한눈에 보는 장단점 </span>
             </h3>
-            <div class="toggle-bar">
+            <div class="toggle-bar" style="display:flex; width:100%;">
               <button style="  flex: 1;" :class="{ active: activeTab === 'pros' }"
                 @click="activeTab = 'pros'">장점</button>
               <button style="  flex: 1;" :class="{ active: activeTab === 'cons' }"
@@ -155,15 +147,15 @@
               <div v-if="activeTab === 'pros'" key="pros" class="content">
                 <ul>
                   <li>
-                    <h5>지하철과 버스 정류장이 매우 가까워 대중교통 이용이 편리합니다.</h5>
+                    <p class="normal">지하철과 버스 정류장이 매우 가까워 대중교통 이용이 편리합니다.</p>
                     <hr>
                   </li>
                   <li>
-                    <h5>근처 1분 거리에 편의점이 있습니다.</h5>
+                    <p class="normal">근처 1분 거리에 편의점이 있습니다.</p>
                     <hr>
                   </li>
                   <li>
-                    <h5>주차장 공간이 넓습니다.</h5>
+                    <p class="normal">주차장 공간이 넓습니다.</p>
                     <hr>
                   </li>
                 </ul>
@@ -171,15 +163,15 @@
               <div v-else key="cons" class="content">
                 <ul>
                   <li>
-                    <h5>지하철과 버스 정류장이 매우 가까워 대중교통 이용이 편리합니다.</h5>
+                    <p class="normal">지하철과 버스 정류장이 매우 가까워 대중교통 이용이 편리합니다.</p>
                     <hr>
                   </li>
                   <li>
-                    <h5>근처 1분 거리에 편의점이 있습니다.</h5>
+                    <p class="normal">근처 1분 거리에 편의점이 있습니다.</p>
                     <hr>
                   </li>
                   <li>
-                    <h5>주차장 공간이 넓습니다.</h5>
+                    <p class="normal">주차장 공간이 넓습니다.</p>
                     <hr>
                   </li>
                 </ul>
@@ -197,15 +189,15 @@
 
           <!-- Review-->
           <div class="mb-4 pb-4 border-bottom" v-for="review in 3" :key="review">
-            <div class="d-flex justify-content-between mb-3">
+            <div class="d-flex justify-content-between">
               <div class="d-flex align-items-center pe-2"><img class="rounded-circle me-1" :src="house.TITLE_IMAGE"
-                  width="48" height="48" alt="Avatar">
+                  width="40" height="40" alt="Avatar" style="width:50px !important; height:50px !important;">
                 <div class="ps-2">
                   <h6 class="fs-base mb-0">말리부</h6><span class="star-rating"></span>
                 </div>
               </div><span class="text-muted fs-sm">Jan 17, 2021</span>
             </div>
-            <p>집주인이 친절하세요. 이번에 전등 나갔을 때도 친절히 수정 도와주셨어요 ! 근처 공원이 있는 점도 마음에 듭니다.</p>
+            <p style="margin-left:4rem;">집주인이 친절하세요. 이번에 전등 나갔을 때도 친절히 수정 도와주셨어요 ! 근처 공원이 있는 점도 마음에 듭니다.</p>
 
           </div>
 
@@ -246,7 +238,7 @@ export default {
   },
   data() {
     const tagsString =
-      "관리비 7~52#FIXED|여성전용#FIXED|청소업체|신용카드|현금영수증|개인에어컨|개인화장실";
+      "1개월~#FIXED|남녀분리#FIXED|주소이전|신용카드|방역업체|현금영수증|청소업체|식사제공|외국어 응대|커피머신|공기청정기|테라스|헬스장|개인에어컨|개인화장실";
 
     const tagsArray = tagsString
       .split("|")
@@ -303,10 +295,9 @@ export default {
 }
 
 .button-container {
-
   gap: 30px;
   justify-content: center;
-  margin-bottom: 100px;
+  margin-bottom: 4rem;
 }
 
 
@@ -379,20 +370,19 @@ export default {
 
 /* Toggle button bar */
 .toggle-bar {
-
+  margin-top: 1rem;
   border-radius: 5px;
   overflow: hidden;
   margin-bottom: 30px;
 }
 
 button {
-
   /* Allow buttons to take equal width */
   padding: 5px;
   border: none;
   cursor: pointer;
-  font-weight: 800;
-  font-size: 20px;
+  font-weight: 600;
+  font-size: 1rem;
   background-color: #f0f0f0;
   color: #333;
   transition: background-color 0.3s, color 0.3s;
