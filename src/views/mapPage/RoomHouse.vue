@@ -139,9 +139,36 @@
 
     <div class="map-list-container">
       <div class="property-list">
-        <p>매물 목록</p>
+        <div class="list-header">
+          <p>매물 목록</p>
+    
+          <!-- Sorting Dropdown -->
+          <div class="sort-dropdown">
+            <select v-model="selectedSort" @change="sortProperties">
+              <option value="distance">거리순</option>
+              <option value="highPrice">높은가격순</option>
+              <option value="lowPrice">낮은가격순</option>
+              <option value="likes">좋아요순</option>
+            </select>
+          </div>
+        </div>
         <div v-for="(property, index) in filteredProperties" :key="index" class="card">
+          <div class="image-container">
           <img src="https://via.placeholder.com/150" class="card-img-top" alt="Property Image" />
+
+          <!-- 판매완료 오버레이 (isSale이 false일 때만 표시) -->
+          <div v-if="!property.isSale" class="sold-overlay">
+            <i class="bi bi-check-circle"></i>
+            <p>판매완료</p>
+          </div>
+
+          <!-- 좋아요 개수와 하트 아이콘 (판매 완료가 아닌 경우에만 표시) -->
+          <div v-if="property.isSale" class="like-overlay">
+            <i class="bi bi-heart-fill"></i>
+            <p>{{ property.likes }}</p>
+          </div>
+        </div>
+
           <div class="card-body">
             <h5 class="card-title">{{ property.name }}</h5>
             <p class="card-text fs-sm">{{ property.price }}만원</p>
@@ -160,44 +187,33 @@
       <div id="map" class="map">
 
         <div class="map-overlay">
-          <div class="location-filters">
+          <!-- <div class="location-filters"> -->
             <!-- 시/도 선택 -->
             <div class="btn-group">
-              <button type="button" class="btn btn-filter" @click="showCitySelect = !showCitySelect">
-                {{ selectedCity || '시/도' }}
+              <button type="button" class="btn btn-filter">
+                {{ selectedCity }}
               </button>
-              <div v-if="showCitySelect" class="dropdown-menu">
-                <a href="#" class="dropdown-item" @click.prevent="setCity('서울시')">서울시</a>
-                <a href="#" class="dropdown-item" @click.prevent="setCity('부산시')">부산시</a>
-                <!-- 필요한 다른 시/도 추가 -->
-              </div>
             </div>
-        
+
             <!-- 구 선택 -->
             <div class="btn-group">
               <button type="button" class="btn btn-filter" @click="showDistrictSelect = !showDistrictSelect">
-                {{ selectedDistrict || '시/군/구' }}
+                {{ selectedDistrict || '구' }}
               </button>
               <div v-if="showDistrictSelect" class="dropdown-menu">
-                <a href="#" class="dropdown-item" @click.prevent="setDistrict('강북구')">강북구</a>
-                <a href="#" class="dropdown-item" @click.prevent="setDistrict('강남구')">강남구</a>
-                <!-- 필요한 다른 구 추가 -->
+                <a 
+                  v-for="district in districts" 
+                  :key="district" 
+                  href="#" 
+                  class="dropdown-item" 
+                  @click.prevent="setDistrict(district)"
+                >
+                  {{ district }}
+                </a>
               </div>
             </div>
-        
-            <!-- 동 선택 -->
-            <div class="btn-group">
-              <button type="button" class="btn btn-filter" @click="showNeighborhoodSelect = !showNeighborhoodSelect">
-                {{ selectedNeighborhood || '읍/면/동' }}
-              </button>
-              <div v-if="showNeighborhoodSelect" class="dropdown-menu">
-                <a href="#" class="dropdown-item" @click.prevent="setNeighborhood('수유동')">수유동</a>
-                <a href="#" class="dropdown-item" @click.prevent="setNeighborhood('삼성동')">삼성동</a>
-                <!-- 필요한 다른 동 추가 -->
-              </div>
-            </div>
+
           </div>
-        </div>
       </div>
     </div>
   </div>
@@ -212,15 +228,15 @@ const activeTab = ref('oneRoom');
 // 매물 데이터 설정: roomType, 전세/월세, 층수 정보를 포함한 mock 데이터 추가
 const propertiesData = {
   oneRoom: [
-    { name: '서울 용산구 위례성대로 8길 28', price: 500, loan: 'LH', type: 'junse', floor: '2floor', roomType: 'oneRoom' },
-    { name: '관악구 원룸', price: 600, loan: '버팀목', type: 'month', floor: '1floor', roomType: 'oneRoom' },
-    { name: '낙성대 원룸', price: 550, loan: '중기청80', type: 'month', floor: 'under', roomType: 'oneRoom' },
-    { name: '광진구 투룸', price: 1500, loan: 'LH', type: 'junse', floor: '2floor', roomType: 'twoRoom' },
-    { name: '노원구 빌라', price: 1300, loan: '버팀목', type: 'month', floor: '1floor', roomType: 'twoRoom' },
-    { name: '마포구 투룸', price: 1200, loan: '중기청80', type: 'month', floor: 'under', roomType: 'twoRoom' },
-    { name: '강남 오피스텔', price: 5000, loan: 'LH', type: 'junse', floor: '2floor', roomType: 'opistels' },
-    { name: '서초구 오피스텔', price: 4000, loan: '버팀목', type: 'month', floor: '1floor', roomType: 'opistels' },
-    { name: '영등포 오피스텔', price: 3500, loan: '중기청80', type: 'month', floor: 'under', roomType: 'opistels' },
+    { name: '서울 용산구 위례성대로 8길 28', price: 500, loan: 'LH', type: 'junse', floor: '2floor', roomType: 'oneRoom', isSale: true },
+    { name: '관악구 원룸', price: 600, loan: '버팀목', type: 'month', floor: '1floor', roomType: 'oneRoom', isSale: false },
+    { name: '낙성대 원룸', price: 550, loan: '중기청80', type: 'month', floor: 'under', roomType: 'oneRoom', isSale: true },
+    { name: '광진구 투룸', price: 1500, loan: 'LH', type: 'junse', floor: '2floor', roomType: 'twoRoom', isSale: true },
+    { name: '노원구 빌라', price: 1300, loan: '버팀목', type: 'month', floor: '1floor', roomType: 'twoRoom', isSale: true },
+    { name: '마포구 투룸', price: 1200, loan: '중기청80', type: 'month', floor: 'under', roomType: 'twoRoom', isSale: true },
+    { name: '강남 오피스텔', price: 5000, loan: 'LH', type: 'junse', floor: '2floor', roomType: 'opistels', isSale: true },
+    { name: '서초구 오피스텔', price: 4000, loan: '버팀목', type: 'month', floor: '1floor', roomType: 'opistels', isSale: true },
+    { name: '영등포 오피스텔', price: 3500, loan: '중기청80', type: 'month', floor: 'under', roomType: 'opistels', isSale: true },
   ],
   
 };
@@ -313,38 +329,56 @@ onMounted(() => {
   clusterer.addMarkers(markers.value);
 });
 // 상태 관리
-const selectedCity = ref('');
+const selectedCity = ref('서울시');
 const selectedDistrict = ref('');
-const selectedNeighborhood = ref('');
-
-const showCitySelect = ref(false);
 const showDistrictSelect = ref(false);
-const showNeighborhoodSelect = ref(false);
 
-// 시 선택
-const setCity = (city) => {
-  selectedCity.value = city;
-  selectedDistrict.value = ''; // 구 초기화
-  selectedNeighborhood.value = ''; // 동 초기화
-  showCitySelect.value = false;
-};
+// 서울시의 구 리스트
+const districts = [
+  '강남구', '강동구', '강북구', '강서구', '관악구', '광진구', '구로구', '금천구',
+  '노원구', '도봉구', '동대문구', '동작구', '마포구', '서대문구', '서초구', '성동구',
+  '성북구', '송파구', '양천구', '영등포구', '용산구', '은평구', '종로구', '중구', '중랑구'
+];
 
-// 구 선택
+// 구 선택 처리
 const setDistrict = (district) => {
   selectedDistrict.value = district;
-  selectedNeighborhood.value = ''; // 동 초기화
+  selectedNeighborhood.value = '';
   showDistrictSelect.value = false;
 };
+const selectedNeighborhood = ref('');
 
-// 동 선택
-const setNeighborhood = (neighborhood) => {
-  selectedNeighborhood.value = neighborhood;
-  showNeighborhoodSelect.value = false;
-  console.log(`선택된 위치: ${selectedCity.value} ${selectedDistrict.value} ${selectedNeighborhood.value}`);
+// Sorting Options
+const selectedSort = ref('distance'); // Default sorting by distance
+
+const sortedProperties = computed(() => {
+  const properties = [...filteredProperties.value]; // Copy the filtered properties
+
+  switch (selectedSort.value) {
+    case 'highPrice':
+      return properties.sort((a, b) => b.price - a.price);
+    case 'lowPrice':
+      return properties.sort((a, b) => a.price - b.price);
+    case 'likes':
+      return properties.sort((a, b) => (b.likes || 0) - (a.likes || 0)); // Assuming properties have a 'likes' field
+    case 'distance':
+    default:
+      return properties.sort((a, b) => (a.distance || 0) - (b.distance || 0)); // Assuming properties have a 'distance' field
+  }
+});
+
+// Mock 'likes' and 'distance' data
+propertiesData.oneRoom = propertiesData.oneRoom.map((property, index) => ({
+  ...property,
+  likes: Math.floor(Math.random() * 100), // Random likes data for demo
+  distance: Math.random() * 10, // Random distance data for demo (in km)
+}));
+
+const sortProperties = () => {
+  console.log(`Sorted by: ${selectedSort.value}`);
 };
-
 </script>
 
 <style scoped>
-@import "../../assets/css/mapPage/roomHouse.css";
+@import "../../assets/css/mapPage/gosiwon.css";
 </style>
