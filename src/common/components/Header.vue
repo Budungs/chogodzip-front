@@ -43,7 +43,7 @@
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="/houses/maps/gosiwons">고시원</a></li>
                             <li><a class="dropdown-item" href="/houses/maps/room">자취방</a></li>
-                            <li><a class="dropdown-item" href="/houses/maps/sharehouses">공유주거시설</a></li>
+                            <li><a class="dropdown-item" href="/houses/maps/sharehouses">공유주거공간</a></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
