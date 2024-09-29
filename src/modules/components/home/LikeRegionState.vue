@@ -2,7 +2,7 @@
     <div class="pb-4 pt-5 mb-4 mt-5">
         <!-- 타이틀 -->
         <div class="d-flex w-100 justify-content-center justify-content-lg-start mt-4 mb-4">
-            <h1 class="h4 mb-0 d-flex w-100 justify-content-center"><span id="home-user-nickname">테스 </span> 의 관심 지역 현황을 확인해보세요 👾</h1>
+            <h1 class="h4 mb-4 d-flex w-100 justify-content-center"><span id="home-user-nickname">테스 </span> 의 관심 지역 현황을 확인해보세요 👾</h1>
         </div>
 
         <!-- 본문 박스 -->

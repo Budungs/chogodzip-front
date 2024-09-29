@@ -4,7 +4,7 @@
                 
                 <div class="router-img-for-finding-rooms card bg-size-cover bg-position-center border-0 rounded-circle overflow-hidden shadow"
                 :style="{ backgroundImage: `url(src/assets/images/icons/${backgroundImage}.jpg)` }"></div>
-                <div class="md-5 mt-3 h-100 h6">{{ destination }}</div>
+                <div class="md-5 mt-3 h-100 h6" style="color: var(--gray1);">{{ destination }}</div>
             </a>
         </div>
 </template>
