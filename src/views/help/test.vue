@@ -40,6 +40,7 @@ const drawGuMap = () => {
   const svg = d3.select(svgMap.value)
     .attr("width", width)
     .attr("height", height);
+    
 
   // 구별 폴리곤 그리기
   svg.selectAll("path")
@@ -64,6 +65,17 @@ const drawGuMap = () => {
       showAllGu.value = false;
       drawDongMap();
     });
+
+    svg.selectAll("text")
+    .data(seoulSigGeoJson.features)
+    .enter()
+    .append("text")
+    .attr("x", d => projection(d3.geoCentroid(d))[0]) // 구역 중심 X 좌표
+    .attr("y", d => projection(d3.geoCentroid(d))[1]) // 구역 중심 Y 좌표
+    .attr("text-anchor", "middle") // 텍스트 중앙 정렬
+    .attr("font-size", "12px") // 텍스트 크기
+    .attr("fill", "black") // 텍스트 색상
+    .text(d => d.properties.SIG_KOR_NM); // 구 이름 표시
 };
 
 // 선택된 구의 동 경계를 그리는 함수
