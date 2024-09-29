@@ -76,7 +76,21 @@
 
     <div class="map-list-container">
       <div class="property-list">
-        <p>매물 목록</p>
+        
+        <div class="list-header">
+          <p>매물 목록</p>
+    
+          <!-- Sorting Dropdown -->
+          <div class="sort-dropdown">
+            <select v-model="selectedSort" @change="sortProperties">
+              <option value="distance">거리순</option>
+              <option value="highPrice">높은가격순</option>
+              <option value="lowPrice">낮은가격순</option>
+              <option value="likes">좋아요순</option>
+            </select>
+          </div>
+        </div>
+
         <div v-for="(property, index) in filteredProperties" :key="index" class="card">
           <!-- 이미지와 판매완료 오버레이 -->
           <div class="image-container">
@@ -87,11 +101,18 @@
               <i class="bi bi-check-circle"></i>
               <p>판매완료</p>
             </div>
+
+            <!-- 좋아요 개수와 하트 아이콘 (판매 완료가 아닌 경우에만 표시) -->
+            <div v-if="property.isSale" class="like-overlay">
+              <i class="bi bi-heart-fill"></i>
+              <p>{{ property.likes }}</p>
+            </div>
           </div>
           
           <div class="card-body">
             <h5 class="card-title">{{ property.name }}</h5>
-            <p class="card-text fs-sm">{{ property.price }}만원</p>
+            <p class="card-text fs-sm">전세 {{ property.price }} 만원 | 월세 {{ property.price }} 만원</p>
+            
             <a href="#" class="btn btn-sm btn-primary">상세보기</a>
         
             <!-- 관심매물 아이콘 -->
@@ -106,41 +127,35 @@
 
       <div id="map" class="map">
         <div class="map-overlay">
-          <div class="location-filters">
+          <!-- <div class="location-filters"> -->
             <!-- 시/도 선택 -->
             <div class="btn-group">
-              <button type="button" class="btn btn-filter" @click="showCitySelect = !showCitySelect">
-                {{ selectedCity || '시/도' }}
+              <button type="button" class="btn btn-filter">
+                {{ selectedCity }}
               </button>
-              <div v-if="showCitySelect" class="dropdown-menu">
-                <a href="#" class="dropdown-item" @click.prevent="setCity('서울시')">서울시</a>
-                <a href="#" class="dropdown-item" @click.prevent="setCity('부산시')">부산시</a>
-              </div>
             </div>
 
             <!-- 구 선택 -->
             <div class="btn-group">
               <button type="button" class="btn btn-filter" @click="showDistrictSelect = !showDistrictSelect">
-                {{ selectedDistrict || '시/군/구' }}
+                {{ selectedDistrict || '구' }}
               </button>
               <div v-if="showDistrictSelect" class="dropdown-menu">
-                <a href="#" class="dropdown-item" @click.prevent="setDistrict('강북구')">강북구</a>
-                <a href="#" class="dropdown-item" @click.prevent="setDistrict('강남구')">강남구</a>
+                <a 
+                  v-for="district in districts" 
+                  :key="district" 
+                  href="#" 
+                  class="dropdown-item" 
+                  @click.prevent="setDistrict(district)"
+                >
+                  {{ district }}
+                </a>
               </div>
             </div>
 
-            <!-- 동 선택 -->
-            <div class="btn-group">
-              <button type="button" class="btn btn-filter" @click="showNeighborhoodSelect = !showNeighborhoodSelect">
-                {{ selectedNeighborhood || '읍/면/동' }}
-              </button>
-              <div v-if="showNeighborhoodSelect" class="dropdown-menu">
-                <a href="#" class="dropdown-item" @click.prevent="setNeighborhood('수유동')">수유동</a>
-                <a href="#" class="dropdown-item" @click.prevent="setNeighborhood('삼성동')">삼성동</a>
-              </div>
-            </div>
+            
           </div>
-        </div>
+        
       </div>
     </div>
   </div>
@@ -156,7 +171,7 @@ const showFilters = ref(true);
 // 고시원 매물 데이터 설정
 const propertiesData = {
   gosiwon: [
-    { name: '건대 고시원', price: 500, gender: '남성', isSale: true },
+    { name: '건대 고시원',  price: 500, gender: '남성', isSale: true },
     { name: '관악구 고시원', price: 600, gender: '여성', isSale: false },
     { name: '낙성대 고시원', price: 550, gender: '남녀공용', isSale: true },
   ],
@@ -253,32 +268,55 @@ onMounted(() => {
 });
 
 // 상태 관리
-const selectedCity = ref('');
+const selectedCity = ref('서울시');
 const selectedDistrict = ref('');
-const selectedNeighborhood = ref('');
-
-const showCitySelect = ref(false);
 const showDistrictSelect = ref(false);
-const showNeighborhoodSelect = ref(false);
 
-const setCity = (city) => {
-  selectedCity.value = city;
-  selectedDistrict.value = '';
-  selectedNeighborhood.value = '';
-  showCitySelect.value = false;
-};
+// 서울시의 구 리스트
+const districts = [
+  '강남구', '강동구', '강북구', '강서구', '관악구', '광진구', '구로구', '금천구',
+  '노원구', '도봉구', '동대문구', '동작구', '마포구', '서대문구', '서초구', '성동구',
+  '성북구', '송파구', '양천구', '영등포구', '용산구', '은평구', '종로구', '중구', '중랑구'
+];
 
+// 구 선택 처리
 const setDistrict = (district) => {
   selectedDistrict.value = district;
   selectedNeighborhood.value = '';
   showDistrictSelect.value = false;
 };
+const selectedNeighborhood = ref('');
 
-const setNeighborhood = (neighborhood) => {
-  selectedNeighborhood.value = neighborhood;
-  showNeighborhoodSelect.value = false;
-  console.log(`선택된 위치: ${selectedCity.value} ${selectedDistrict.value} ${selectedNeighborhood.value}`);
+// Sorting Options
+const selectedSort = ref('distance'); // Default sorting by distance
+
+const sortedProperties = computed(() => {
+  const properties = [...filteredProperties.value]; // Copy the filtered properties
+
+  switch (selectedSort.value) {
+    case 'highPrice':
+      return properties.sort((a, b) => b.price - a.price);
+    case 'lowPrice':
+      return properties.sort((a, b) => a.price - b.price);
+    case 'likes':
+      return properties.sort((a, b) => (b.likes || 0) - (a.likes || 0)); // Assuming properties have a 'likes' field
+    case 'distance':
+    default:
+      return properties.sort((a, b) => (a.distance || 0) - (b.distance || 0)); // Assuming properties have a 'distance' field
+  }
+});
+
+// Mock 'likes' and 'distance' data
+propertiesData.gosiwon = propertiesData.gosiwon.map((property, index) => ({
+  ...property,
+  likes: Math.floor(Math.random() * 100), // Random likes data for demo
+  distance: Math.random() * 10, // Random distance data for demo (in km)
+}));
+
+const sortProperties = () => {
+  console.log(`Sorted by: ${selectedSort.value}`);
 };
+
 
 </script>
 

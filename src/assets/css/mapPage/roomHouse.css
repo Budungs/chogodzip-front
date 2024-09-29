@@ -295,7 +295,9 @@ hr {
   padding: 10px;
   display: flex;
   flex-wrap: wrap;
-  width: 200px;
+  width: 1rem;
+  max-height: 150px; /* 최대 높이를 설정 (항목 5개 정도의 높이) */
+  overflow-y: auto;  
 }
 
 .dropdown-item {
