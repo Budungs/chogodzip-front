@@ -21,9 +21,10 @@
                 </button>
             </div>
         </div>
+        
       </div>
     </div>
-  </template>
+</template>
 
 <script setup>
 import SearchNavBar from './SearchNavBar.vue';
