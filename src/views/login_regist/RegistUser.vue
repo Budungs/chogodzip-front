@@ -3,7 +3,7 @@
     <!-- Signup Form -->
     <div class="signup-container text-center">
       <h1 class="mb-4">회원가입</h1>
-      <form class="signup-form">
+      <form class="signup-form" @submit.prevent="goToRegistComplete">
         <!-- 닉네임 입력 -->
         <div class="mb-3">
           <input type="text" id="nickname" class="form-control" placeholder="닉네임">
@@ -30,10 +30,11 @@
         </div>
 
         <!-- 회원가입 버튼 -->
-        <button type="submit" @click="goToRegistComplete" class="btn btn-primary w-100">회원가입 완료</button>
+        <button type="submit" class="btn btn-primary w-100">회원가입 완료</button>
       </form>
     </div>
   </div>
+  <br><br><br><br>
 </template>
 
 <script setup>
