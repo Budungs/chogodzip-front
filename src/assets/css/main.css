@@ -19,7 +19,6 @@ div {
 
 .container {
   display: flex;
-  /* background-color: white; */
   border-radius: 10px;
   margin-top: 20px;
   padding: 10px;
@@ -35,6 +34,7 @@ div {
 }
 
 #app {
+  
   display: flex;
   flex-direction: column;
 }

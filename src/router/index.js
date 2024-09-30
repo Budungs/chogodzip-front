@@ -16,6 +16,7 @@ import CommunityMain from '@/views/community/CommunityMain.vue';
 import CommunityWrite from '@/views/community/CommunityWrite.vue';
 
 import helpRoutes from './help';
+import community from './community';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -34,5 +35,16 @@ const router = createRouter({
     ...mypageRoutes
   ],
 });
+
+    // 2안 ) 여러개의 경로를 묶을 수도 있다.
+    ...houseRoutes,
+      ...lottoRoutes,
+      ...registRoom,
+      ...registMember,
+      ...helpRoutes,
+      ...community,
+    ],
+  });
+
 
 export default router;

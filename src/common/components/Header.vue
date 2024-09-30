@@ -26,7 +26,7 @@
                         <a href="#" class="nav-link align-items-center pe-lg-4">청약</a>
                     </li>
                     <li class="nav-item me-lg-2">
-                        <a href="#" class="nav-link align-items-center pe-lg-4">커뮤니티</a>
+                        <a href="/communitymain" class="nav-link align-items-center pe-lg-4">커뮤니티</a>
                     </li>
                     <li class="nav-item">
                         <a href="#" class="nav-link align-items-center pe-lg-4">도움말</a>
