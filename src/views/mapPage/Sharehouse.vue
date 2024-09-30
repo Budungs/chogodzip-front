@@ -6,12 +6,14 @@
         class="tab-item"
         :class="{ active: activeTab === 'sharehouse' }"
         @click.prevent="setTab('sharehouse')"
-      >공유주택</a>
-      <a
-        class="tab-item"
-        :class="{ active: activeTab === 'sharedhouse' }"
-        @click.prevent="setTab('sharedhouse')"
-      >쉐어하우스</a>
+      >공유주거공간</a>
+      
+      <div class="search-form">
+        <form class="search-bar" action="/search" method="GET">
+          <input type="text" name="query" placeholder="궁금한 지역을 검색하세요">
+          <button type="submit">검색</button>
+        </form>
+      </div>
     </div>
 
     <hr />
@@ -27,6 +29,22 @@
           <div class="accordion-body">
             <!-- 필터링 영역 -->
             <div class="filter-section">
+              <div class="row">
+                <div class="filter-box">
+                  <h5>주거 타입</h5>
+                  <div class="checkbox-group vertical">
+                    <label>
+                      <input type="checkbox" value="공유주택" v-model="filters.type" />
+                      &nbsp 공유주택
+                    </label>
+                    <label>
+                      <input type="checkbox" value="쉐어하우스" v-model="filters.type" />
+                      &nbsp 쉐어하우스
+                    </label>
+                  </div>
+                </div>
+              </div>
+              
               <!-- 성별 필터 -->
               <div class="row">
                 <div class="filter-box">
@@ -85,10 +103,6 @@
               </div>
 
               <div class="button-group">
-                <form class="search-bar" action="/search" method="GET">
-                  <input type="text" name="query" placeholder="주변 지하철역을 검색">
-                </form>
-
                 <div class="submit-button-container">
                   <button class="btn btn-submit" @click="submitFilters">필터 적용</button>
                   <button class="btn btn-reset" @click="resetFilters">조건 초기화</button>
@@ -105,9 +119,37 @@
     <!-- 매물 목록 및 지도 -->
     <div class="map-list-container">
       <div class="property-list"> 
-        <p>매물 목록</p>
+        <div class="list-header">
+          <p>매물 목록</p>
+    
+          <!-- Sorting Dropdown -->
+          <div class="sort-dropdown">
+            <select v-model="selectedSort" @change="sortProperties">
+              <option value="distance">거리순</option>
+              <option value="highPrice">높은가격순</option>
+              <option value="lowPrice">낮은가격순</option>
+              <option value="likes">좋아요순</option>
+            </select>
+          </div>
+        </div>
+
         <div v-for="(property, index) in filteredProperties" :key="index" class="card">
-          <img src="https://via.placeholder.com/150" class="card-img-top" alt="Property Image">
+          <div class="image-container">
+            <img src="https://via.placeholder.com/150" class="card-img-top" alt="Property Image">
+            
+            <!-- 판매완료 오버레이 (isSale이 false일 때만 표시) -->
+            <div v-if="!property.isSale" class="sold-overlay">
+              <i class="bi bi-check-circle"></i>
+              <p>판매완료</p>
+            </div>
+
+            <!-- 좋아요 개수와 하트 아이콘 (판매 완료가 아닌 경우에만 표시) -->
+            <div v-if="property.isSale" class="like-overlay">
+              <i class="bi bi-heart-fill"></i>
+              <p>{{ property.likes }}</p>
+            </div>
+          </div>
+
           <div class="card-body">
             <h5 class="card-title">{{ property.name }}</h5>
             <p class="card-text fs-sm">{{ property.price }}만원</p>
@@ -115,9 +157,9 @@
 
             <!-- 관심매물 아이콘 -->
             <div class="interest-icon">
-              <i 
-                :class="property.interested ? 'fas fa-heart active' : 'far fa-heart'"
-                @click="toggleInterest(property)"
+              <i
+                :class="heartIcons[index]"
+                @click="toggleHeartIcon(index)"
               ></i>
             </div>
           </div>
@@ -125,7 +167,37 @@
       </div>
 
       <!-- Kakao 지도 -->
-      <div id="map" class="map"></div>
+      <div id="map" class="map">
+        <div class="map-overlay">
+          <!-- <div class="location-filters"> -->
+            <!-- 시/도 선택 -->
+            <div class="btn-group">
+              <button type="button" class="btn btn-filter">
+                {{ selectedCity }}
+              </button>
+            </div>
+
+            <!-- 구 선택 -->
+            <div class="btn-group">
+              <button type="button" class="btn btn-filter" @click="showDistrictSelect = !showDistrictSelect">
+                {{ selectedDistrict || '구' }}
+              </button>
+              <div v-if="showDistrictSelect" class="dropdown-menu">
+                <a 
+                  v-for="district in districts" 
+                  :key="district" 
+                  href="#" 
+                  class="dropdown-item" 
+                  @click.prevent="setDistrict(district)"
+                >
+                  {{ district }}
+                </a>
+              </div>
+            </div>
+
+          </div>
+        
+      </div>
     </div>
   </div>
 </template>
@@ -139,17 +211,16 @@ const showFilters = ref(true);
 // 쉐어하우스와 공유주택 매물 목록
 const propertiesData = {
   sharehouse: [
-    { name: '강남 공유주택', price: 1000, gender: '공용', floor: '1floor', interested: true },
-    { name: '서초 공유주택', price: 950, gender: '남성', floor: '2floor', interested: false },
+    { name: '강남 공유주택', price: 1000, type: '공유주택', gender: '공용', floor: '1floor', interested: true,isSale: true },
+    { name: '서초 공유주택', price: 950, type: '공유주택', gender: '남성', floor: '2floor', interested: false,isSale: false },
+    { name: '서울대 쉐어하우스', price: 500, type: '쉐어하우스', gender: '여성', floor: '2floor', interested: false,isSale: true },
+    { name: '관악구 쉐어하우스', price: 600, type: '쉐어하우스', gender: '남성', floor: 'under', interested: false,isSale: true },
   ],
-  sharedhouse: [
-    { name: '서울대 쉐어하우스', price: 500, gender: '여성', floor: '2floor', interested: false },
-    { name: '관악구 쉐어하우스', price: 600, gender: '남성', floor: 'under', interested: false },
-  ]
 };
 
 // 필터링 관련 설정
 const filters = reactive({
+  type: ['공유주택', '쉐어하우스'],
   gender: ['남성', '여성', '공용'],
   floor: ['under', '1floor', '2floor'],
   rent: 5000000,
@@ -159,12 +230,14 @@ const filters = reactive({
 // 필터 적용된 매물 목록 계산
 const filteredProperties = computed(() => {
   const properties = propertiesData[activeTab.value];
+
   return properties.filter(property => {
+    const matchesType = filters.type.length === 0 || filters.type.includes(property.type);
     const matchesGender = filters.gender.length === 0 || filters.gender.includes(property.gender);
     const matchesFloor = filters.floor.length === 0 || filters.floor.includes(property.floor);
     const matchesRent = property.price <= filters.rent;
     const matchesDeposit = property.price <= filters.deposit;
-    return matchesGender && matchesFloor && matchesRent && matchesDeposit;
+    return matchesType && matchesGender && matchesFloor && matchesRent && matchesDeposit;
   });
 });
 
@@ -179,6 +252,15 @@ const setTab = (tab) => {
   resetFilters();
 };
 
+// 하트 아이콘 상태 관리
+const heartIcons = ref(Array(propertiesData.sharehouse.length).fill('far fa-heart'));
+
+// 하트 아이콘 토글 함수
+const toggleHeartIcon = (index) => {
+  heartIcons.value[index] =
+    heartIcons.value[index] === 'far fa-heart' ? 'fas fa-heart' : 'far fa-heart';
+};
+
 // 필터 값 형식 처리
 const formattedDeposit = computed(() => {
   return `${(filters.deposit / 10000000).toFixed(1)}억 원`;
@@ -189,6 +271,7 @@ const formattedRent = computed(() => {
 });
 
 const resetFilters = () => {
+  filters.type = ['공유주택', '쉐어하우스'];
   filters.gender = ['남성', '여성', '공용'];
   filters.floor = ['under', '1floor', '2floor'];
   filters.deposit = 200000000;
@@ -227,256 +310,59 @@ onMounted(() => {
 
   clusterer.addMarkers(markers.value);
 });
+
+// 상태 관리
+const selectedCity = ref('서울시');
+const selectedDistrict = ref('');
+const showDistrictSelect = ref(false);
+
+// 서울시의 구 리스트
+const districts = [
+  '강남구', '강동구', '강북구', '강서구', '관악구', '광진구', '구로구', '금천구',
+  '노원구', '도봉구', '동대문구', '동작구', '마포구', '서대문구', '서초구', '성동구',
+  '성북구', '송파구', '양천구', '영등포구', '용산구', '은평구', '종로구', '중구', '중랑구'
+];
+
+// 구 선택 처리
+const setDistrict = (district) => {
+  selectedDistrict.value = district;
+  selectedNeighborhood.value = '';
+  showDistrictSelect.value = false;
+};
+
+// Sorting Options
+const selectedSort = ref('distance'); // Default sorting by distance
+
+const sortedProperties = computed(() => {
+  const properties = [...filteredProperties.value]; // Copy the filtered properties
+
+  switch (selectedSort.value) {
+    case 'highPrice':
+      return properties.sort((a, b) => b.price - a.price);
+    case 'lowPrice':
+      return properties.sort((a, b) => a.price - b.price);
+    case 'likes':
+      return properties.sort((a, b) => (b.likes || 0) - (a.likes || 0)); // Assuming properties have a 'likes' field
+    case 'distance':
+    default:
+      return properties.sort((a, b) => (a.distance || 0) - (b.distance || 0)); // Assuming properties have a 'distance' field
+  }
+});
+
+// Mock 'likes' and 'distance' data
+propertiesData.sharehouse = propertiesData.sharehouse.map((property, index) => ({
+  ...property,
+  likes: Math.floor(Math.random() * 100), // Random likes data for demo
+  distance: Math.random() * 10, // Random distance data for demo (in km)
+}));
+
+const sortProperties = () => {
+  console.log(`Sorted by: ${selectedSort.value}`);
+};
+
+
 </script>
 
-
-
-
 <style scoped>
-/* 필터 섹션 */
-.filter-section {
-  display: flex;
-  flex-direction: column;
-  padding: 10px 0;
-  margin-left: 20px;
-  gap: 20px; /* Add spacing between rows */
-}
-
-.row {
-  display: flex;
-  justify-content: space-between; /* Ensure items are spaced out */
-  width: 100%;
-}
-
-.full-width {
-  width: 100%; /* Make the 전/월세 section take full width */
-}
-
-/* 대출, 층수 필터 박스 */
-.filter-box {
-  flex: 1; /* Each filter box takes equal width */
-  padding: 10px;
-}
-
-/* 전/월세 체크박스와 가격 슬라이더 */
-.checkbox-group.horizontal {
-  display: flex;
-  gap: 20px; /* Space between 전세 and 월세 checkboxes */
-}
-
-.price-slider-group {
-  display: flex;
-  gap: 20px; /* Space between the two sliders */
-}
-
-.price-slider {
-  display: flex;
-  flex-direction: column;
-  width: 100%; /* Make sliders take full width */
-}
-
-.price-slider label {
-  margin-bottom: 5px; /* Add space between the label and slider */
-}
-
-.price-slider input {
-  width: 100%; /* Slider width */
-}
-
-/* 탭 네비게이션 */
-.tab-navigation {
-  font-weight: bold;
-  font-size: 24px; /* 탭 네비게이션의 기본 폰트 크기 */
-  margin-left: 26px;
-}
-
-.tab-item {
-  margin-top: 10px;
-  margin-bottom: 10px;
-  margin-right: 15px;
-  color: gray;
-  text-decoration: none;
-  position: relative;
-  font-size: 28px; /* 탭 아이템의 폰트 크기를 증가 */
-  cursor: pointer;
-}
-
-.tab-item.active {
-  color: #6b2e9b;
-  font-size: 28px; /* 활성화된 탭의 폰트 크기를 더 크게 설정 */
-}
-
-/* checkbox-group 클래스를 가로 배치 */
-.checkbox-group.horizontal {
-  display: flex;
-  gap: 20px; /* 각 항목 간의 간격을 조정 */
-}
-
-.checkbox-group label {
-  display: inline-flex;
-  align-items: center;
-  margin-right: 7px;
-}
-
-/* 지도와 매물 목록을 나란히 배치하는 컨테이너 */
-.map-list-container {
-  display: flex;
-  flex-direction: row;
-  height: 1200px;
-}
-
-/* 매물 목록 스타일 */
-.property-list {
-  width: 25%;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  padding: 20px;
-  overflow-y: auto;
-  height: 80%;
-  scrollbar-width: thin;
-  scrollbar-color: #6b2e9b #f9f9f9;
-}
-
-.card {
-  position: relative;
-  margin-bottom: 20px;
-  background-color: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 10px;
-}
-
-.card-img-top {
-  width: 100%;
-  height: 150px;
-  object-fit: cover;
-  border-radius: 8px;
-}
-
-.card-body {
-  padding: 15px;
-}
-
-.card-title {
-  font-size: 1.25rem;
-  margin-bottom: 10px;
-}
-
-.card-text {
-  font-size: 1rem;
-}
-
-.btn-primary {
-  background-color: var(--main1);
-  border: none;
-}
-
-.btn-primary:hover {
-  background-color: #5a2384;
-}
-
-/* 지도 스타일 */
-.map {
-  width: 75%;
-  height: 80%;
-  border-radius: 8px;
-}
-
-/* 스크롤바 스타일 커스터마이징 */
-.property-list::-webkit-scrollbar {
-  width: 8px;
-}
-
-.property-list::-webkit-scrollbar-thumb {
-  background-color: var(--main1);
-  border-radius: 10px;
-}
-
-.property-list::-webkit-scrollbar-track {
-  background-color: #f9f9f9;
-}
-
-/* 제출 버튼 스타일 */
-.submit-button-container {
-  display: flex;
-  align-items: center;
-}
-
-.btn-submit {
-  background-color: var(--main1);
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 8px;
-  margin-right: 10px;
-  cursor: pointer;
-}
-
-.btn-submit:hover {
-  background-color: #5a2384;
-}
-
-.btn-reset {
-  background-color: #e5e5e5;
-  color: black;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 8px;
-  margin-right: 20px;
-  cursor: pointer;
-}
-
-.btn-reset:hover {
-  background-color: #8f8484;
-}
-
-/* 작은 버튼 크기 조정 */
-.small-btn {
-  padding: 5px 10px;
-  font-size: 12px;
-  border-radius: 5px;
-}
-
-/* 검색바 및 버튼 그룹을 같은 줄에 배치 */
-.button-group {
-  display: flex;
-  align-items: flex-end;
-  gap: 20px; /* 검색창과 필터 적용 버튼 사이 간격 */
-}
-
-/* 검색창 스타일 */
-.search-bar {
-  display: flex;
-  align-items: center;
-}
-
-.search-bar input[type="text"] {
-  padding: 8px 12px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 14px;
-}
-
-hr {
-  border: 0;
-  height: 3px; /* 원하는 굵기로 설정 */
-  background-color: var(--main-gray1); /* 진한 색상으로 설정 */
-}
-
-/* 카드 하단에 관심매물 아이콘을 배치 */
-.interest-icon {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  cursor: pointer;
-}
-
-.interest-icon i {
-  font-size: 24px;
-  color: #888;
-}
-
-.interest-icon i.active {
-  color: red;
-}
+@import "../../assets/css/mapPage/gosiwon.css";
 </style>

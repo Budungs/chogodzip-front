@@ -1,114 +1,167 @@
 <template>
-    <div class="container">
-      <hr />
-      <div class="tab-navigation d-flex">
-        <a
-          class="tab-item"
-          :class="{ active: activeTab === 'gosiwon' }"
-          @click.prevent="setTab('gosiwon')"
-        >고시원</a>
-        
+  <div class="container">
+    <hr />
+    <div class="tab-navigation d-flex">
+      <a
+        class="tab-item"
+        :class="{ active: activeTab === 'gosiwon' }"
+        @click.prevent="setTab('gosiwon')"
+      >고시원</a>
+      <div class="search-form">
+        <form class="search-bar" action="/search" method="GET">
+          <input type="text" name="query" placeholder="궁금한 지역을 검색하세요">
+          <button type="submit">검색</button>
+        </form>
       </div>
-  
-      <hr />
-      
-      <div class="accordion" id="exampleAccordion">
-        <div class="accordion-item">
-          <h2 class="accordion-header" id="headingFilter">
-            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="true" aria-controls="filterCollapse">
-              필터링 옵션
-            </button>
-          </h2>
-          <div id="filterCollapse" class="accordion-collapse collapse show" aria-labelledby="headingFilter" data-bs-parent="#exampleAccordion">
-            <div class="accordion-body">
-              <!-- 필터링 영역 -->
-              <div class="filter-section">
-                <!-- 첫번째 줄: 대출, 층수 -->
-                <div class="row">
-                  <div class="filter-box">
-                    <h5>성별</h5>
-                    <div class="checkbox-group vertical">
-                      <label>
-                        <input type="checkbox" value="남성" v-model="filters.gender" />
-                        &nbsp 남성 전용
-                      </label>
-                      <label>
-                        <input type="checkbox" value="여성" v-model="filters.gender" />
-                        &nbsp 여성 전용
-                      </label>
-                      <label>
-                        <input type="checkbox" value="남녀공용" v-model="filters.gender" />
-                        &nbsp 남녀 공용
-                      </label>
-                    </div>
+    </div>
+
+    <div class="accordion" id="exampleAccordion">
+      <hr>
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="headingFilter">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="true" aria-controls="filterCollapse">
+            필터링 옵션
+          </button>
+        </h2>
+        <div id="filterCollapse" class="accordion-collapse collapse show" aria-labelledby="headingFilter" data-bs-parent="#exampleAccordion">
+          <div class="accordion-body">
+            <div class="filter-section">
+              <div class="row">
+                <div class="filter-box">
+                  <h5>성별</h5>
+                  <div class="checkbox-group vertical">
+                    <label>
+                      <input type="checkbox" value="남성" v-model="filters.gender" />
+                      &nbsp 남성 전용
+                    </label>
+                    <label>
+                      <input type="checkbox" value="여성" v-model="filters.gender" />
+                      &nbsp 여성 전용
+                    </label>
+                    <label>
+                      <input type="checkbox" value="남녀공용" v-model="filters.gender" />
+                      &nbsp 남녀 공용
+                    </label>
                   </div>
-                  
-                  <div class="filter-box">
-                    <div class="price-slider-group">
-                      <div class="price-slider">
-                        <label for="depositRange">보증금(전세금)</label>
-                        <input type="range" id="depositRange" v-model="filters.deposit" min="0" max="200000000" step="1000000">
-                        <span>{{ formattedDeposit }}</span>
-                      </div>
-                      <div class="price-slider">
-                        <label for="rentRange">월세</label>
-                        <input type="range" id="rentRange" v-model="filters.rent" min="0" max="5000000" step="50000">
-                        <span>{{ formattedRent }}</span>
-                      </div>
+                </div>
+                <div class="filter-box">
+                  <div class="price-slider-group">
+                    <div class="price-slider">
+                      <label for="depositRange">보증금(전세금)</label>
+                      <input type="range" id="depositRange" v-model="filters.deposit" min="0" max="10000000" step="1000000">
+                      <span>{{ formattedDeposit }}</span>
+                    </div>
+                    <div class="price-slider">
+                      <label for="rentRange">월세</label>
+                      <input type="range" id="rentRange" v-model="filters.rent" min="0" max="5000000" step="50000">
+                      <span>{{ formattedRent }}</span>
                     </div>
                   </div>
                 </div>
-  
-               
-  
-                <div class="button-group">
-                  <form class="search-bar" action="/search" method="GET">
-                    <input type="text" name="query" placeholder="주변 지하철역을 검색">
-                  </form>
-  
-                  <div class="submit-button-container">
-                    <button class="btn btn-submit" @click="submitFilters">필터 적용</button>
-                    <button class="btn btn-reset" @click="resetFilters">조건 초기화</button>
-                  </div>
+              </div>
+
+              <div class="button-group">
+                <div class="submit-button-container">
+                  <button class="btn btn-submit" @click="submitFilters">필터 적용</button>
+                  <button class="btn btn-reset" @click="resetFilters">조건 초기화</button>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-  
-  
-      <hr />
-  
-      <!-- 매물 목록 및 지도 -->
-      <div class="map-list-container">
-        <div class="property-list"> 
-          <p>매물 목록</p>
-          <div v-for="(property, index) in filteredProperties" :key="index" class="card">
-            <img src="https://via.placeholder.com/150" class="card-img-top" alt="Property Image">
-            <div class="card-body">
-              <h5 class="card-title">{{ property.name }}</h5>
-              <p class="card-text fs-sm">{{ property.price }}만원</p>
-              <a href="#" class="btn btn-sm btn-primary">상세보기</a>
+    </div>
 
-              <!-- 관심매물 아이콘 -->
-            <div class="interest-icon">
-              <i 
-                :class="property.interested ? 'fas fa-heart active' : 'far fa-heart'"
-                @click="toggleInterest(property)"
-              ></i>
+    <hr />
+
+    <div class="map-list-container">
+      <div class="property-list">
+        
+        <div class="list-header">
+          <p>매물 목록</p>
+    
+          <!-- Sorting Dropdown -->
+          <div class="sort-dropdown">
+            <select v-model="selectedSort" @change="sortProperties">
+              <option value="distance">거리순</option>
+              <option value="highPrice">높은가격순</option>
+              <option value="lowPrice">낮은가격순</option>
+              <option value="likes">좋아요순</option>
+            </select>
+          </div>
+        </div>
+
+        <div v-for="(property, index) in filteredProperties" :key="index" class="card">
+          <!-- 이미지와 판매완료 오버레이 -->
+          <div class="image-container">
+            <img src="https://via.placeholder.com/150" class="card-img-top" alt="Property Image">
+            
+            <!-- 판매완료 오버레이 (isSale이 false일 때만 표시) -->
+            <div v-if="!property.isSale" class="sold-overlay">
+              <i class="bi bi-check-circle"></i>
+              <p>판매완료</p>
             </div>
+
+            <!-- 좋아요 개수와 하트 아이콘 (판매 완료가 아닌 경우에만 표시) -->
+            <div v-if="property.isSale" class="like-overlay">
+              <i class="bi bi-heart-fill"></i>
+              <p>{{ property.likes }}</p>
+            </div>
+          </div>
+          
+          <div class="card-body">
+            <h5 class="card-title">{{ property.name }}</h5>
+            <p class="card-text fs-sm">전세 {{ property.price }} 만원 | 월세 {{ property.price }} 만원</p>
+            
+            <a href="#" class="btn btn-sm btn-primary">상세보기</a>
+        
+            <!-- 관심매물 아이콘 -->
+            <div class="interest-icon mt-2">
+              <i :class="heartIcons[index]" @click="toggleHeartIcon(index)"></i>
             </div>
           </div>
         </div>
-  
-        <!-- Kakao 지도 -->
-        <div id="map" class="map"></div>
+        
+        
+      </div>
+
+      <div id="map" class="map">
+        <div class="map-overlay">
+          <!-- <div class="location-filters"> -->
+            <!-- 시/도 선택 -->
+            <div class="btn-group">
+              <button type="button" class="btn btn-filter">
+                {{ selectedCity }}
+              </button>
+            </div>
+
+            <!-- 구 선택 -->
+            <div class="btn-group">
+              <button type="button" class="btn btn-filter" @click="showDistrictSelect = !showDistrictSelect">
+                {{ selectedDistrict || '구' }}
+              </button>
+              <div v-if="showDistrictSelect" class="dropdown-menu">
+                <a 
+                  v-for="district in districts" 
+                  :key="district" 
+                  href="#" 
+                  class="dropdown-item" 
+                  @click.prevent="setDistrict(district)"
+                >
+                  {{ district }}
+                </a>
+              </div>
+            </div>
+
+            
+          </div>
+        
       </div>
     </div>
-  </template>
-  
-  <script setup>
+  </div>
+</template>
+
+<script setup>
 import { ref, reactive, computed, onMounted } from 'vue';
 
 // 탭 상태 관리
@@ -118,17 +171,26 @@ const showFilters = ref(true);
 // 고시원 매물 데이터 설정
 const propertiesData = {
   gosiwon: [
-    { name: '건대 고시원', price: 500, gender: '남성' },
-    { name: '관악구 고시원', price: 600, gender: '여성' },
-    { name: '낙성대 고시원', price: 550, gender: '남녀공용' },
+    { name: '건대 고시원',  price: 500, gender: '남성', isSale: true },
+    { name: '관악구 고시원', price: 600, gender: '여성', isSale: false },
+    { name: '낙성대 고시원', price: 550, gender: '남녀공용', isSale: true },
   ],
 };
 
-// 필터 관리: 기본값을 모두 선택된 상태로 설정
+// 하트 아이콘 상태 관리
+const heartIcons = ref(Array(propertiesData.gosiwon.length).fill('far fa-heart'));
+
+// 하트 아이콘 토글 함수
+const toggleHeartIcon = (index) => {
+  heartIcons.value[index] =
+    heartIcons.value[index] === 'far fa-heart' ? 'fas fa-heart' : 'far fa-heart';
+};
+
+// 필터 관리
 const filters = reactive({
-  gender: ['남성', '여성', '남녀공용'], // 모든 성별 옵션을 기본적으로 선택
-  deposit: 200000000, // 보증금 필터의 최대값 설정
-  rent: 5000000, // 월세 필터의 최대값 설정
+  gender: ['남성', '여성', '남녀공용'],
+  deposit: 10000000,
+  rent: 5000000,
 });
 
 // 필터 값 형식 처리
@@ -146,11 +208,11 @@ const setTab = (tab) => {
   resetFilters();
 };
 
-// 필터 초기화: 기본적으로 모든 항목을 선택된 상태로 되돌림
+// 필터 초기화
 const resetFilters = () => {
-  filters.gender = ['남성', '여성', '남녀공용']; // 모든 성별 옵션을 선택
-  filters.deposit = 200000000; // 보증금 슬라이더를 최대로 설정
-  filters.rent = 5000000; // 월세 슬라이더를 최대로 설정
+  filters.gender = ['남성', '여성', '남녀공용'];
+  filters.deposit = 100000000;
+  filters.rent = 5000000;
 };
 
 // 필터 적용된 매물 목록 계산
@@ -178,7 +240,7 @@ const markers = ref([]);
 onMounted(() => {
   const container = document.getElementById('map');
   const options = {
-    center: new kakao.maps.LatLng(37.5665, 126.9780), // 서울 시청 좌표
+    center: new kakao.maps.LatLng(37.5665, 126.9780),
     level: 5,
   };
 
@@ -204,478 +266,60 @@ onMounted(() => {
 
   clusterer.addMarkers(markers.value);
 });
+
+// 상태 관리
+const selectedCity = ref('서울시');
+const selectedDistrict = ref('');
+const showDistrictSelect = ref(false);
+
+// 서울시의 구 리스트
+const districts = [
+  '강남구', '강동구', '강북구', '강서구', '관악구', '광진구', '구로구', '금천구',
+  '노원구', '도봉구', '동대문구', '동작구', '마포구', '서대문구', '서초구', '성동구',
+  '성북구', '송파구', '양천구', '영등포구', '용산구', '은평구', '종로구', '중구', '중랑구'
+];
+
+// 구 선택 처리
+const setDistrict = (district) => {
+  selectedDistrict.value = district;
+  selectedNeighborhood.value = '';
+  showDistrictSelect.value = false;
+};
+const selectedNeighborhood = ref('');
+
+// Sorting Options
+const selectedSort = ref('distance'); // Default sorting by distance
+
+const sortedProperties = computed(() => {
+  const properties = [...filteredProperties.value]; // Copy the filtered properties
+
+  switch (selectedSort.value) {
+    case 'highPrice':
+      return properties.sort((a, b) => b.price - a.price);
+    case 'lowPrice':
+      return properties.sort((a, b) => a.price - b.price);
+    case 'likes':
+      return properties.sort((a, b) => (b.likes || 0) - (a.likes || 0)); // Assuming properties have a 'likes' field
+    case 'distance':
+    default:
+      return properties.sort((a, b) => (a.distance || 0) - (b.distance || 0)); // Assuming properties have a 'distance' field
+  }
+});
+
+// Mock 'likes' and 'distance' data
+propertiesData.gosiwon = propertiesData.gosiwon.map((property, index) => ({
+  ...property,
+  likes: Math.floor(Math.random() * 100), // Random likes data for demo
+  distance: Math.random() * 10, // Random distance data for demo (in km)
+}));
+
+const sortProperties = () => {
+  console.log(`Sorted by: ${selectedSort.value}`);
+};
+
+
 </script>
 
-
-  
-  <style scoped>
-  /* 필터 섹션 */
-  .filter-section {
-    display: flex;
-    flex-direction: column;
-    padding: 10px 0;
-    margin-left: 20px;
-    gap: 20px; /* Add spacing between rows */
-  }
-  
-  .row {
-    display: flex;
-    justify-content: space-between; /* Ensure items are spaced out */
-    width: 100%;
-  }
-  
-  .full-width {
-    width: 100%; /* Make the 전/월세 section take full width */
-  }
-  
-  /* 대출, 층수 필터 박스 */
-  .filter-box {
-    flex: 1; /* Each filter box takes equal width */
-    padding: 10px;
-  }
-  
-  /* 전/월세 체크박스와 가격 슬라이더 */
-  .checkbox-group.horizontal {
-    display: flex;
-    gap: 20px; /* Space between 전세 and 월세 checkboxes */
-  }
-  
-  .price-slider-group {
-    display: flex;
-    gap: 20px; /* Space between the two sliders */
-  }
-  
-  .price-slider {
-    display: flex;
-    flex-direction: column;
-    width: 100%; /* Make sliders take full width */
-  }
-  
-  .price-slider label {
-    margin-bottom: 5px; /* Add space between the label and slider */
-  }
-  
-  .price-slider input {
-    width: 100%; /* Slider width */
-  }
-  
-  /* 탭 네비게이션 */
-.tab-navigation {
-  font-weight: bold;
-  font-size: 24px; /* 탭 네비게이션의 기본 폰트 크기 */
-  margin-left: 26px;
-}
-
-.tab-item {
-  margin-top: 10px;
-  margin-bottom: 10px;
-  margin-right: 15px;
-  color: gray;
-  text-decoration: none;
-  position: relative;
-  font-size: 28px; /* 탭 아이템의 폰트 크기를 증가 */
-  cursor: pointer;
-}
-
-.tab-item.active {
-  color: #6b2e9b;
-  font-size: 28px; /* 활성화된 탭의 폰트 크기를 더 크게 설정 */
-}
-  
-  /* checkbox-group 클래스를 가로 배치 */
-  .checkbox-group.horizontal {
-    display: flex;
-    gap: 20px; /* 각 항목 간의 간격을 조정 */
-  }
-  
-  .checkbox-group label {
-    display: inline-flex;
-    align-items: center;
-    margin-right: 7px;
-  }
-  
-  /* 지도와 매물 목록을 나란히 배치하는 컨테이너 */
-  .map-list-container {
-    display: flex;
-    flex-direction: row;
-    height: 1200px;
-  }
-  
-  /* 매물 목록 스타일 */
-  .property-list {
-    width: 25%;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    padding: 20px;
-    overflow-y: auto;
-    height: 80%;
-    scrollbar-width: thin;
-    scrollbar-color: #6b2e9b #f9f9f9;
-  }
-  
-  .card {
-    margin-bottom: 20px;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 10px;
-  }
-  
-  .card-img-top {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 8px;
-  }
-  
-  .card-body {
-    padding: 15px;
-  }
-  
-  .card-title {
-    font-size: 1.25rem;
-    margin-bottom: 10px;
-  }
-  
-  .card-text {
-    font-size: 1rem;
-  }
-  
-  .btn-primary {
-    background-color: var(--main1);
-    border: none;
-  }
-  
-  .btn-primary:hover {
-    background-color: #5a2384;
-  }
-  
-  /* 지도 스타일 */
-  .map {
-    width: 75%;
-    height: 80%;
-    border-radius: 8px;
-  }
-  
-  /* 스크롤바 스타일 커스터마이징 */
-  .property-list::-webkit-scrollbar {
-    width: 8px;
-  }
-  
-  .property-list::-webkit-scrollbar-thumb {
-    background-color: var(--main1);
-    border-radius: 10px;
-  }
-  
-  .property-list::-webkit-scrollbar-track {
-    background-color: #f9f9f9;
-  }
-  
-  /* 제출 버튼 스타일 */
-  .submit-button-container {
-    display: flex;
-    align-items: center;
-  }
-  
-  .btn-submit {
-    background-color: var(--main1);
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 8px;
-    margin-right: 10px;
-    cursor: pointer;
-  }
-  
-  .btn-submit:hover {
-    background-color: #5a2384;
-  }
-  
-  .btn-reset {
-    background-color: #e5e5e5;
-    color: black;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 8px;
-    margin-right: 20px;
-    cursor: pointer;
-  }
-  
-  .btn-reset:hover {
-    background-color: #8f8484;
-  }
-  
-  /* 작은 버튼 크기 조정 */
-  .small-btn {
-    padding: 5px 10px;
-    font-size: 12px;
-    border-radius: 5px;
-  }
-  
-  /* 검색바 및 버튼 그룹을 같은 줄에 배치 */
-  .button-group {
-    display: flex;
-    align-items: flex-end;
-    gap: 20px; /* 검색창과 필터 적용 버튼 사이 간격 */
-  }
-  
-  /* 검색창 스타일 */
-  .search-bar {
-    display: flex;
-    align-items: center;
-  }
-  
-  .search-bar input[type="text"] {
-    padding: 8px 12px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 14px;
-  }
-  </style>
-  
-  
-  <style scoped>
-  /* 필터 섹션 */
-  .filter-section {
-    display: flex;
-    flex-direction: column;
-    padding: 10px 0;
-    margin-left: 20px;
-    gap: 20px; /* Add spacing between rows */
-  }
-  
-  .row {
-    display: flex;
-    justify-content: space-between; /* Ensure items are spaced out */
-    width: 100%;
-  }
-  
-  .full-width {
-    width: 100%; /* Make the 전/월세 section take full width */
-  }
-  
-  /* 대출, 층수 필터 박스 */
-  .filter-box {
-    flex: 1; /* Each filter box takes equal width */
-    padding: 10px;
-  }
-  
-  /* 전/월세 체크박스와 가격 슬라이더 */
-  .checkbox-group.horizontal {
-    display: flex;
-    gap: 20px; /* Space between 전세 and 월세 checkboxes */
-  }
-  
-  .price-slider-group {
-    display: flex;
-    gap: 20px; /* Space between the two sliders */
-  }
-  
-  .price-slider {
-    display: flex;
-    flex-direction: column;
-    width: 100%; /* Make sliders take full width */
-  }
-  
-  .price-slider label {
-    margin-bottom: 5px; /* Add space between the label and slider */
-  }
-  
-  .price-slider input {
-    width: 100%; /* Slider width */
-  }
-  
-  /* 탭 네비게이션 */
-  .tab-navigation {
-    font-weight: bold;
-    font-size: 22px;
-    margin-left: 26px;
-  }
-  
-  .tab-item {
-    margin-top: 10px;
-    margin-bottom: 10px;
-    margin-right: 15px;
-    color: gray;
-    text-decoration: none;
-    position: relative;
-  }
-  
-  .tab-item.active {
-    color: #6b2e9b;
-  }
-  
-  /* checkbox-group 클래스를 가로 배치 */
-  .checkbox-group.horizontal {
-    display: flex;
-    gap: 20px; /* 각 항목 간의 간격을 조정 */
-  }
-  
-  .checkbox-group label {
-    display: inline-flex;
-    align-items: center;
-    margin-right: 7px;
-  }
-  
-  /* 지도와 매물 목록을 나란히 배치하는 컨테이너 */
-  .map-list-container {
-    display: flex;
-    flex-direction: row;
-    height: 1200px;
-  }
-  
-  /* 매물 목록 스타일 */
-  .property-list {
-    width: 25%;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    padding: 20px;
-    overflow-y: auto;
-    height: 80%;
-    scrollbar-width: thin;
-    scrollbar-color: #6b2e9b #f9f9f9;
-  }
-  
-  .card {
-    margin-bottom: 20px;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 10px;
-  }
-  
-  .card-img-top {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 8px;
-  }
-  
-  .card-body {
-    padding: 15px;
-  }
-  
-  .card-title {
-    font-size: 1.25rem;
-    margin-bottom: 10px;
-  }
-  
-  .card-text {
-    font-size: 1rem;
-  }
-  
-  .btn-primary {
-    background-color: var(--main1);
-    border: none;
-  }
-  
-  .btn-primary:hover {
-    background-color: #5a2384;
-  }
-  
-  /* 지도 스타일 */
-  .map {
-    width: 75%;
-    height: 80%;
-    border-radius: 8px;
-  }
-  
-  /* 스크롤바 스타일 커스터마이징 */
-  .property-list::-webkit-scrollbar {
-    width: 8px;
-  }
-  
-  .property-list::-webkit-scrollbar-thumb {
-    background-color: var(--main1);
-    border-radius: 10px;
-  }
-  
-  .property-list::-webkit-scrollbar-track {
-    background-color: #f9f9f9;
-  }
-  
-  /* 제출 버튼 스타일 */
-  .submit-button-container {
-    display: flex;
-    align-items: center;
-  }
-  
-  .btn-submit {
-    background-color: var(--main1);
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 8px;
-    margin-right: 10px;
-    cursor: pointer;
-  }
-  
-  .btn-submit:hover {
-    background-color: #5a2384;
-  }
-  
-  .btn-reset {
-    background-color: #e5e5e5;
-    color: black;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 8px;
-    margin-right: 20px;
-    cursor: pointer;
-  }
-  
-  .btn-reset:hover {
-    background-color: #8f8484;
-  }
-  
-  /* 작은 버튼 크기 조정 */
-  .small-btn {
-    padding: 5px 10px;
-    font-size: 12px;
-    border-radius: 5px;
-  }
-  
-  /* 검색바 및 버튼 그룹을 같은 줄에 배치 */
-  .button-group {
-    display: flex;
-    align-items: flex-end;
-    gap: 20px; /* 검색창과 필터 적용 버튼 사이 간격 */
-  }
-  
-  /* 검색창 스타일 */
-  .search-bar {
-    display: flex;
-    align-items: center;
-  }
-  
-  .search-bar input[type="text"] {
-    padding: 8px 12px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 14px;
-  }
-
-  hr {
-    border: 0;
-    height: 3px; /* 원하는 굵기로 설정 */
-    background-color: var(--main-gray1); /* 진한 색상으로 설정 */
-  }
-
-  /* 카드 하단에 관심매물 아이콘을 배치 */
-  .interest-icon {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    cursor: pointer;
-  }
-
-  .interest-icon i {
-    font-size: 24px;
-    color: #888;
-  }
-
-  .interest-icon i.active {
-    color: red;
-  }
-  </style>
-  
+<style scoped>
+@import "../../assets/css/mapPage/gosiwon.css";
+</style>

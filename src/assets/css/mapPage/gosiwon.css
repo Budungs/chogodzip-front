@@ -1,0 +1,394 @@
+/* 필터 섹션 */
+.filter-section {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 0;
+  margin-left: 20px;
+  gap: 20px;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.full-width {
+  width: 100%;
+}
+
+/* 필터 박스 */
+.filter-box {
+  flex: 1;
+  padding: 10px;
+}
+
+.checkbox-group.horizontal,
+.price-slider-group {
+  display: flex;
+  gap: 20px;
+}
+
+.checkbox-group label {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 7px;
+}
+
+.price-slider {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.price-slider label {
+  margin-bottom: 5px;
+}
+
+.price-slider input {
+  width: 100%;
+}
+
+/* 탭 네비게이션 */
+.tab-navigation {
+  font-weight: bold;
+  font-size: 28px;
+  margin-left: 26px;
+  display: flex;
+  justify-content: space-between; /* 탭과 검색 폼 사이에 공간을 균등 배분 */
+  align-items: center; /* 세로로 중앙 정렬 */
+}
+
+.tab-item {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-right: 15px;
+  color: gray;
+  text-decoration: none;
+  position: relative;
+  font-size: 40px;
+  cursor: pointer;
+}
+
+.tab-item.active {
+  color: #6b2e9b;
+}
+
+/* 지도와 매물 목록 컨테이너 */
+.map-list-container {
+  display: flex;
+  flex-direction: row;
+  height: 1200px;
+}
+
+.property-list {
+  width: 25%;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 20px;
+  overflow-y: auto;
+  height: 80%;
+  scrollbar-width: thin;
+  scrollbar-color: #6b2e9b #f9f9f9;
+}
+
+.property-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.map {
+  width: 75%;
+  height: 80%;
+  border-radius: 8px;
+}
+
+.property-list::-webkit-scrollbar-thumb {
+  background-color: var(--main1);
+  border-radius: 10px;
+}
+
+.property-list::-webkit-scrollbar-track {
+  background-color: #f9f9f9;
+}
+
+/* 카드 스타일 */
+.card {
+  margin-bottom: 20px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+}
+
+.card-img-top {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.card-body {
+  padding: 15px;
+}
+
+.card-title {
+  font-size: 1.25rem;
+  margin-bottom: 10px;
+}
+
+.card-text {
+  font-size: 1rem;
+}
+
+.interest-icon {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  cursor: pointer;
+}
+
+.interest-icon i {
+  font-size: 24px;
+  color: var(--main3);
+}
+
+.interest-icon i.active {
+  color: red;
+}
+
+/* 버튼 스타일 */
+.btn-primary {
+  background-color: var(--main1);
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: #5a2384;
+}
+
+.btn-submit {
+  background-color: var(--main1);
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.btn-submit:hover {
+  background-color: #5a2384;
+}
+
+.btn-reset {
+  background-color: #e5e5e5;
+  color: black;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  margin-right: 20px;
+  cursor: pointer;
+}
+
+.btn-reset:hover {
+  background-color: #8f8484;
+}
+
+.small-btn {
+  padding: 5px 10px;
+  font-size: 12px;
+  border-radius: 5px;
+}
+
+.search-form {
+  display: flex;
+  justify-content: flex-end; /* 검색 폼을 오른쪽으로 배치 */
+  width: 60%; /* 너비를 적절히 조절하여 탭과 균형 유지 */
+  margin-top: 10px; /* 불필요한 여백 제거 */
+  margin-bottom: 10px;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%; /* 검색 폼이 주어진 너비를 꽉 채우도록 설정 */
+}
+
+.search-bar input {
+  flex-grow: 1;
+  padding: 12px 20px;
+  font-size: 1.2rem;
+  border: 2px solid var(--main1);
+  border-radius: 8px;
+  outline: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+.search-bar button {
+  padding: 16px 20px;
+  font-size: 1rem;
+  color: #fff;
+  background-color: var(--main1);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* 제출 버튼 컨테이너 */
+.submit-button-container {
+  display: flex;
+  align-items: center;
+}
+
+/* 구분선 스타일 */
+hr {
+  border: 0;
+  height: 3px;
+  background-color: var(--main-gray1);
+}
+
+.map-overlay {
+  background-color: rgba(255, 255, 255, 0.5);
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  display: flex;
+  gap: 10px;
+}
+
+.location-filters {
+  display: flex;
+  background-color: white;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.btn-filter {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  color: #333;
+  padding: 10px 15px;
+  background-color: rgba(255, 255, 255, 0.7);
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.btn-filter:hover {
+  background-color: #f1f1f1;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  width: 1rem;
+  max-height: 150px; /* 최대 높이를 설정 (항목 5개 정도의 높이) */
+  overflow-y: auto;  /* 세로 스크롤을 가능하게 설정 */
+}
+
+.dropdown-item {
+  padding: 5px 10px;
+  cursor: pointer;
+  width: 100px; /* 셀 하나의 너비 */
+  text-align: center;
+}
+
+.dropdown-item:hover {
+  background-color: #eaeaea;
+}
+
+/* Hover like icon and count */
+.image-container {
+  position: relative;
+  width: 100%;
+  height: auto;
+  overflow: hidden; /* Ensures content stays within the bounds of the image */
+}
+
+.sold-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* 반투명한 검정색 배경 */
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  font-size: 1.5rem;
+  border-radius: 5px;
+}
+
+.sold-overlay i {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+/* 좋아요 아이콘과 좋아요 개수를 표시하는 오버레이 */
+.like-overlay {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  display: none;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+  color: #666; /* 기본 색상 */
+}
+
+.like-overlay i {
+  color: #e25a5a; /* 좋아요 하트 색상 */
+  font-size: 24px;
+}
+
+.like-overlay p {
+  font-size: 18px;
+  margin: 0;
+}
+
+/* 이미지에 마우스 호버 시 좋아요 오버레이 표시 */
+.image-container:hover .like-overlay {
+  display: flex;
+}
+
+/* Sorting Dropdown and List Title */
+.list-header {
+  display: flex;
+  justify-content: space-between; /* Space out the items */
+  align-items: center; /* Align them vertically */
+  margin-bottom: 10px;
+}
+
+.list-header p {
+  margin: 0;
+  font-size: 1.5rem; /* You can adjust this size */
+}
+
+.sort-dropdown {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.sort-dropdown select {
+  padding: 10px;
+  font-size: 1rem;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  background-color: white;
+  cursor: pointer;
+}
