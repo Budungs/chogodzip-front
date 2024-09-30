@@ -1,5 +1,5 @@
 <template>
-    <header class="navbar navbar-expand-lg navbar-light fixed-top" data-scroll-header>
+    <header class="navbar navbar-expand-lg navbar-light fixed-top" style="background-color: white" data-scroll-header>
         <div class="container">
             <!-- 로고 -->
             <a class="navbar-brand me-3 me-xl-4" href="/">
