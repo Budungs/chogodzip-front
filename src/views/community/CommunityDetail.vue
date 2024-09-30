@@ -1,11 +1,6 @@
 <template>
-    <!-- 뒤로가기 버튼 -->
     <div class="outer-container">
-        <br><br>
-        <button type="button" class="btn btn-primary" style="background-color:red; margin-left:100px;" @click="goToMainPage">
-            <i class="bi bi-arrow-left"></i>   뒤로가기
-        </button>
-        <br><br>
+        <br><br><br>
         <div class="container">
         <!-- 게시글 제목 -->
         <h1 style="margin-top:30px;">게시글 제목</h1>
