@@ -13,6 +13,7 @@ import registComplete from '../views/login_regist/RegistComplete.vue';
 
 import CommunityMain from '@/views/community/CommunityMain.vue';
 import CommunityWrite from '@/views/community/CommunityWrite.vue';
+import CommunityDetail from '@/views/community/CommunityDetail.vue';
 
 import helpRoutes from './help';
 
@@ -25,6 +26,7 @@ const router = createRouter({
 
     { path: '/communitymain', name:'communityMain', component: CommunityMain}, // CommunityMain 페이지로 이동
     { path: '/communitywrite', name:'communityWrite', component: CommunityWrite}, // CommunityWrite 페이지로 이동
+    { path: '/communitydetail', name:'communityDetail', component: CommunityDetail}, // CommunityDetail 페이지로 이동
     // 2안 ) 여러개의 경로를 묶을 수도 있다.
     ...houseRoutes,
       ...lottoRoutes,
