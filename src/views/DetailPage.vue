@@ -9,107 +9,41 @@
           <li class="breadcrumb-item active">쉐어하우스</li>
         </ol>
       </nav>
-      <h1 class="h2 mb-4">{{ house.NAME }}</h1>
       <div class="row">
         <!-- Left column-->
-        <div class="col-md-5 mb-md-0 mb-4 pb-md-0 pb-2">
-          <div class="row g-2 g-md-3 gallery" data-thumbnails="true" style="min-width: 30rem; min-height: 30rem;">
-            <div class="col-12">
-              <a class="gallery-item rounded rounded-md-3" :href="house.TITLE_IMAGE"
-                data-sub-html="&lt;h6 class=&quot;fs-sm text-light&quot;&gt;Bathroom&lt;/h6&gt;">
-                <img :src="house.TITLE_IMAGE" alt="Gallery thumbnail" style="width: 100%;">
-              </a>
-            </div>
-
-            <div class="col-6">
-              <a class="gallery-item rounded rounded-md-3" :href="house.TITLE_IMAGE"
-                data-sub-html="&lt;h6 class=&quot;fs-sm text-light&quot;&gt;Bedroom&lt;/h6&gt;">
-                <img :src="house.TITLE_IMAGE" alt="Gallery thumbnail" style="width: 100%;">
-              </a>
-            </div>
-            <div class="col-6">
-              <a class="gallery-item rounded rounded-md-3" :href="house.TITLE_IMAGE"
-                data-sub-html="&lt;h6 class=&quot;fs-sm text-light&quot;&gt;Living room&lt;/h6&gt;">
-                <img :src="house.TITLE_IMAGE" alt="Gallery thumbnail" style="width: 100%;">
-              </a>
-            </div>
+        <div class="col-md-7 mb-md-0 mb-4 pb-md-0 pb-2">
+          <div class="g-2 g-md-3 gallery" data-thumbnails="true" style="min-width: 30rem; min-height: 30rem;">
+            <a class="gallery-item rounded rounded-md-3" :href="house.TITLE_IMAGE"
+              data-sub-html="&lt;h6 class=&quot;fs-sm text-light&quot;&gt;Bathroom&lt;/h6&gt;">
+              <img :src="house.TITLE_IMAGE" alt="Gallery thumbnail" style="width: 100%;">
+            </a>
           </div>
         </div>
         <!-- Sidebar-->
-        <aside class="col-md-7">
-          <!-- Place card-->
-          <div>
-            <div class="card-body"
-              style="padding: 1.5em 3.0rem; border: 1px solid gainsboro; border-radius:25px; min-height: 30rem;">
-              <!--가격-->
-              <div class="pb-2 pt-3 border-bottom" style="padding-left: 25px;">
-                <div class="row">
-                  <div class="col">
-                    <div class="mb-2">
-                      <div style="font-size: 1.4rem; font-weight:bold;">보증금&nbsp;</div>
-                      <span class="main1" style="font-size:48px; font-weight:bold;">{{ house.DEPOSIT_MIN
-                        }}&nbsp;-&nbsp;{{
-                          house.DEPOSIT_MAX
-                        }}&nbsp;</span>
-                      <span style="font-size: 1.3rem; color:#777777;">만원&nbsp;</span>
-                    </div>
-                  </div>
-                  <div class="col">
-                    <div class="mb-2">
-                      <div style="font-size: 1.4rem; font-weight:bold;">월세&nbsp;</div>
-                      <span class="main1" style="font-size:48px; font-weight:bold;">{{ house.PRICE_MIN
-                        }}&nbsp;-&nbsp;{{
-                          house.PRICE_MAX
-                        }}&nbsp;</span>
-                      <span style="font-size: 1.3rem; color:#777777;">만원&nbsp;</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <!-- Place contacts-->
-              <div class="mb-3 pb-3 pt-4 d-flex" style="justify-content: space-evenly;">
-                <div class="text-center">
-                  <span><img width="40" height="40" :src="floorImage" alt="Floor Image" class="pb-2" />
-                  </span><span class="fs-5">&nbsp;&nbsp;총 {{ house.FLOOR }}층</span>
-                </div>
-                <div class="text-center">
-                  <span><img width="40" height="40" :src="roomImage" alt="Room Image" class="pb-2" />
-                  </span><span class="fs-5">&nbsp;&nbsp;총 {{ house.ROOM_CNT }}개의 방</span>
-                </div>
-                <div class="text-center">
-                  <span><img width="40" height="40" :src="laughImage" alt="Laugh Image" class="pb-2" />
-                  </span><span class="fs-5">&nbsp;&nbsp;{{ house.GENDER_TYPE_NM }}</span>
-                </div>
-              </div>
-              <ul class="list-unstyled d-flex flex-wrap justify-content-center mb-2">
-                <li v-for="(tag, index) in tagsArray" :key="index" class="fs-8" style="margin-right:8px;">
-                  <span class="tag">{{ tag }}</span>
-                </li>
-              </ul>
-              <!-- 지하철호선 -->
-              <div class="d-flex flex-wrap justify-content-center">
-                <img :src="subway_3" width="25" height="25" />
-                <span style="margin-left:7px;" v-for="subway in house.nearSubways[0]" :key="subway.NAME">
-                  {{ subway.FULL_NAME }}
-                </span>
-              </div>
-              <!-- Place following-->
-              <div class="pt-3 fs-6 d-flex flex-wrap justify-content-center">
-                {{ house.ADDR_FULL_ROAD }}
-              </div>
-              <div class="pb-2 d-flex justify-content-center align-items-center pt-2">
-                <button type="button" id="chat-btn"
-                  style="border-radius: 55px; background-color:#D85F5F; color:white; padding:2px 8px; width:150px; height:55px; margin-right:10px;">
-                  채팅
-                </button>
-                <div id="pay-btn"
-                  style="display: flex; justify-content: center; align-items: center; width:150px; height:55px;">
-                  <img :src="Kakao" style="max-height: 100%;" alt="Pay with Kakao" />
-                </div>
-              </div>
-
+        <aside class="col-md-5">
+          <div style="margin-left: 1rem;">
+            <p class="fs-lg">매물번호: M001147474</p>
+            <h3>보증금 {{ house.DEPOSIT_MIN }}-{{ house.DEPOSIT_MAX }} / 월세 {{ house.PRICE_MIN }}-{{ house.PRICE_MAX }}
+            </h3>
+            <div>관리비 12만원</div>
+            <hr class="mt-3 mb-3" style="height:2px; border-color:#0C0C0C;">
+            <div class="fs-6" style="color:black;">홍제동</div>
+            <div class="fs-6 mb-3" style="color:black;">공유주거공간</div>
+            <!-- 지하철호선 -->
+            <div class="mb-3">
+              <img :src="subway_3" width="25" height="25" />
+              <span class="main1" style="margin-left:7px; font-weight:bolder" v-for="subway in house.nearSubways[0]"
+                :key="subway.NAME">
+                {{ subway.NAME }} </span><span style="margin-left:1rem;">도보 10분 </span>
             </div>
-
+            <div class="d-flex justify-content-end">
+              <button class="s-btn"><i class="s-icon far fa-heart"
+                  style="margin-right:0.5rem;" /><span>116</span></button>
+              <button class="s-btn"><i class="s-icon fas fa-map-marker-alt" /></button>
+              <button class="s-btn"><i class="s-icon far fa-comments" /></button>
+              <button class="s-btn"><i class="s-icon far fa-edit" /></button>
+              <button class="s-btn"><i class="s-icon fas fa-trash-alt" style="color: #D85F5F" /></button>
+            </div>
           </div>
         </aside>
       </div>
@@ -290,6 +224,16 @@ export default {
 </script>
 
 <style scoped>
+.s-btn {
+  background: white;
+  border: 1px solid #ddd;
+  margin-left: 0.5rem;
+}
+
+.s-icon {
+  width: 25px;
+}
+
 .container {
   font-family: 'Spoqa Han Sans Neo';
 }
