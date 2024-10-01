@@ -29,5 +29,5 @@
 
 <script setup>
 import CounterCards from './CounterCards.vue';
-import HomeLottoNoticeList from './HomeLottoNoticeList.vue';
+import HomeLottoNoticeList from '../home04/HomeLottoNoticeList.vue';
 </script>
