@@ -10,7 +10,7 @@
         <div class="col-md-4">
             <div class="counter-box d-flex flex-column pt-5 pb-4 rounded-3 shadow">
                 <i class="fas fa-flag-checkered display-6"></i>
-                <span class="counter display-5" style="color:red">22</span>
+                <span class="counter display-5" style="color:var(--caution)">22</span>
                 <p class="h4 mt-1">접수중</p>
             </div>
         </div>
@@ -63,6 +63,6 @@ onMounted(() => {
 }
 
 .counter {
-    color: var(--main1);
+    color: var(--main3);
 }
 </style>
