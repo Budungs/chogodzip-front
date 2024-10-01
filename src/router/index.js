@@ -37,14 +37,14 @@ const router = createRouter({
 });
 
     // 2안 ) 여러개의 경로를 묶을 수도 있다.
-    ...houseRoutes,
-      ...lottoRoutes,
-      ...registRoom,
-      ...registMember,
-      ...helpRoutes,
-      ...community,
-    ],
-  });
+  //   ...houseRoutes,
+  //     ...lottoRoutes,
+  //     ...registRoom,
+  //     ...registMember,
+  //     ...helpRoutes,
+  //     ...community,
+  //   ],
+  // });
 
 
 export default router;

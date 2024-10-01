@@ -61,6 +61,7 @@ nav::before {
     height: 100%;
     z-index: -2;
     position: absolute;
+    border-radius: 5px;
 }
 
 nav label {
