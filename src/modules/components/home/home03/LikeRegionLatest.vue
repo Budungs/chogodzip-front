@@ -6,46 +6,7 @@
                 <!-- <a class="btn btn-link fw-normal p-0" href="#">더 많은 매물 확인하기<i class="fas fa-angle-right ms-2" /></a> -->
             </div>
             <div class="row gx-2 mx-0 pt-3 pb-5">
-                <RoomCard 
-                hrefUrl="/houses/sharehouses/info/:id" 
-                imgName="home-1.png"
-                roomType="원룸"
-                houseType="오피스텔"
-                price="전세 1억 8000천"
-                majorDesc="계약 면적 28평 | 2층 | 관리비 17만"
-                desc="깔끔하고 공간 좋은 오픈형 원룸"
-                address="서울특별시 강남구 역삼동"
-                />
-                <RoomCard 
-                hrefUrl="/houses/sharehouses/info/:id" 
-                imgName="home-1.png"
-                roomType="원룸"
-                houseType="연립/다세대"
-                price="월세 200/100"
-                majorDesc="계약 면적 28평 | 복층형 | 관리비 9만"
-                desc="깔끔하고 공간 좋은 복층형 원룸"
-                address="서울특별시 광진구 역삼동"
-                />
-                <RoomCard 
-                hrefUrl="/houses/sharehouses/info/:id" 
-                imgName="home-1.png"
-                roomType="원룸"
-                houseType="오피스텔"
-                price="전세 1억 8000천"
-                majorDesc="계약 면적 28평 | 2층 | 관리비 17만"
-                desc="깔끔하고 공간 좋은 오픈형 원룸"
-                address="서울특별시 강남구 역삼동"
-                />
-                <RoomCard 
-                hrefUrl="/houses/sharehouses/info/:id" 
-                imgName="home-1.png"
-                roomType="원룸"
-                houseType="오피스텔"
-                price="전세 1억 8000천"
-                majorDesc="계약 면적 28평 | 2층 | 관리비 17만"
-                desc="깔끔하고 공간 좋은 오픈형 원룸"
-                address="서울특별시 강남구 역삼동"
-                />
+                <RoomCard v-for="(regionItem, idx) in regionItemList" :key="idx" :item="regionItem" />
             </div>
         </section>
     </div>
@@ -53,6 +14,49 @@
 
 <script setup>
 import RoomCard from '@/common/components/RoomCard.vue';
+
+const regionItemList = [
+    {
+        hrefUrl: '/houses/sharehouses/info/:id',
+        imgUrl: "src/assets/images/backgrounds/home-1.png",
+        roomType: "원룸",
+        houseType: "오피스텔",
+        price: "전세 1억 8000천",
+        majorDesc: "계약 면적 28평 | 2층 | 관리비 17만",
+        desc: "깔끔하고 공간 좋은 오픈형 원룸",
+        address: "서울특별시 강남구 역삼동",
+    },
+    {
+        hrefUrl: '/houses/sharehouses/info/:id',
+        imgUrl: "src/assets/images/backgrounds/home-1.png",
+        roomType: "원룸",
+        houseType: "오피스텔",
+        price: "전세 1억 8000천",
+        majorDesc: "계약 면적 28평 | 2층 | 관리비 17만",
+        desc: "깔끔하고 공간 좋은 오픈형 원룸",
+        address: "서울특별시 강남구 역삼동",
+    },
+    {
+        hrefUrl: '/houses/sharehouses/info/:id',
+        imgUrl: "src/assets/images/backgrounds/home-1.png",
+        roomType: "원룸",
+        houseType: "오피스텔",
+        price: "전세 1억 8000천",
+        majorDesc: "계약 면적 28평 | 2층 | 관리비 17만",
+        desc: "깔끔하고 공간 좋은 오픈형 원룸",
+        address: "서울특별시 강남구 역삼동",
+    },
+    {
+        hrefUrl: '/houses/sharehouses/info/:id',
+        imgUrl: "src/assets/images/backgrounds/home-1.png",
+        roomType: "원룸",
+        houseType: "오피스텔",
+        price: "전세 1억 8000천",
+        majorDesc: "계약 면적 28평 | 2층 | 관리비 17만",
+        desc: "깔끔하고 공간 좋은 오픈형 원룸",
+        address: "서울특별시 강남구 역삼동",
+    },
+]
 </script>
 
 <style scoped>
