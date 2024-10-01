@@ -1,6 +1,6 @@
 <template>
     <div class="background-color-100 bg-size-cover bg-position-center border-0">
-        <section class="container pt-5 pb-5 mb-md-4">
+        <section class="container pt-5 pb-5">
             <div class="row pt-5 pb-5">
 
                 <!-- 퀴즈 -->
