@@ -79,6 +79,7 @@ import SearchNavBar from './SearchNavBar.vue';
     width: 100%;
     height: auto;
     object-fit: cover;
+    z-index:1;
 }
 
 /* 히어로 이미지 위 텍스트 + 검색 영역 */
