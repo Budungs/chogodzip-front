@@ -1,117 +1,81 @@
 <template>
-    <div class="container">
-        <header class="d-flex justify-content-between align-items-center py-3 flex-wrap">
-            <div class="logo">
-                <a href="/"><img src="../../assets/images/logo1.png" alt="CHOGODZIP 로고" class="logo-img"></a>
+    <header class="navbar navbar-expand-lg navbar-light fixed-top" style="background-color: white" data-scroll-header>
+        <div class="container">
+            <!-- 로고 -->
+            <a class="navbar-brand me-3 me-xl-4" href="/">
+                <img class="d-block" src="@/assets/images/logo1.png" width="200" alt="Chogodzip">
+            </a>
+
+            <!-- 로그인했을 경우 마이페이지 라우터 모달: 닉네임, 프로필 사진 표시 -->
+            <div v-if="isUser" class="dropdown d-none d-lg-block order-lg-3 my-n2 me-3">
+                <a class="d-block py-2" href="#"><img class="rounded-circle" src="@/assets/images/pfp/pfp01.png" width="40" alt="User"></a>
+                <div class="dropdown-menu dropdown-menu-end">
+                    <div class="d-flex align-items-start border-bottom px-3 py-1 mb-2" style="width: 16rem;"><img class="rounded-circle" src="@/assets/images/pfp/pfp01.png" width="48" alt="User">
+                        <div class="ps-2">
+                            <h6 class="fs-base mb-0">제갈민수</h6>
+                            <div class="fs-xs py-0">관심지역: 서울시 광진구</div>
+                        </div>
+                    </div>
+                    <a class="dropdown-item" href="/mypage/info"><i class="far fa-user-circle opacity-60 me-2"/>내 프로필</a>
+                    <a class="dropdown-item" href="/mypage/favoriteLottos"><i class="fas fa-heart opacity-60 me-2"/>관심 청약 목록</a>
+                    <a class="dropdown-item" href="/mypage/favoriteRooms"><i class="fas fa-heart opacity-60 me-2"></i>관심 매물 목록</a>
+                    <a class="dropdown-item" href="/mypage/postReviews"><i class="fas fa-pencil-alt opacity-60 me-2"></i>작성 리뷰 목록</a>
+                    <a class="dropdown-item" href="/mypage/postRooms"><i class="fas fa-pencil-alt opacity-60 me-2"></i>등록한 매물 목록</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="/rooms">방 내놓기</a>
+                    <a class="dropdown-item" href="#" @click="signOut">로그아웃</a>
+                </div>
             </div>
-            <nav class="header-nav ms-auto">
-                <ul class="nav">
-                    <li 
-                      class="nav-item dropdown me-lg-2"
-                      @mouseover="isDropdownVisible = true"
-                      @mouseleave="isDropdownVisible = false"
-                    >
-                        <a class="nav-link align-items-center pe-lg-4" href="#" role="button">
-                            방찾기
-                        </a>
-                        <ul class="dropdown-menu" v-if="isDropdownVisible">
-                            <li><a class="dropdown-item" href="#">고시원</a></li>
-                            
-                            <li><a class="dropdown-item" href="#">자취방</a></li>
-                           
-                            <li><a class="dropdown-item" href="#">공유주거공간</a></li>
+
+            <!-- 로그인 / 회원가입 버튼 -->
+            <!-- 임시 상태변화용 요소 -->
+            <a v-if="!isUser" class="btn btn btn-outline-accent btn-sm rounded-pill ms-2 order-lg-3" href="#" @click="signIn">
+            <!-- <a v-if="!isUser" class="btn btn btn-outline-accent btn-sm rounded-pill ms-2 order-lg-3" href="/login" @click="signIn"> -->
+                    로그인 | <span class='d-none d-sm-inline'>회원 가입</span>
+            </a>
+
+
+            <!-- 헤더 메뉴 -->
+            <div class="collapse navbar-collapse order-lg-2" id="navbarNav">
+                <ul class="navbar-nav navbar-nav-scroll" style="max-height: 35rem">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">방 찾기</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/houses/maps/gosiwons">고시원</a></li>
+                            <li><a class="dropdown-item" href="/houses/maps/room">자취방</a></li>
+                            <li><a class="dropdown-item" href="/houses/maps/sharehouses">공유주거공간</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item me-lg-2">
-                        <a href="#" class="nav-link align-items-center pe-lg-4">청약</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">청약</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/lottos/calendars">청약 캘린더</a></li>
+                            <li><a class="dropdown-item" href="/lottos/lists">청약 목록</a></li>
+                            <li><a class="dropdown-item" href="/lottos/news">청약 뉴스</a></li>
+                        </ul>
                     </li>
-                    <li class="nav-item me-lg-2">
-                        <a href="/communitymain" class="nav-link align-items-center pe-lg-4">커뮤니티</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link" href="/community">커뮤니티</a>
                     </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link align-items-center pe-lg-4">도움말</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" aria-expanded="false">도움말</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/help/easyDictionary">쉬운 말 사전</a></li>
+                            <li><a class="dropdown-item" href="#">별별 통계</a></li>
+                        </ul>
                     </li>
                 </ul>
-            </nav>
-            <div class="header-links d-flex ms-auto"> 
-                <a href="#" class="nav-link px-3">관심목록</a>
-                <a href="/registroom" class="nav-link px-3">방내놓기</a>
             </div>
-            <div class="header-buttons d-flex">
-                <a href="/login" class="btn btn-outline-secondary mx-2">로그인/회원가입</a>
-            </div>
-        </header>
-    </div>
+        </div>
+      </header>
 </template>
 
 <script setup>
 import { ref } from 'vue';
 
-const isDropdownVisible = ref(false);
+// 임시 로그인 - 로그아웃 처리
+let isUser = ref(false);
+
+const signIn = () => isUser.value = true;
+const signOut = () => isUser.value = false;
 </script>
-
-
-<style scoped>
-.logo-img {
-    width: auto; 
-    max-height: 5rem;
-}
-
-.header-nav ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    gap: 30px; /* 항목 간 간격 조정 */
-}
-
-.nav-item .nav-link {
-    font-size: 1.25rem; /* 글씨 크기 조정 */
-    color: black;
-    text-decoration: none;
-    padding: 10px;
-    position: relative;
-}
-
-.dropdown-menu {
-    position: absolute;
-    background-color: white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    z-index: 100;
-    padding: 0;
-    margin: 0;
-}
-
-.dropdown-menu a {
-    color: black;
-    text-decoration: none;
-    
-    display: block;
-    white-space: nowrap;
-}
-
-.dropdown-menu a:hover {
-    background-color: #f1f1f1;
-}
-
-.dropdown-item {
-    padding: 8px 10px; /* padding을 조정하여 간격을 좁게 */
-    font-size: 1rem;    /* 폰트 크기 조정 (필요시) */
-}
-
-
-.header-links a {
-    font-size: 1.25rem; /* 글씨 크기 조정 */
-}
-
-.header-buttons a {
-    border-radius: 5px;
-    padding: 5px 15px;
-    font-size: 1.25rem; /* 글씨 크기 조정 */
-    border: 1px solid #ccc;
-}
-
-.header-buttons .btn-outline-dark {
-    border-color: #000;
-}
-</style>

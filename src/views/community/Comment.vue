@@ -16,12 +16,13 @@
               <span class="fs-sm text-muted">2024-09-27</span>
             </div>
           </div>
-          <p class="pb-2 mb-0">
+          <p class="pb-2 mb-0 command-text-container">
             안녕하세요. 댓글입니다요~
+            <button type="button" class="btn btn-outline-danger btn-icon delete-btn-continer" @click="deleteComment" style="justify-content: center;">
+              <i class="fa fa-trash"></i>
+            </button>
           </p>
-          <button type="button" class="btn btn-outline-danger btn-icon" @click="deleteComment">
-            <i class="fa fa-trash"></i>
-          </button>
+
         </div>
       </div>
     </div>
@@ -92,4 +93,10 @@
       transform: none;
     }
   }
+  .command-text-container {
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
   </style>
