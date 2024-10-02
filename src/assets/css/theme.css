@@ -81,9 +81,10 @@
   --bs-body-color-rgb: 102, 98, 118;
   --bs-body-bg-rgb: 119, 71, 181;
   --bs-font-sans-serif: "Noto Sans", sans-serif;
+  --bs-font-spoqa-han-sans-neo: "Spoqa Han Sans Neo", sans-serif;
   --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --bs-gradient: linear-gradient(26.21deg, #5d3cf2 0%, var(--main1) 108.88%);
-  --bs-body-font-family: var(--bs-font-sans-serif);
+  --bs-body-font-family: var(--bs-font-spoqa-han-sans-neo);
   --bs-body-font-size: 1rem;
   --bs-body-font-weight: 400;
   --bs-body-line-height: 1.5;
@@ -6771,7 +6772,7 @@ fieldset:disabled .btn {
   z-index: 1080;
   display: block;
   margin: 0;
-  font-family: var(--bs-font-sans-serif);
+  font-family: var(--bs-font-spoqa-han-sans-neo);
   font-style: normal;
   font-weight: 400;
   line-height: 1.5;
