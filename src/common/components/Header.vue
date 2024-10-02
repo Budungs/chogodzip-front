@@ -16,13 +16,13 @@
                             <div class="fs-xs py-0">관심지역: 서울시 광진구</div>
                         </div>
                     </div>
-                    <a class="dropdown-item" href="#"><i class="far fa-user-circle opacity-60 me-2"/>내 프로필</a>
-                    <a class="dropdown-item" href="#"><i class="fas fa-heart opacity-60 me-2"/>관심 청약 목록</a>
-                    <a class="dropdown-item" href="#"><i class="fas fa-heart opacity-60 me-2"></i>관심 매물 목록</a>
-                    <a class="dropdown-item" href="#"><i class="fas fa-pencil-alt opacity-60 me-2"></i>작성 리뷰 목록</a>
-                    <a class="dropdown-item" href="#"><i class="fas fa-pencil-alt opacity-60 me-2"></i>등록한 매물 목록</a>
+                    <a class="dropdown-item" href="/mypage/info"><i class="far fa-user-circle opacity-60 me-2"/>내 프로필</a>
+                    <a class="dropdown-item" href="/mypage/favoriteLottos"><i class="fas fa-heart opacity-60 me-2"/>관심 청약 목록</a>
+                    <a class="dropdown-item" href="/mypage/favoriteRooms"><i class="fas fa-heart opacity-60 me-2"></i>관심 매물 목록</a>
+                    <a class="dropdown-item" href="/mypage/postReviews"><i class="fas fa-pencil-alt opacity-60 me-2"></i>작성 리뷰 목록</a>
+                    <a class="dropdown-item" href="/mypage/postRooms"><i class="fas fa-pencil-alt opacity-60 me-2"></i>등록한 매물 목록</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">방 내놓기</a>
+                    <a class="dropdown-item" href="/rooms">방 내놓기</a>
                     <a class="dropdown-item" href="#" @click="signOut">로그아웃</a>
                 </div>
             </div>
@@ -55,7 +55,7 @@
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link" href="/communitymain">커뮤니티</a>
+                        <a class="nav-link" href="/community">커뮤니티</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" aria-expanded="false">도움말</a>
