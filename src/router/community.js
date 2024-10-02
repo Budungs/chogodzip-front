@@ -1,17 +1,17 @@
 export default [
     {
-        path: "/communitymain",
-        name: "/communityMain",
+        path: "/community",
+        name: "community",
         component: () => import("@/views/community/CommunityMain.vue"),
     },
     {
-        path: "/communitywrite",
-        name: "/communityWrite",
+        path: "/community/new",
+        name: "community/new",
         component: () => import("@/views/community/CommunityWrite.vue"),
     },
     {
-        path: "/communitydetail",
-        name: "/communityDetail",
+        path: "/community/:id",
+        name: "community/:id",
         component: () => import("@/views/community/CommunityDetail.vue"),
     },
 ]
