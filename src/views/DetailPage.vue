@@ -9,19 +9,20 @@
           <li class="breadcrumb-item active">쉐어하우스</li>
         </ol>
       </nav>
-      <div class="row">
+      <div class="row" style="align-items: stretch;">
         <!-- Left column-->
-        <div class="col-md-7 mb-md-0 mb-4 pb-md-0 pb-2">
-          <div class="g-2 g-md-3 gallery" data-thumbnails="true" style="min-width: 30rem; min-height: 30rem;">
+        <div class="col-md-7 mb-md-0 mb-4" style="display: flex; flex-direction: column;">
+          <div class="g-2 g-md-3 gallery" data-thumbnails="true" style="flex-grow: 1;">
             <a class="gallery-item rounded rounded-md-3" :href="house.TITLE_IMAGE"
               data-sub-html="&lt;h6 class=&quot;fs-sm text-light&quot;&gt;Bathroom&lt;/h6&gt;">
-              <img :src="house.TITLE_IMAGE" alt="Gallery thumbnail" style="width: 100%;">
+              <img :src="house.TITLE_IMAGE" alt="Gallery thumbnail"
+                style="width: 100%; height: 100%; object-fit: cover;">
             </a>
           </div>
         </div>
         <!-- Sidebar-->
-        <aside class="col-md-5">
-          <div style="margin-left: 1rem;">
+        <aside class="col-md-5" style="display: flex; flex-direction: column;">
+          <div style="margin-left: 1rem; flex-grow: 1;">
             <p class="fs-lg">매물번호: M001147474</p>
             <h3>보증금 {{ house.DEPOSIT_MIN }}-{{ house.DEPOSIT_MAX }} / 월세 {{ house.PRICE_MIN }}-{{ house.PRICE_MAX }}
             </h3>
@@ -45,73 +46,257 @@
               <button class="s-btn"><i class="s-icon fas fa-trash-alt" style="color: #D85F5F" /></button>
             </div>
           </div>
+          <div class="market-price d-flex flex-column align-items-center">
+            <h6 class="main1 mt-3" style="margin-left: 7px; font-weight: bolder; color: #D85F5F;">
+              서울시 광진구 화양동
+            </h6>
+            <div class="row" style="width: 25rem;">
+              <div class="col text-center" style="border-right: solid 3px #D2D2D2">
+                <div style="font-weight: bold; color:black;">평균</div>
+                <div><span
+                    style="font-weight: bolder; color: #D85F5F; font-size: 1.3rem; margin-right: 0.2rem;">97</span>만원
+                </div>
+              </div>
+              <div class="col text-center" style="border-right: solid 3px #D2D2D2">
+                <div style="font-weight: bold; color:black;">평균</div>
+                <div><span
+                    style="font-weight: bolder; color: #D85F5F; font-size: 1.3rem; margin-right: 0.2rem;">97</span>만원
+                </div>
+              </div>
+              <div class="col text-center">
+                <div style="font-weight: bold; color:black;">평균</div>
+                <div><span
+                    style="font-weight: bolder; color: #D85F5F; font-size: 1.3rem; margin-right: 0.2rem;">97</span>만원
+                </div>
+              </div>
+            </div>
+          </div>
         </aside>
       </div>
-      <!-- 카카오 지도 -->
-      <div class="position-relative mt-4">
-        <DetailMap class="rounded-3" :latitude="house.LATITUDE" :longitude="house.LONGITUDE" />
-      </div>
     </section>
-    <div>
-      <div class="button-container d-flex justify-content-center" style="gap: 1rem;">
-        <button type="button" class="btn btn-1 mt-5" id="backButton">목록으로 돌아가기</button>
-        <button type="button" class="btn btn-1 mt-5" id="saveButton">관심매물 저장</button>
+  </div>
+  <div class="gray-container">
+    <div class="container">
+      <div class="white-box p-5 mb-4">
+        <div class="d-flex justify-content-center h4"><span>서울시 광진구 화양동 144-1</span><span>다세대(빌라/연립)</span></div>
+        <div class="features d-flex justify-content-between">
+          <div class="feature">
+            <img :src="ApartmentIcon" alt="Loan Icon" />
+            <span>개인화장실</span>
+          </div>
+          <div class="feature">
+            <img :src="ApartmentIcon" alt="Mortgage Icon" />
+            <span>식사제공</span>
+          </div>
+          <div class="feature">
+            <img :src="DepartmentIcon" alt="Room Icon" />
+            <span>2~3층</span>
+          </div>
+          <div class="feature">
+            <img :src="DepartmentIcon" alt="Area Icon" />
+            <span>방 12개</span>
+          </div>
+          <div class="feature">
+            <img :src="ParkingIcon" alt="Parking Icon" />
+            <span>주차가능</span>
+          </div>
+          <div class="feature">
+            <img :src="ToiletIcon" alt="Pets Icon" />
+            <span>남녀공용</span>
+          </div>
+        </div>
+
+        <div class="description">
+          <p>침대대출가능 모두가능 저융자 안전한방</p>
+          <p>복층형 원룸 단독타입(사무 등록 저융자로 공감으로, 크지 않습니다)</p>
+          <p>반려동물 협의 (고양이 가능, 장애있는 소형견입주 협의 가능)</p>
+          <p>임대인 국세, 저융세 협박 확인 (쉽게 연락가능)</p>
+          <p>임대차 보호 특별법에 의해 임차인 보호 특약 대상 많이 넣어드립니다</p>
+          <p>훌륭한 전세시장은 침착히 보증보험 가입해서 저희와 보증금 안전하게 지키세요!</p>
+          <div class="more-button main1 mt-2" type="button"><strong>소개 더보기</strong></div>
+        </div>
+      </div>
+      <div class="row white-box" style="margin: auto; width: 100%;">
+        <div class="col-md-6">
+          <div class="table1">
+            <div class="info-container">
+              <h4>매물정보</h4>
+              <table>
+                <tbody>
+                  <tr>
+                    <th>임대 유형</th>
+                    <td>월세</td>
+                  </tr>
+                  <tr>
+                    <th>보증금</th>
+                    <td>10만원</td>
+                  </tr>
+                  <tr>
+                    <th>월 이용료</th>
+                    <td>29~41만원</td>
+                  </tr>
+                  <tr>
+                    <th>관리비</th>
+                    <td>3~6만원</td>
+                  </tr>
+                  <tr>
+                    <th>이용기간<br />(계약기간)</th>
+                    <td>제한없음</td>
+                  </tr>
+                  <tr>
+                    <th>이용연령</th>
+                    <td>연령제한 없음</td>
+                  </tr>
+                  <tr>
+                    <th>방 종류</th>
+                    <td>1인실(9개) 2인실(7개)</td>
+                  </tr>
+                  <tr>
+                    <th>남녀구분</th>
+                    <td>여성전용</td>
+                  </tr>
+                  <tr>
+                    <th>기타사항</th>
+                    <td>외국인</td>
+                  </tr>
+                  <tr>
+                    <th>제공 서비스</th>
+                    <td>청소업체 현금서비스</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="table2">
+            <div class="info-container table2">
+              <h4>공용시설</h4>
+              <table>
+                <tbody>
+                  <tr>
+                    <th>난방시설</th>
+                    <td>중앙난방</td>
+                  </tr>
+                  <tr>
+                    <th>세탁시설</th>
+                    <td>세탁기 건조기 다리미</td>
+                  </tr>
+
+                  <tr>
+                    <th>주방시설</th>
+                    <td>전자레인지 전기밥솥 정수기 가스레인지</td>
+                  </tr>
+                  <tr>
+                    <th>생활시설</th>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <th>제공비품</th>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="info-container table2">
+              <h4>건물정보</h4>
+              <table>
+                <tbody>
+                  <tr>
+                    <th>건물형태</th>
+                    <td>단독주택</td>
+                  </tr>
+                  <tr>
+                    <th>주차</th>
+                    <td>가능</td>
+                  </tr>
+                  <tr>
+                    <th>엘레베이터</th>
+                    <td>없음</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="white-box mt-4 p-5">
+        <h4 class="mb-3">위치</h4>
+        <div class="fs-6 mb-3" style="color:black;">서울 관악구 봉천동</div>
+        <!-- 지하철호선 -->
+        <div class="mb-3">
+          <img :src="subway_3" width="20" height="20" />
+          <span style="margin-left:16px;" v-for="subway in house.nearSubways[0]" :key="subway.NAME">
+            {{ subway.NAME }} </span>
+        </div>
+        <div class="mb-3">
+          <i class="fas fa-school" />
+          <span style="margin-left:1rem;">숭실대학교</span>
+        </div>
+
+        <div class="position-relative mt-4">
+          <DetailMap class="rounded-3" :latitude="house.LATITUDE" :longitude="house.LONGITUDE" />
+        </div>
       </div>
     </div>
+  </div>
+  <!--ai요약-->
+  <div class="ai-card">
+    <div class="container">
+      <h3 class="title" style="margin-left:7px;">
+        <span class="emoji mb-4">👾</span>
+        <span class="h5">한눈에 보는 장단점 </span>
+      </h3>
+      <div class="toggle-bar" style="display:flex; width:100%;">
+        <button style="  flex: 1;" :class="{ active: activeTab === 'pros' }" @click="activeTab = 'pros'">장점</button>
+        <button style="  flex: 1;" :class="{ active: activeTab === 'cons' }" @click="activeTab = 'cons'">단점</button>
+      </div>
+
+      <transition name="fade" mode="out-in">
+        <div v-if="activeTab === 'pros'" key="pros" class="content">
+          <ul>
+            <li>
+              <p class="normal">지하철과 버스 정류장이 매우 가까워 대중교통 이용이 편리합니다.</p>
+              <hr>
+            </li>
+            <li>
+              <p class="normal">근처 1분 거리에 편의점이 있습니다.</p>
+              <hr>
+            </li>
+            <li>
+              <p class="normal">주차장 공간이 넓습니다.</p>
+              <hr>
+            </li>
+          </ul>
+        </div>
+        <div v-else key="cons" class="content">
+          <ul>
+            <li>
+              <p class="normal">지하철과 버스 정류장이 매우 가까워 대중교통 이용이 편리합니다.</p>
+              <hr>
+            </li>
+            <li>
+              <p class="normal">근처 1분 거리에 편의점이 있습니다.</p>
+              <hr>
+            </li>
+            <li>
+              <p class="normal">주차장 공간이 넓습니다.</p>
+              <hr>
+            </li>
+          </ul>
+        </div>
+      </transition>
+    </div>
+  </div>
+  <div class="container">
     <!-- Content-->
     <div class="mb-5">
       <!-- Tabs content-->
       <div class="tab-content pt-2">
         <!-- Reviews about you tab-->
         <div class="tab-pane fade show active" id="reviews-about-you" role="tabpanel">
-          <!--ai요약-->
-          <div class="ai-card">
-            <h3 class="title">
-              <span class="emoji mb-4">👾</span>
-              <span class="h5">한눈에 보는 장단점 </span>
-            </h3>
-            <div class="toggle-bar" style="display:flex; width:100%;">
-              <button style="  flex: 1;" :class="{ active: activeTab === 'pros' }"
-                @click="activeTab = 'pros'">장점</button>
-              <button style="  flex: 1;" :class="{ active: activeTab === 'cons' }"
-                @click="activeTab = 'cons'">단점</button>
-            </div>
 
-            <transition name="fade" mode="out-in">
-              <div v-if="activeTab === 'pros'" key="pros" class="content">
-                <ul>
-                  <li>
-                    <p class="normal">지하철과 버스 정류장이 매우 가까워 대중교통 이용이 편리합니다.</p>
-                    <hr>
-                  </li>
-                  <li>
-                    <p class="normal">근처 1분 거리에 편의점이 있습니다.</p>
-                    <hr>
-                  </li>
-                  <li>
-                    <p class="normal">주차장 공간이 넓습니다.</p>
-                    <hr>
-                  </li>
-                </ul>
-              </div>
-              <div v-else key="cons" class="content">
-                <ul>
-                  <li>
-                    <p class="normal">지하철과 버스 정류장이 매우 가까워 대중교통 이용이 편리합니다.</p>
-                    <hr>
-                  </li>
-                  <li>
-                    <p class="normal">근처 1분 거리에 편의점이 있습니다.</p>
-                    <hr>
-                  </li>
-                  <li>
-                    <p class="normal">주차장 공간이 넓습니다.</p>
-                    <hr>
-                  </li>
-                </ul>
-              </div>
-            </transition>
-          </div>
           <!-- Normal input -->
           <div class="mb-3 position-relative pt-2 pb-2">
             <input style="height: 100px; width: 100%;" class="form-control" id="input-normal" type="text">
@@ -121,7 +306,7 @@
           </div>
 
 
-          <!-- Review-->
+          <!-- 리뷰 -->
           <div class="mb-4 pb-4 border-bottom" v-for="review in 3" :key="review">
             <div class="d-flex justify-content-between">
               <div class="d-flex align-items-center pe-2"><img class="rounded-circle me-1" :src="house.TITLE_IMAGE"
@@ -135,7 +320,7 @@
 
           </div>
 
-          <!-- Pagination-->
+          <!-- 페이지네이션 -->
           <nav class="mt-2" aria-label="Reviews pagination">
             <ul class="pagination">
               <li class="page-item d-sm-none"><span class="page-link page-link-static">1 /
@@ -151,7 +336,6 @@
             </ul>
           </nav>
         </div>
-
       </div>
     </div>
   </div>
@@ -165,6 +349,10 @@ import mapImage from "@/assets/img/map.png";
 import DetailMap from '@/common/components/DetailMap.vue';
 import Kakao from '@/assets/img/Kakao.png';
 import subway_3 from '@/assets/img/subway_3.png';
+import ApartmentIcon from '@/assets/img/detail/Apartment.png';
+import DepartmentIcon from '@/assets/img/detail/Department.png';
+import ParkingIcon from '@/assets/img/detail/Parking.png';
+import ToiletIcon from '@/assets/img/detail/Toilet.png';
 
 export default {
   components: {
@@ -187,6 +375,10 @@ export default {
       mapImage,
       Kakao,
       subway_3,
+      ApartmentIcon,
+      DepartmentIcon,
+      ParkingIcon,
+      ToiletIcon,
       house: {
         ROOM_CNT: "39",
         nearSubways: [
@@ -224,6 +416,21 @@ export default {
 </script>
 
 <style scoped>
+.gray-container {
+  background: #EDEDED;
+  margin-top: 5rem;
+  padding: 3rem;
+  padding-top: 7rem;
+  padding-bottom: 7rem;
+}
+
+.market-price {
+  margin-top: 1rem;
+  border-radius: 20px;
+  background: #F1F1F1;
+  height: 8.5rem;
+}
+
 .s-btn {
   background: white;
   border: 1px solid #ddd;
@@ -236,26 +443,6 @@ export default {
 
 .container {
   font-family: 'Spoqa Han Sans Neo';
-}
-
-.button-container {
-  gap: 30px;
-  justify-content: center;
-  margin-bottom: 4rem;
-}
-
-
-
-#backButton {
-  background-color: #d3d3d3;
-  color: #666666;
-  width: 250px;
-}
-
-#saveButton {
-  background-color: #6cc7c1;
-  color: white;
-  width: 250px;
 }
 
 .border-20 {
@@ -294,10 +481,11 @@ export default {
 
 .ai-card {
   background-color: #f7f2fc;
-  padding: 35px;
+  padding-top: 4rem;
+  padding-bottom: 4rem;
   border-radius: 8px;
   width: 100%;
-  margin-bottom: 12px;
+  margin-bottom: 2rem;
 }
 
 .title {
@@ -500,19 +688,50 @@ button.active {
   }
 }
 
-#chat-btn {
-  margin: 5px 0px;
-  font-size: 25px;
-  font-weight: 700;
-  padding: 0px;
-}
-
-#pay-btn {
-  margin: 5px 0px;
-  padding: 0px;
-}
-
 .breadcrumb-item+.breadcrumb-item::before {
   content: ">";
+}
+
+.features {
+  padding: 1.5rem 1rem 1.5rem 1rem;
+  border-top: solid 1px #C5C5C5;
+  border-bottom: solid 1px #C5C5C5;
+  margin: 3rem auto 3rem;
+}
+
+.features img {
+  margin-right: 0.3rem;
+}
+
+.description {
+  text-align: center;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #cdcad45f;
+}
+
+td {
+  height: 3.5rem;
+  padding-left: 1rem;
+  border-bottom: 1px solid #cdcad45f;
+}
+
+th {
+  background: #F5F6F7;
+  padding-left: 1rem;
+  border-right: 1px solid #cdcad45f;
+  border-bottom: 1px solid #cdcad45f
+}
+
+
+.info-container {
+  padding: 2rem;
+}
+
+.white-box {
+  background: white;
 }
 </style>
