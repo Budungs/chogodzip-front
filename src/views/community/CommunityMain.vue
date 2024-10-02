@@ -14,6 +14,7 @@ import CommunitySearch from '@/views/community/CommunitySearch.vue';
 </script>
 
 <style scoped>
+
 .in-background {
     background-color: #E6E6FA;
 }

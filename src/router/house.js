@@ -21,15 +21,9 @@ export default [
   },
 
   {
-    path: "/houses/sharehouses/info/:id",
+    path: "/houses/sharehouses/:id",
     name: "DetailPage",
     component: () => import("../views/DetailPage.vue"),
-  },
-
-  {
-    path: "/houses/sharehouses/reviews/:id",
-    name: "ReviewPage",
-    component: () => import("../views/Review.vue"),
   },
 ];
 
