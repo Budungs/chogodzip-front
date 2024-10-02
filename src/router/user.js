@@ -2,26 +2,26 @@
 export default [
     // AddInfo 페이지로 이동
     {
-      path: '/addinfo',
-      name: 'addInfo',
+      path: '/users/details',
+      name: 'users/details',  
       component: () => import('../views/login_regist/AddInfo.vue'),
     },
     // RegistUser 페이지로 이동
     {
-      path: '/registuser',
-      name: 'registUser',
+      path: '/users',
+      name: 'users',
       component: () => import('../views/login_regist/RegistUser.vue'),
     },
     // RegistUser 페이지로 이동
     {
-      path: '/registcomplete',
-      name: 'registComplete',
+      path: '/users/welcome',
+      name: 'users/welcome',
       component: () => import('../views/login_regist/RegistComplete.vue'),
     },
     // login 페이지로 이동
     {
       path: '/login',
-      name: 'kakaoLogin',
+      name: 'login',
       component: () => import('../views/login_regist/KakaoLogin.vue'),
     },
   ];
