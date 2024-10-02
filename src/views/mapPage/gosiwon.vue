@@ -19,10 +19,12 @@
           <button type="submit">검색</button>
         </form>
       
-        <!-- Dropdown for search results -->
         <div class="search-results-dropdown" v-if="showDropdown && searchResults.length">
+          <div class="dropdown-header">
+            <button @click="closeDropdown" class="close-btn">닫기</button>
+          </div>
           <ul>
-            <li v-for="result in searchResults" :key="result.id">
+            <li v-for="result in searchResults" :key="result.id" @click="selectResult(result)">
               {{ result.name }} ({{ result.type }})
             </li>
           </ul>
@@ -125,7 +127,6 @@
         <div class="list-header">
           <p>매물 목록</p>
     
-          <!-- Sorting Dropdown -->
           <div class="sort-dropdown">
             <select v-model="selectedSort" @change="sortProperties">
               <option value="distance">거리순</option>
@@ -214,7 +215,7 @@ import markerImageSrc from '@/assets/img/room/house1.png'; // 마커 이미지
 // Search query and results
 const searchQuery = ref('');
 const searchResults = ref([]);
-const showDropdown = ref(false); // Control visibility of dropdown
+const showDropdown = ref(false); 
 
 // Sample data for subway stations and universities
 const allLocations = [
@@ -229,7 +230,7 @@ const allLocations = [
 const performSearch = () => {
   const query = searchQuery.value.trim().toLowerCase();
 
-  console.log('Search Query:', query);  // Log search query for debugging
+  console.log('Search Query:', query);
 
   searchResults.value = allLocations.filter(location =>
     location.name.toLowerCase().includes(query)
@@ -237,7 +238,18 @@ const performSearch = () => {
   
   // Show dropdown if there are results
   showDropdown.value = searchResults.value.length > 0;
-  console.log('Filtered Results:', searchResults.value);  // Log filtered results for debugging
+  console.log('Filtered Results:', searchResults.value);  
+};
+
+const selectResult = (result) => {
+  console.log('Selected:', result);
+  searchQuery.value = result.name;  // Update the search input with the selected result
+  showDropdown.value = false;  // Hide the dropdown after selecting an item
+};
+
+
+const closeDropdown = () => {
+  showDropdown.value = false;
 };
 
 // 탭 상태 관리
@@ -423,6 +435,8 @@ const districtCoordinates = {
   중구: { lat: 37.5637, lng: 126.9973 },
   중랑구: { lat: 37.6063, lng: 127.0923 },
 };
+
+const selectedSort = ref('distance');
 
 // 구 선택 처리
 const setDistrict = (district) => {
