@@ -169,8 +169,6 @@
       <!-- Kakao 지도 -->
       <div id="map" class="map">
         <div class="map-overlay">
-          <!-- <div class="location-filters"> -->
-            <!-- 시/도 선택 -->
             <div class="btn-group">
               <button type="button" class="btn btn-filter">
                 {{ selectedCity }}
@@ -297,7 +295,7 @@ onMounted(() => {
   });
 
   const markerData = [
-    { lat: 37.5665, lng: 126.9780, title: 'Marker 1' },
+    { lat: 37.5690693304177, lng: 126.988583709349, title: 'Marker 1' },
     { lat: 37.5655, lng: 126.9760, title: 'Marker 2' },
     { lat: 37.5645, lng: 126.9750, title: 'Marker 3' },
   ];

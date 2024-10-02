@@ -87,7 +87,7 @@
   border-radius: 8px;
   padding: 20px;
   overflow-y: auto;
-  height: 80%;
+  height: 60%;
   scrollbar-width: thin;
   scrollbar-color: #6b2e9b #f9f9f9;
 }
@@ -98,7 +98,7 @@
 
 .map {
   width: 75%;
-  height: 80%;
+  height: 60%;
   border-radius: 8px;
 }
 
@@ -391,4 +391,31 @@ hr {
   border-radius: 8px;
   background-color: white;
   cursor: pointer;
+}
+
+.search-results-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  z-index: 10;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.search-results-dropdown ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.search-results-dropdown li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.search-results-dropdown li:hover {
+  background-color: #f0f0f0;
 }
