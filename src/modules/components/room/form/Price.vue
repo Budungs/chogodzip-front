@@ -3,17 +3,19 @@
         <h2 class="form-label pt-4 pb-0">가격</h2>
 
         <!-- 월세 -->
-        <div class="form-label pt-3 pb-1">임대 가격(1개월)<span class="text-danger">*</span></div>
-        <div class="d-flex align-items-center pb-4">
+        <div v-if="rentalType === 'monthly'" class="form-label pt-3 pb-1">임대 가격(1개월)<span class="text-danger">*</span></div>
+        <div v-if="rentalType === 'monthly'" class="d-flex align-items-center pb-4">
             <div class="w-50 pe-2">
-                <div class="input-group"><span class="input-group-text fs-base">₩</span>
-                <input class="form-control range-slider-value-min" type="text">
+                <div class="input-group">
+                    <input class="form-control range-slider-value-min" type="text">
+                    <span class="input-group-text fs-base">만원</span>
                 </div>
             </div>
             <div class="text-muted">&mdash;</div>
             <div class="w-50 ps-2">
-                <div class="input-group"><span class="input-group-text fs-base">₩</span>
-                <input class="form-control range-slider-value-max" type="text">
+                <div class="input-group">
+                    <input class="form-control range-slider-value-max" type="text">
+                    <span class="input-group-text fs-base">만원</span>
                 </div>
             </div>
         </div>
@@ -22,14 +24,16 @@
         <div class="form-label pt-3 pb-1">보증금<span class="text-danger">*</span></div>
         <div class="d-flex align-items-center g-2">
             <div class="w-50 pe-2">
-                <div class="input-group"><span class="input-group-text fs-base">₩</span>
-                <input class="form-control range-slider-value-min" type="text" v-model="depositFeeMin" :disabled="isNoDepositFee">
+                <div class="input-group">
+                    <input class="form-control range-slider-value-min" type="text" v-model="depositFeeMin">
+                    <span class="input-group-text fs-base">만원</span>
                 </div>
             </div>
             <div class="text-muted">&mdash;</div>
             <div class="w-50 ps-2">
-                <div class="input-group"><span class="input-group-text fs-base">₩</span>
-                <input class="form-control range-slider-value-max" type="text" v-model="depositFeeMax" :disabled="isNoDepositFee">
+                <div class="input-group">
+                    <input class="form-control range-slider-value-max" type="text" v-model="depositFeeMax">
+                    <span class="input-group-text fs-base">만원</span>
                 </div>
             </div>
         </div>
@@ -43,15 +47,15 @@
             <div class="d-flex align-items-center g-2">
                 <div class="w-50 pe-2">
                     <div class="input-group">
-                        <span class="input-group-text fs-base">₩</span>
                         <input class="form-control range-slider-value-min" type="text" v-model="maintenanceFeeMin" :disabled="isNoMaintenanceFee">
+                        <span class="input-group-text fs-base">만원</span>
                     </div>
                 </div>
                 <div class="text-muted">&mdash;</div>
                 <div class="w-50 ps-2">
                     <div class="input-group">
-                        <span class="input-group-text fs-base">₩</span>
                         <input class="form-control range-slider-value-max" type="text" v-model="maintenanceFeeMax" :disabled="isNoMaintenanceFee">
+                        <span class="input-group-text fs-base">만원</span>
                     </div>
                 </div>
             </div>
@@ -74,4 +78,12 @@ const isNoDepositFee = ref(false);
 const maintenanceFeeMin = ref('');
 const maintenanceFeeMax = ref('');
 const isNoMaintenanceFee = ref(false);
+
+//월세or전세
+const props = defineProps({
+    rentalType: {
+        type: String,
+        required: true,
+    },
+})
 </script>

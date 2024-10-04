@@ -29,8 +29,8 @@
           <div class="row">
             <div class="col-sm-6 mb-3">
               <label class="form-label" for="ap-category">매물 유형 <span class="text-danger">*</span></label>
-              <select class="form-select" id="ap-category" required>
-                <option value="" disabled selected>매물 유형을 선택해주세요.</option>
+              <select class="form-select" id="ap-category" required v-model="category">
+                <option value="" disabled>매물 유형을 선택해주세요.</option>
                 <option value="gosiwon">고시원</option>
                 <option value="jachiroom">자취방</option>
                 <option value="sharehouse">공유주거공간</option>
@@ -42,10 +42,8 @@
 
 
         <!-- 세부 폼 작성: 매물 유형에 따라 표시 컴포넌트 변경 -->
-        <MultiForm />
-        
-
-
+        <MultiForm v-if="category === 'gosiwon' || category === 'sharehouse'" />
+        <SingleForm v-if="category === 'jachiroom'" />
 
       </div>
 
@@ -82,6 +80,12 @@
 </template>
 
 <script setup>
+import { ref, watch } from 'vue';
 import MultiForm from '@/modules/components/room/form/multiple/MultiForm.vue';
-</script>
+import SingleForm from '@/modules/components/room/form/single/SingleForm.vue';
 
+const category = ref('');
+watch(category, (val) => {
+  console.log('category value:', val);
+});
+</script>

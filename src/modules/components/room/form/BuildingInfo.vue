@@ -5,18 +5,22 @@
         <div class="row">
 
             <div class="col-sm-6 mb-3 w-100">
-                <div class="form-label pt-3 pb-2 fw-bold">건물형태<span class="text-danger">*</span></div>
+                <div class="form-label pt-3 pb-2 fw-bold">건축물 구분<span class="text-danger">*</span></div>
                 <div class="container row w-100">
                     <div class="form-check col-lg-3 justify-content-around">
                         <input class="form-check-input" type="radio" id="period-one" name="ap-business-type">
                         <label class="form-check-label" for="period-one">상가건물</label>
+                    </div>
+                    <div class="form-check col-lg-3 justify-content-around">
+                        <input class="form-check-input" type="radio" id="period-one" name="ap-business-type">
+                        <label class="form-check-label" for="period-one">단독주택</label>
                     </div>
                 </div>
             </div>
 
 
             <div class="col-sm-6 mb-3 w-100">
-                <div class="form-label pt-3 pb-2 fw-bold">주차여부<span class="text-danger">*</span></div>
+                <div class="form-label pt-3 pb-2 fw-bold">주차여부</div>
                 <div class="container row w-100">
                     <div class="form-check col-lg-6 justify-content-around">
                         <input class="form-check-input" type="radio" id="period-one" name="ap-business-type">
@@ -30,7 +34,7 @@
             </div>
 
             <div class="col-sm-6 mb-3 w-100">
-                <div class="form-label pt-3 pb-2 fw-bold">엘리베이터<span class="text-danger">*</span></div>
+                <div class="form-label pt-3 pb-2 fw-bold">엘리베이터</div>
                 <div class="container row w-100">
                     <div class="form-check col-lg-6 justify-content-around">
                         <input class="form-check-input" type="radio" id="period-one" name="ap-business-type">

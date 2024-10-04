@@ -24,6 +24,10 @@
                       <input class="form-check-input" type="checkbox" id="wifi">
                       <label class="form-check-label" for="wifi">세탁기</label>
                     </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="wifi">
+                      <label class="form-check-label" for="wifi">건조기</label>
+                    </div>
                   </div>
                   <div class="col-sm-4">
                     <div class="form-check">
@@ -34,7 +38,7 @@
                   <div class="col-sm-4">
                     <div class="form-check">
                       <input class="form-check-input" type="checkbox" id="wifi">
-                      <label class="form-check-label" for="wifi">값 추가</label>
+                      <label class="form-check-label" for="wifi">다리미</label>
                     </div>
                   </div>
                 </div>
@@ -89,6 +93,20 @@
                     <div class="form-check">
                       <input class="form-check-input" type="checkbox" id="wifi">
                       <label class="form-check-label" for="wifi">비데</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="wifi">
+                      <label class="form-check-label" for="wifi">드라이기</label>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="wifi">
+                      <label class="form-check-label" for="wifi">공용에어컨</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="wifi">
+                      <label class="form-check-label" for="wifi">공용화장실</label>
                     </div>
                   </div>
                 </div>
@@ -148,6 +166,22 @@
                     <div class="form-check">
                       <input class="form-check-input" type="checkbox" id="wifi">
                       <label class="form-check-label" for="wifi">라면</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="wifi">
+                      <label class="form-check-label" for="wifi">조미료</label>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="wifi">
+                      <label class="form-check-label" for="wifi">세탁세제</label>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="wifi">
+                      <label class="form-check-label" for="wifi">휴지</label>
                     </div>
                   </div>
                 </div>

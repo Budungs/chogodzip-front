@@ -6,79 +6,107 @@
             <!-- 제목 & 주소-->
             <NameAddress />
 
-            <!-- 계약 최소 기간 -->
+            <!-- 임대 유형 -->
             <div class="col-sm-6 mb-3 w-100">
-                <div class="form-label pt-3 pb-2 fw-bold">계약 최소 기간<span class="text-danger">*</span></div>
+                <div class="form-label pt-3 pb-2 fw-bold">임대 유형<span class="text-danger">*</span></div>
                 <div class="container row w-100">
                     <div class="form-check col-lg-3 justify-content-around">
-                        <input class="form-check-input" type="radio" id="period-one" name="ap-business-type">
-                        <label class="form-check-label" for="period-one">1개월</label>
+                        <input class="form-check-input" type="radio" id="type-monthly" name="ap-business-type" value="monthly" v-model="rentalType">
+                        <label class="form-check-label" for="type-monthly">월세</label>
                     </div>
                     <div class="form-check col-lg-3">
-                        <input class="form-check-input" type="radio" id="period-two" name="ap-business-type">
-                        <label class="form-check-label" for="period-two">2개월</label>
-                    </div>
-                    <div class="form-check col-lg-3">
-                        <input class="form-check-input" type="radio" id="period-three" name="ap-business-type">
-                        <label class="form-check-label" for="period-three">3개월</label>
-                    </div>
-                    <div class="form-check col-lg-3">
-                        <input class="form-check-input" type="radio" id="period-four" name="ap-business-type">
-                        <label class="form-check-label" for="period-four">4개월 이상</label>
+                        <input class="form-check-input" type="radio" id="type-jeonse" name="ap-business-type" value="jeonse" v-model="rentalType">
+                        <label class="form-check-label" for="type-jeonse">전세</label>
                     </div>
                 </div>
             </div>
 
             <!-- 계약금 -->
-            <Price />
+            <Price :rentalType="rentalType" />
 
-            <!-- 이용 가능 연령 -->
+            <!-- 최소 계약 기간 -->
+            <label class="form-label fw-bold" for="ap-category">최소 계약 기간<span class="text-danger">*</span></label>
+            <div class="input-group mb-3">
+                <input class="form-control range-slider-value-max" type="number" required>
+                <span class="input-group-text fs-base">개월</span>
+            </div>
+          
+            <!-- 해당 층 / 전체 층 -->
+            <div class="row">
+                <div class="col-sm-6 mb-3">
+                  <label class="form-label fw-bold" for="ap-category">해당 층<span class="text-danger">*</span></label>
+                  <input class="form-control" type="number" id="ap-area" min="-1" placeholder="매물이 위치한 층을 입력하세요" required>
+                </div>
+                <div class="col-sm-6 mb-3">
+                  <label class="form-label fw-bold" for="ap-type">건물 전체 층 수<span class="text-danger">*</span></label>
+                  <input class="form-control" type="number" id="ap-area" min="-1" placeholder="건물 전체 층 수를 입력하세요" required>
+                </div>
+            </div>
+
+            <!-- 방 구조 -->
             <div class="mb-3">
-                <div class="mb-4">
-                    <label class="form-label fw-bold" for="ap-area">이용 가능 연령<span class="text-danger">*</span></label>
-                    <input class="form-control" type="number" id="ap-area" min="20" placeholder="Enter your area" value="20" required :disabled="isNoLimitAge">
-                    <div class="form-check d-flex justify-content-end pt-2 fs-sm">
-                        <input class="form-check-input" type="checkbox" id="no-age-limit" name="no-age-limit" v-model="isNoLimitAge">
-                        <label class="form-check-label px-2" for="no-age-limit">연령 제한 없음</label>
+              <label class="form-label fw-bold" for="ap-category">방 구조<span class="text-danger">*</span></label>
+              <select class="form-select" id="ap-category" required>
+                <option value="" disabled hidden>방 구조를 선택하세요</option>
+                <option value="Rent">원룸(오픈형)</option>
+                <option value="Sell">원룸(분리형)</option>
+                <option value="Sell">원룸(복층형)</option>
+                <option value="Sell">투룸</option>
+                <option value="Sell">투룸 이상</option>
+              </select>
+            </div>
+
+            <!-- 방 수 / 욕실 수 -->
+            <div class="row">
+                <div class="col-sm-6 mb-3">
+                  <label class="form-label fw-bold" for="ap-category">방 개수<span class="text-danger">*</span></label>
+                  <input class="form-control" type="number" id="ap-area" min="1" placeholder="방 개수를 입력하세요" required>
+                </div>
+                <div class="col-sm-6 mb-3">
+                  <label class="form-label fw-bold" for="ap-type">욕실 개수<span class="text-danger">*</span></label>
+                  <input class="form-control" type="number" id="ap-area" min="1" placeholder="욕실 개수를 입력하세요" required>
+                </div>
+            </div>
+
+            <!-- 전용 면적 / 공급 면적 -->
+            <div class="form-label pt-3 pb-1 fw-bold">면적<span class="text-danger">*</span></div>
+            <div class="d-flex align-items-center pb-4">
+                <div class="w-50 pe-2">
+                    <label for="supply-area">공급 면적</label>
+                    <div class="input-group">
+                        <input class="form-control range-slider-value-min" id="supply-area" type="text">
+                        <span class="input-group-text fs-base">m²</span>
+                    </div>
+                </div>
+                <div class="w-50 ps-2">
+                  <label for="use-area">전용 면적</label>
+                    <div class="input-group">
+                        <input class="form-control range-slider-value-max" id="use-area" type="text">
+                        <span class="input-group-text fs-base">m²</span>
                     </div>
                 </div>
             </div>
 
-
-            <!-- 쉐어하우스: 방 종류 -->
-            <div v-if="category" class="mb-3">
-                <div class="mb-4">
-                    <label class="form-label fw-bold" for="ap-area">이용 가능 연령<span class="text-danger">*</span></label>
-                    <input class="form-control" type="number" id="ap-area" min="20" placeholder="Enter your area" value="20" required :disabled="isNoLimitAge">
-                    <div class="form-check d-flex justify-content-end pt-2 fs-sm">
-                        <input class="form-check-input" type="checkbox" id="no-age-limit" name="no-age-limit" v-model="isNoLimitAge">
-                        <label class="form-check-label px-2" for="no-age-limit">연령 제한 없음</label>
-                    </div>
-                </div>
+            <!-- 주실 방향 -->
+            <div class="mb-3">
+              <label class="form-label fw-bold" for="ap-category">주실 방향<span class="text-danger">*</span></label>
+              <select class="form-select" id="ap-category" required>
+                <option value="" disabled hidden>주실 방향을 선택하세요</option>
+                <option value="Rent">남향</option>
+                <option value="Sell">북향</option>
+                <option value="Sell">동향</option>
+                <option value="Sell">서향</option>
+              </select>
             </div>
-            
 
-            <!-- 남녀 구분 -->
-            <div class="col-sm-6 mb-5 w-100 ">
-                <div class="form-label pt-3 pb-2 fw-bold">성별구분<span class="text-danger">*</span></div>
-                <div class="container row w-100">
-                    <div class="form-check col-lg-3 justify-content-around">
-                        <input class="form-check-input" type="radio" id="period-one" name="ap-business-type">
-                        <label class="form-check-label" for="period-one">구분 없음</label>
-                    </div>
-                    <div class="form-check col-lg-3">
-                        <input class="form-check-input" type="radio" id="period-two" name="ap-business-type">
-                        <label class="form-check-label" for="period-two">남녀 분리</label>
-                    </div>
-                    <div class="form-check col-lg-3">
-                        <input class="form-check-input" type="radio" id="period-three" name="ap-business-type">
-                        <label class="form-check-label" for="period-three">여성 전용</label>
-                    </div>
-                    <div class="form-check col-lg-3">
-                        <input class="form-check-input" type="radio" id="period-four" name="ap-business-type">
-                        <label class="form-check-label" for="period-four">남성 전용</label>
-                    </div>
-                </div>
+            <!-- 입주가능일 -->
+            <label class="form-label fw-bold">입주가능일<span class="text-danger">*</span></label>
+            <div class="input-group">
+              <input class="form-control rounded pe-5" type="date" placeholder="입주가능일을 선택하세요" :disabled="canMoveInNow"/>
+            </div>
+            <div class="form-check d-flex justify-content-end pt-2 fs-sm">
+              <input class="form-check-input" type="checkbox" id="no-deposit" name="no-deposit-fee" v-model="canMoveInNow">
+              <label class="form-check-label px-2" for="no-deposit-fee">즉시 입주 가능(협의 가능)</label>
             </div>
 
             <!-- 개인시설 -->
@@ -205,4 +233,6 @@ import Price from '../Price.vue';
 import NameAddress from '../NameAddress.vue';
 
 const isNoLimitAge = ref(false);
+const rentalType = ref('');
+const canMoveInNow = ref(false);
 </script>
