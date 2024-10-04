@@ -55,7 +55,7 @@
   
         <!-- summernote -->
         <div class="summernote-container">
-          <div id="summernote"><p>여기에 입력해주세요.</p></div>
+          <div id="summernote"><p>오늘의 일기 : 헤더의 배경색이 갑자기 회색으로 바뀌었다. 무려 성인 남성 3명과 여성 1명이 붙어서 이 문제를 해결하려고 했다. 결국 해결이 되었다! 바로바로바로 #app 에 background-color을 white로 고치는 것이었다. 자살할 뻔 했다.</p></div>
         </div>
         
         <br><br><br>
