@@ -8,12 +8,12 @@
         @click.prevent="setTab('gosiwon')"
       >고시원</a>
       <div class="search-form">
-        <form class="search-bar" @submit.prevent="performSearch">
+        <form class="search-bar" @submit.prevent="handleSearch">
           <input
             type="text"
             v-model="searchQuery"
             name="query"
-            placeholder="궁금한 지역을 검색하세요"
+            placeholder="궁금한 역명이나 대학교를 검색하세요"
             @input="performSearch" 
           />
           <button type="submit">검색</button>
@@ -25,7 +25,7 @@
           </div>
           <ul>
             <li v-for="result in searchResults" :key="result.id" @click="selectResult(result)">
-              {{ result.name }} ({{ result.type }})
+              {{ result.universityName }} ({{ result.type }})
             </li>
           </ul>
         </div>
@@ -211,42 +211,74 @@
 import { ref, reactive, computed, onMounted } from 'vue';
 import api from '@/api/mapApi'; // 고시원 데이터를 가져올 api 파일
 import markerImageSrc from '@/assets/img/room/house1.png'; // 마커 이미지
+import searchApi from '@/api/searchApi';
 
 // Search query and results
 const searchQuery = ref('');
 const searchResults = ref([]);
 const showDropdown = ref(false); 
 
-// Sample data for subway stations and universities
-const allLocations = [
-  { id: 1, name: '강남역', type: '지하철' },
-  { id: 2, name: '서울대입구역', type: '지하철' },
-  { id: 3, name: '연세대학교', type: '학교' },
-  { id: 4, name: '고려대학교', type: '학교' },
-  { id: 5, name: '홍대입구역', type: '지하철' },
-];
+// 백엔드에서 받은 대학 데이터를 저장할 상태
+const universityData = ref([]);
 
-// Function to filter search results based on query
+// 검색 로직 (백엔드에서 받은 대학 데이터를 활용하여 필터링)
 const performSearch = () => {
   const query = searchQuery.value.trim().toLowerCase();
+  if (!query) {
+    searchResults.value = [];
+    showDropdown.value = false;
+    return;
+  }
 
-  console.log('Search Query:', query);
-
-  searchResults.value = allLocations.filter(location =>
-    location.name.toLowerCase().includes(query)
+  searchResults.value = universityData.value.filter((university) =>
+    university.universityName.toLowerCase().includes(query)
   );
-  
-  // Show dropdown if there are results
   showDropdown.value = searchResults.value.length > 0;
-  console.log('Filtered Results:', searchResults.value);  
 };
 
+// 검색 결과 선택 시 검색창에 대학 이름 입력 및 드롭다운 닫기
 const selectResult = (result) => {
-  console.log('Selected:', result);
-  searchQuery.value = result.name;  // Update the search input with the selected result
-  showDropdown.value = false;  // Hide the dropdown after selecting an item
+  searchQuery.value = result.universityName;
+  console.log(searchQuery.value);
+ 
+  showDropdown.value = false; // 드롭다운 닫기
+  handleSearch();
 };
 
+const fetchUniversityData = async () => {
+  try {
+    const data = await searchApi.getUniversityList(); // API 호출 (대학 데이터 가져오기)
+    universityData.value = data; // 받아온 대학 데이터를 상태에 저장
+    console.log('Fetched University Data:', universityData.value);
+  } catch (error) {
+    console.error('대학 데이터를 가져오는 중 오류 발생:', error);
+  }
+};
+
+
+
+const handleSearch = async () => {
+  
+    console.log('searchQuery.value:', searchQuery.value); // 검색어 출력
+    const data = await searchApi.getOneUniversity({name : searchQuery.value });
+    console.log('Fetched University Data:', data);
+
+    if (data && data.universityLat && data.universityLong) {
+      // 대학의 위도 및 경도를 사용하여 새로운 지도 중심 좌표 설정
+      const newCenter = new kakao.maps.LatLng(data.universityLat, data.universityLong);
+      console.log('New center:', newCenter); // 새로운 중심 좌표 출력
+      
+      if (map.value) {
+        map.value.setCenter(newCenter); // 지도 중심 이동
+        console.log('Map center moved to:', newCenter);
+      } else {
+        console.error('Map is not initialized.');
+      }
+    } else {
+      console.error('해당 대학을 찾을 수 없습니다.');
+    }
+ 
+};
 
 const closeDropdown = () => {
   showDropdown.value = false;
@@ -254,7 +286,6 @@ const closeDropdown = () => {
 
 // 탭 상태 관리
 const activeTab = ref('gosiwon');
-const showFilters = ref(true);
 
 // 고시원 매물 데이터 설정
 const propertiesData = ref([]); // API로부터 데이터를 받을 상태
@@ -352,6 +383,8 @@ const fetchGosiwonData = async (lat, lng) => {
 
 // 컴포넌트 마운트 후 지도 초기화 및 고시원 리스트 불러오기
 onMounted(async () => {
+  // 대학 데이터를 받아오는 함수 (백엔드 API 사용)
+
   const container = document.getElementById('map');
   const options = {
     center: new kakao.maps.LatLng(37.5665, 126.9780), // 초기 지도 중심 좌표 (서울 기준)
@@ -370,6 +403,8 @@ onMounted(async () => {
     const center = map.value.getCenter(); // 드래그 후 중심 좌표
     await fetchGosiwonData(center.getLat(), center.getLng()); // 중심 좌표로부터 고시원 데이터 가져오기
   });
+
+  await fetchUniversityData();
 });
 
 // 상태 관리
