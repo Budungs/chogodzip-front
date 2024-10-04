@@ -40,9 +40,7 @@
         </section>
 
         <!-- 세부 폼 작성: 매물 유형에 따라 표시 컴포넌트 변경 -->
-        <MultiForm v-if="category === 'gosiwon' || category === 'sharehouse'" :category="category" />
-        <SingleForm v-if="category === 'jachiroom'" :category="category" />
-
+        <RoomPostForm v-if="category !== ''" :category="category" />
       </div>
 
       <!-- Progress of completion-->
@@ -78,12 +76,8 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
-import MultiForm from '@/modules/components/room/form/multiple/MultiForm.vue';
-import SingleForm from '@/modules/components/room/form/single/SingleForm.vue';
+import { ref } from 'vue';
+import RoomPostForm from '@/modules/components/room/form/RoomPostForm.vue';
 
 const category = ref('');
-watch(category, (val) => {
-  console.log('category value:', val);
-});
 </script>

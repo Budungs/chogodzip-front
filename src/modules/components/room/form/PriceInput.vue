@@ -3,8 +3,8 @@
         <h2 class="form-label pt-4 pb-0">가격</h2>
 
         <!-- 월세 -->
-        <div v-if="rentalType === 'monthly'" class="form-label pt-3 pb-1">임대 가격(1개월)<span class="text-danger">*</span></div>
-        <div v-if="rentalType === 'monthly'" class="d-flex align-items-center pb-4">
+        <div v-if="(rentalType === 'monthly' && category === 'jachiroom' ) || category !== 'jachiroom'"  class="form-label pt-3 pb-1">임대 가격(1개월)<span class="text-danger">*</span></div>
+        <div v-if="(rentalType === 'monthly' && category === 'jachiroom' ) || category !== 'jachiroom'" class="d-flex align-items-center pb-4">
             <div class="w-50 pe-2">
                 <div class="input-group">
                     <input class="form-control range-slider-value-min" type="text">
@@ -82,6 +82,10 @@ const isNoMaintenanceFee = ref(false);
 //월세or전세
 const props = defineProps({
     rentalType: {
+        type: String,
+        required: true,
+    },
+    category: {
         type: String,
         required: true,
     },
