@@ -42,7 +42,8 @@
 
 
         <!-- 세부 폼 작성: 매물 유형에 따라 표시 컴포넌트 변경 -->
-        <GosiwonForm />
+        <MultiForm />
+        
 
 
 
@@ -58,13 +59,20 @@
           <ul class="list-unstyled">
             <li class="d-flex align-items-center">
               <i class="far fa-check-circle text-primary me-2"/>
-              <a class="nav-link fw-normal ps-1 p-0" href="#room-category" data-scroll data-scroll-offset="20">매물 유형</a>
+              <a class="nav-link fw-normal ps-1 p-0" href="#room-category" data-scroll data-scroll-offset="25">매물 유형</a>
             </li>
-            <li class="d-flex align-items-center"><i class="far fa-check-circle text-primary me-2"></i><a class="nav-link fw-normal ps-1 p-0" href="#location" data-scroll data-scroll-offset="20">Location</a></li>
-            <li class="d-flex align-items-center"><i class="far fa-check-circle text-primary me-2"></i><a class="nav-link fw-normal ps-1 p-0" href="#details" data-scroll data-scroll-offset="20">Property details</a></li>
-            <li class="d-flex align-items-center"><i class="far fa-check-circle text-muted me-2"></i><a class="nav-link fw-normal ps-1 p-0" href="#price" data-scroll data-scroll-offset="20">Price</a></li>
-            <li class="d-flex align-items-center"><i class="far fa-check-circle text-muted me-2"></i><a class="nav-link fw-normal ps-1 p-0" href="#photos" data-scroll data-scroll-offset="20">Photos / video</a></li>
-            <li class="d-flex align-items-center"><i class="far fa-check-circle text-primary me-2"></i><a class="nav-link fw-normal ps-1 p-0" href="#contacts" data-scroll data-scroll-offset="20">Contacts</a></li>
+            <li class="d-flex align-items-center">
+              <i class="far fa-check-circle text-primary me-2"></i>
+              <a class="nav-link fw-normal ps-1 p-0" href="#location" data-scroll data-scroll-offset="25">이용 정보</a>
+            </li>
+            <li class="d-flex align-items-center">
+              <i class="far fa-check-circle text-primary me-2"></i>
+              <a class="nav-link fw-normal ps-1 p-0" href="#location" data-scroll data-scroll-offset="25">공용 시설 정보</a>
+            </li>
+            <li class="d-flex align-items-center">
+              <i class="far fa-check-circle text-primary me-2"></i>
+              <a class="nav-link fw-normal ps-1 p-0" href="#location" data-scroll data-scroll-offset="25">건물 정보</a>
+            </li>
           </ul>
         </div>
       </aside>
@@ -74,6 +82,6 @@
 </template>
 
 <script setup>
-import GosiwonForm from '@/modules/components/room/form/gosiwon/GosiwonForm.vue';
+import MultiForm from '@/modules/components/room/form/multiple/MultiForm.vue';
 </script>
 
