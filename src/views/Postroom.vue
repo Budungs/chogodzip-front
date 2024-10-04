@@ -41,86 +41,9 @@
 
 
 
-        <!-- 임대 유형 -->
-        <section class="card card-body border-0 shadow-sm p-4 mb-4" id="room-category">
-          <h2 class="h4 mb-4"><i class="fas fa-tags text-primary fs-5 mt-n1 me-2" />이용 정보를 입력해주세요.</h2>
-          <div class="row">
+        <!-- 세부 폼 작성: 매물 유형에 따라 표시 컴포넌트 변경 -->
+        <GosiwonForm />
 
-            <div class="col-sm-6 mb-3 w-100">
-              <div class="form-label pt-3 pb-2">임대 유형<span class="text-danger">*</span></div>
-              <div class="container row w-100">
-                <div class="form-check col-lg-4 justify-content-around">
-                  <input class="form-check-input" type="radio" id="ap-company" name="ap-business-type">
-                  <label class="form-check-label" for="ap-company">1일</label>
-                </div>
-                <div class="form-check col-lg-4">
-                  <input class="form-check-input" type="radio" id="ap-individual" name="ap-business-type">
-                  <label class="form-check-label" for="ap-individual">1주일</label>
-                </div>
-                <div class="form-check col-lg-4">
-                  <input class="form-check-input" type="radio" id="ap-individual" name="ap-business-type">
-                  <label class="form-check-label" for="ap-individual">1개월(월세)</label>
-                </div>
-              </div>
-            </div>
-
-
-            <div class="col-sm-6 mb-3 w-100">
-              <h3 class="form-label pt-3 pb-2">임대 가격</h3>
-              <div class="form-label pt-3 pb-2">보증금<span class="text-danger">*</span></div>
-              <div class="d-flex align-items-center">
-                <div class="w-50 pe-2">
-                  <div class="input-group"><span class="input-group-text fs-base">$</span>
-                    <input class="form-control range-slider-value-min" type="text">
-                  </div>
-                </div>
-                <div class="text-muted">&mdash;</div>
-                <div class="w-50 ps-2">
-                  <div class="input-group"><span class="input-group-text fs-base">$</span>
-                    <input class="form-control range-slider-value-max" type="text">
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-label pt-3 pb-2">관리비<span class="text-danger">*</span></div>
-              <div class="d-flex align-items-center">
-                <div class="w-50 pe-2">
-                  <div class="input-group"><span class="input-group-text fs-base">$</span>
-                    <input class="form-control range-slider-value-min" type="text">
-                  </div>
-                </div>
-                <div class="text-muted">&mdash;</div>
-                <div class="w-50 ps-2">
-                  <div class="input-group"><span class="input-group-text fs-base">$</span>
-                    <input class="form-control range-slider-value-max" type="text">
-                  </div>
-                </div>
-              </div>
-           </div>
-
-
-
-
-          </div>
-
-          <!-- 월세 -->
-          <label class="form-label" for="ap-price">임대 가격<span class="text-danger">*</span></label>
-          <div class="d-sm-flex">
-            <select class="form-select w-25 mb-2">
-              <option value="day">1일</option>
-              <option value="week">1주</option>
-              <option value="month">1개월</option>
-            </select>
-            
-            <select class="form-select w-25 mb-2">
-              <option value="month">월세</option>
-              <option value="year">전세</option>  
-            </select>
-            <input class="form-control w-100 me-2 mb-2" type="number" id="ap-price" min="200" step="50" required>
-
-          </div>
-
-        </section>
 
 
       </div>
@@ -149,3 +72,8 @@
     </div>
   </div>
 </template>
+
+<script setup>
+import GosiwonForm from '@/modules/components/room/form/gosiwon/GosiwonForm.vue';
+</script>
+
