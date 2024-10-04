@@ -39,11 +39,9 @@
           </div>
         </section>
 
-
-
         <!-- 세부 폼 작성: 매물 유형에 따라 표시 컴포넌트 변경 -->
-        <MultiForm v-if="category === 'gosiwon' || category === 'sharehouse'" />
-        <SingleForm v-if="category === 'jachiroom'" />
+        <MultiForm v-if="category === 'gosiwon' || category === 'sharehouse'" :category="category" />
+        <SingleForm v-if="category === 'jachiroom'" :category="category" />
 
       </div>
 

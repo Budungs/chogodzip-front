@@ -1,10 +1,25 @@
 <template>
     <section class="card card-body border-0 shadow-sm p-4 mb-4" id="room-category">
-        <h2 class="h4 mb-4"><i class="fas fa-tags text-primary fs-5 mt-n1 me-2" />이용 정보를 입력해주세요.</h2>
+        <h2 class="h4 mb-4"><i class="fas fa-info-circle text-primary fs-5 mt-n1 me-2" />이용 정보를 입력해주세요.</h2>
         <div class="row">
 
             <!-- 제목 & 주소-->
             <NameAddress />
+
+            <!-- 쉐어하우스일 경우: 주거 타입 -->
+            <div v-if="category === 'sharehouse'"  class="col-sm-6 mb-3 w-100">
+                <div class="form-label pt-3 pb-2 fw-bold">주거 타입<span class="text-danger">*</span></div>
+                <div class="container row w-100">
+                    <div class="form-check col-lg-3 justify-content-around">
+                        <input class="form-check-input" type="radio" id="period-one" name="ap-business-type">
+                        <label class="form-check-label" for="period-one">공유 주택</label>
+                    </div>
+                    <div class="form-check col-lg-3">
+                        <input class="form-check-input" type="radio" id="period-two" name="ap-business-type">
+                        <label class="form-check-label" for="period-two">쉐어하우스</label>
+                    </div>
+                </div>
+            </div>
 
             <!-- 계약 최소 기간 -->
             <div class="col-sm-6 mb-3 w-100">
@@ -45,16 +60,19 @@
             </div>
 
 
-            <!-- 쉐어하우스: 방 종류 -->
-            <div v-if="category" class="mb-3">
-                <div class="mb-4">
-                    <label class="form-label fw-bold" for="ap-area">이용 가능 연령<span class="text-danger">*</span></label>
-                    <input class="form-control" type="number" id="ap-area" min="20" placeholder="Enter your area" value="20" required :disabled="isNoLimitAge">
-                    <div class="form-check d-flex justify-content-end pt-2 fs-sm">
-                        <input class="form-check-input" type="checkbox" id="no-age-limit" name="no-age-limit" v-model="isNoLimitAge">
-                        <label class="form-check-label px-2" for="no-age-limit">연령 제한 없음</label>
-                    </div>
-                </div>
+            <!-- 쉐어하우스일 경우: 방 종류 -->
+            <div v-if="category === 'sharehouse'" class="col-sm-6 mb-5 w-100 ">
+              <div class="form-label pt-3 pb-2 fw-bold">방 개수<span class="text-danger">*</span></div>
+              <div class="mb-3 d-flex gap-1">
+                  <div class="col-lg-6">
+                      <label class="form-label" for="ap-area">1인실</label>
+                      <input class="form-control" type="number" id="ap-area" min="0" placeholder="Enter your area" value="0" required>
+                  </div>
+                  <div class="col-lg-6">
+                      <label class="form-label" for="ap-area">2인실</label>
+                      <input class="form-control" type="number" id="ap-area" min="0" placeholder="Enter your area" value="0" required>
+                  </div>
+              </div>
             </div>
             
 
@@ -205,4 +223,11 @@ import Price from '../Price.vue';
 import NameAddress from '../NameAddress.vue';
 
 const isNoLimitAge = ref(false);
+
+const props = defineProps({
+  category: {
+    type: String,
+    required: true,
+  },
+})
 </script>

@@ -1,6 +1,6 @@
 <template>
     <section class="card card-body border-0 shadow-sm p-4 mb-4" id="room-category">
-        <h2 class="h4 mb-4"><i class="fas fa-tags text-primary fs-5 mt-n1 me-2" />공용 시설 정보를 입력해주세요.</h2>
+        <h2 class="h4 mb-4"><i class="fas fa-archive text-primary fs-5 mt-n1 me-2" />공용 시설 정보를 입력해주세요.</h2>
 
         <div class="row">
 
@@ -88,6 +88,10 @@
                       <input class="form-check-input" type="checkbox" id="wifi">
                       <label class="form-check-label" for="wifi">WIFI</label>
                     </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="wifi">
+                      <label class="form-check-label" for="wifi">공용화장실</label>
+                    </div>
                   </div>
                   <div class="col-sm-4">
                     <div class="form-check">
@@ -103,10 +107,6 @@
                     <div class="form-check">
                       <input class="form-check-input" type="checkbox" id="wifi">
                       <label class="form-check-label" for="wifi">공용에어컨</label>
-                    </div>
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="wifi">
-                      <label class="form-check-label" for="wifi">공용화장실</label>
                     </div>
                   </div>
                 </div>

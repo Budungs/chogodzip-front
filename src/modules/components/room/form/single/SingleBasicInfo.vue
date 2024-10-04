@@ -1,6 +1,6 @@
 <template>
     <section class="card card-body border-0 shadow-sm p-4 mb-4" id="room-category">
-        <h2 class="h4 mb-4"><i class="fas fa-tags text-primary fs-5 mt-n1 me-2" />이용 정보를 입력해주세요.</h2>
+        <h2 class="h4 mb-4"><i class="fas fa-info-circle text-primary fs-5 mt-n1 me-2" />이용 정보를 입력해주세요.</h2>
         <div class="row">
 
             <!-- 제목 & 주소-->
@@ -41,6 +41,17 @@
                   <label class="form-label fw-bold" for="ap-type">건물 전체 층 수<span class="text-danger">*</span></label>
                   <input class="form-control" type="number" id="ap-area" min="-1" placeholder="건물 전체 층 수를 입력하세요" required>
                 </div>
+            </div>
+
+            <!-- 방 종류 -->
+            <div class="mb-3">
+              <label class="form-label fw-bold" for="ap-category">방 종류<span class="text-danger">*</span></label>
+              <select class="form-select" id="ap-category" required>
+                <option value="" disabled hidden>방 종류를 선택하세요</option>
+                <option value="Rent">원룸</option>
+                <option value="Sell">투룸/빌라</option>
+                <option value="Sell">오피스텔</option>
+              </select>
             </div>
 
             <!-- 방 구조 -->
@@ -211,6 +222,12 @@
                     <div class="form-check">
                       <input class="form-check-input" type="checkbox" id="allow-cats">
                       <label class="form-check-label" for="allow-cats">외국인 가능</label>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="allow-cats">
+                      <label class="form-check-label" for="allow-cats">반려동물 가능</label>
                     </div>
                   </div>
                 </div>

@@ -1,6 +1,6 @@
 <template>
     <section class="card card-body border-0 shadow-sm p-4 mb-4" id="room-category">
-        <h2 class="h4 mb-4"><i class="fas fa-tags text-primary fs-5 mt-n1 me-2" />시설 정보를 입력해주세요.</h2>
+        <h2 class="h4 mb-4"><i class="fas fa-archive text-primary fs-5 mt-n1 me-2" />시설 정보를 입력해주세요.</h2>
 
         <div class="row">
 
