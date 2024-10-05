@@ -19,6 +19,10 @@
     </div>
 </template>
 
+<script setup>
+
+</script>
+
 <style scoped>
 * {
     margin: 0;
@@ -33,11 +37,11 @@ body {
     justify-content: center;
     align-items: center;
     background: rgba(0, 0, 0, 0.7);
-    }
+}
 
 nav {
     width: 700px;
-    height: 35px;
+    height: 45px;
     border-radius: 6px;
     display: flex;
     text-align: center;
@@ -49,7 +53,7 @@ nav {
 @media (max-width: 700px) {
     nav {
         width: 100vw;
-        height: 35px;
+        height: 45px;
         border-radius: 0;
     }
 }
@@ -67,7 +71,7 @@ nav::before {
 nav label {
     width: 100%;
     height: 100%;
-    font-size: 16px;
+    font-size: 1.35rem;
     font-weight: 400;
     border-radius: 5px;
     margin: 0 5px;
@@ -79,18 +83,6 @@ nav label {
     display: flex; 
     align-items: center; 
     justify-content: center;
-}
-
-@media (max-width: 480px) {
-    nav label {
-        font-size: 14px;
-    }
-}
-
-@media (max-width: 370px) {
-    nav label {
-        margin: 0 14px;
-    }
 }
 
 nav label:hover {

@@ -5,7 +5,7 @@
   
       <!-- 히어로 이미지 위 텍스트 + 검색 영역 -->
       <div class="bx-home-search-valid">
-        <div class="bx-home-search-title">
+        <div class="bx-home-search-title pb-1">
           <h1>어떤 집을 찾고 계신가요?</h1>
         </div>
 
@@ -14,10 +14,10 @@
             <SearchNavBar />
             
             <!-- 검색 -->
-            <div class="input-group" style="max-width:700px; height:55px">
-                <input class="form-control" type="text" placeholder="원하시는 지역 시와 구를 입력해주세요" />
+            <div class="input-group" style="max-width:700px; height:70px">
+                <input class="form-control px-4 fs-lg" type="text" placeholder="주변 매물을 찾고 싶은 대학교나 전철역을 입력하세요." />
                 <button class="btn btn-primary" type="button">
-                    <i class="fas fa-search" />
+                    <i class="fas fa-search display-6" />
                 </button>
             </div>
         </div>
