@@ -112,7 +112,7 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 
 const goToCommunityMainPage = () => {
-  router.push('/communitymain');
+  router.push('/community');
 }
 </script>
   
