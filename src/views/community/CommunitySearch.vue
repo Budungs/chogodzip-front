@@ -228,7 +228,7 @@ const handlePageChange = (page) => {
 import { useRouter } from 'vue-router';
 const router = useRouter();
 function goToWritePage() {
-  router.push('/communitywrite'); // '/communitywrite' 경로로 이동
+  router.push('/community/new'); // '/communitywrite' 경로로 이동
 }
 </script>
 

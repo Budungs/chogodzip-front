@@ -204,6 +204,8 @@
 h1 {
   margin-top:30px;
   margin-bottom: 20px;
+  width:150px;
+  height:150px;
 }
 .form-control {
   width:310px;
