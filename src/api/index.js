@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-// import { useAuthStore } from '@/stores/auth';
+import { useAuthStore } from '@/stores/auth';
 import router from '@/router';
 import qs from "qs";
 
@@ -14,23 +14,23 @@ const instance = axios.create({
 
 
 // 요청 인터셉터
-// instance.interceptors.request.use(
-//   (config) => {
-//     // JWT 추출
-//     const { getToken } = useAuthStore();
-//     const token = getToken();
-//     if (token) {
-//       // 토큰이 있는 경우
-//       config.headers['Authorization'] = `Bearer ${token}`;
-//       console.log(config.headers.Authorization);
-//     }
-//     return config;
-//   },
-//   (error) => {
-//     console.log(error);
-//     return Promise.reject(error);
-//   }
-// );
+instance.interceptors.request.use(
+  (config) => {
+    // JWT 추출
+    const { getToken } = useAuthStore();
+    const token = getToken();
+    if (token) {
+      // 토큰이 있는 경우
+      config.headers['Authorization'] = `Bearer ${token}`;
+      console.log(config.headers.Authorization);
+    }
+    return config;
+  },
+  (error) => {
+    console.log(error);
+    return Promise.reject(error);
+  }
+);
 
 // 응답 인터셉터
 instance.interceptors.response.use(
