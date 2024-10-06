@@ -17,7 +17,7 @@
             </div>
 
             <div class="mb-4">
-                <label class="form-label d-block fw-bold mb-2 pb-1">냉방</label>
+                <label class="form-label d-block fw-bold mb-2 pb-1">냉방시설</label>
                 <div class="row">
                   <div class="col-sm-4">
                     <div class="form-check">
