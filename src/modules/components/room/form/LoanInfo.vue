@@ -8,25 +8,25 @@
             <div class="row">
               <div v-if="category === 'jachiroom'" class="col-sm-6">
                 <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="r-loan-hug" v-model="loanHug">
+                  <input class="form-check-input" type="checkbox" id="r-loan-hug" v-model="store.loans.hug">
                   <label class="form-check-label" for="r-loan-hug">HUG</label>
                 </div>
               </div>
               <div v-if="category === 'jachiroom'" class="col-sm-6">
                 <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="r-loan-y-100" v-model="loanY100">
+                  <input class="form-check-input" type="checkbox" id="r-loan-y-100" v-model="store.loans.young100">
                   <label class="form-check-label" for="r-loan-y-100">중소기업청년대출 100%</label>
                 </div>
               </div>
               <div class="col-sm-6">
                 <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="r-loan-withstand" v-model="loanWithstand">
+                  <input class="form-check-input" type="checkbox" id="r-loan-withstand" v-model="store.loans.withstand">
                   <label class="form-check-label" for="r-loan-withstand">버팀목</label>
                 </div>
               </div>
               <div v-if="category === 'jachiroom'" class="col-sm-6">
                 <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="r-loan-y-80" v-model="loanY80">
+                  <input class="form-check-input" type="checkbox" id="r-loan-y-80" v-model="store.loans.young80">
                   <label class="form-check-label" for="r-loan-y-80">중소기업청년대출 80%</label>
                 </div>
               </div>
@@ -38,11 +38,11 @@
       <h2  v-if="category === 'jachiroom'" class="h4 mb-4"><i class="fas fa-money-check-alt text-primary fs-5 mt-n1 me-2" />융자금 유무를 선택해주세요<span class="span text-danger">*</span></h2>
       <div v-if="category === 'jachiroom'" class="container row w-100">
           <div class="form-check col-lg-6 justify-content-around">
-              <input class="form-check-input" type="radio" id="r-mortgage-x" name="r-mortgage" v-model="haveMort" value="false">
+              <input class="form-check-input" type="radio" id="r-mortgage-x" name="r-mortgage" v-model="store.mortgage" value="false">
               <label class="form-check-label" for="r-mortgage-x">융자 없음</label>
           </div>
           <div class="form-check col-lg-6">
-              <input class="form-check-input" type="radio" id="r-mortgage-o" name="r-mortgage" v-model="haveMort" value="true">
+              <input class="form-check-input" type="radio" id="r-mortgage-o" name="r-mortgage" v-model="store.mortgage" value="true">
               <label class="form-check-label" for="r-mortgage-o">융자 있음</label>
           </div>
       </div>
@@ -51,10 +51,7 @@
 </template>
 
 <script setup>
-const props = defineProps({
-    category: {
-        type: String,
-        required: true,
-    },
-})
+import { usePostRoomStore } from '@/modules/stores/postRoom';
+const store = usePostRoomStore().loanInfo;
+const category = computed(() => store.category);
 </script>

@@ -1,20 +1,20 @@
 <template>
-    <div class="col-sm-6 mb-3 w-100">
+    <div class="col-sm-6 mb-3 w-100" >
         <h2 class="form-label pt-4 pb-0">가격</h2>
 
         <!-- 자취방(월세) & 고시원 & 공유주거공간 -->
-        <div v-if="(rentalType === 'monthly' && category === 'jachiroom' ) || category !== 'jachiroom'"  class="form-label pt-3 pb-1">임대 가격(1개월)<span class="text-danger">*</span></div>
-        <div v-if="(rentalType === 'monthly' && category === 'jachiroom' ) || category !== 'jachiroom'" class="d-flex align-items-center pb-4">
+        <div v-if="(rentType === 'monthly' && category === 'jachiroom' ) || category !== 'jachiroom'"  class="form-label pt-3 pb-1">임대 가격(1개월)<span class="text-danger">*</span></div>
+        <div v-if="(rentType === 'monthly' && category === 'jachiroom' ) || category !== 'jachiroom'" class="d-flex align-items-center pb-4">
             <div class="w-50 pe-2">
                 <div class="input-group">
-                    <input class="form-control range-slider-value-min" type="number" v-model="monthlyFeeMin" required>
+                    <input class="form-control range-slider-value-min" type="number" v-model="store.monthlyFeeMin">
                     <span class="input-group-text fs-base">만원</span>
                 </div>
             </div>
             <div class="text-muted">&mdash;</div>
             <div class="w-50 ps-2">
                 <div class="input-group">
-                    <input class="form-control range-slider-value-max" type="number" v-model="monthlyFeeMax" required>
+                    <input class="form-control range-slider-value-max" type="number" v-model="store.monthlyFeeMax">
                     <span class="input-group-text fs-base">만원</span>
                 </div>
             </div>
@@ -25,20 +25,20 @@
         <div class="d-flex align-items-center g-2">
             <div class="w-50 pe-2">
                 <div class="input-group">
-                    <input class="form-control range-slider-value-min" type="number" v-model="depositFeeMin" required>
+                    <input class="form-control range-slider-value-min" type="number" v-model="store.depositFeeMin" :disabled="store.isNoDepositFee">
                     <span class="input-group-text fs-base">만원</span>
                 </div>
             </div>
             <div class="text-muted">&mdash;</div>
             <div class="w-50 ps-2">
                 <div class="input-group">
-                    <input class="form-control range-slider-value-max" type="number" v-model="depositFeeMax" required>
+                    <input class="form-control range-slider-value-max" type="number" v-model="store.depositFeeMax" :disabled="store.isNoDepositFee">
                     <span class="input-group-text fs-base">만원</span>
                 </div>
             </div>
         </div>
         <div class="form-check d-flex justify-content-end pt-2 fs-sm">
-            <input class="form-check-input" type="checkbox" id="no-deposit" name="no-deposit-fee" v-model="isNoDepositFee">
+            <input class="form-check-input" type="checkbox" id="no-deposit" name="no-deposit-fee" v-model="store.isNoDepositFee">
             <label class="form-check-label px-2" for="no-deposit-fee">보증금 없음</label>
         </div>
 
@@ -47,47 +47,30 @@
             <div class="d-flex align-items-center g-2">
                 <div class="w-50 pe-2">
                     <div class="input-group">
-                        <input class="form-control range-slider-value-min" type="number" v-model="maintenanceFeeMin" :disabled="isNoMaintenanceFee" required>
+                        <input class="form-control range-slider-value-min" type="number" v-model="store.maintenanceFeeMin" :disabled="store.isNoMaintenanceFee">
                         <span class="input-group-text fs-base">만원</span>
                     </div>
                 </div>
                 <div class="text-muted">&mdash;</div>
                 <div class="w-50 ps-2">
                     <div class="input-group">
-                        <input class="form-control range-slider-value-max" type="number" v-model="maintenanceFeeMax" :disabled="isNoMaintenanceFee" required>
+                        <input class="form-control range-slider-value-max" type="number" v-model="store.maintenanceFeeMax" :disabled="store.isNoMaintenanceFee">
                         <span class="input-group-text fs-base">만원</span>
                     </div>
                 </div>
             </div>
             <div class="form-check d-flex justify-content-end pt-2 fs-sm">
-                <input class="form-check-input" type="checkbox" id="no-maintenance-fee" v-model="isNoMaintenanceFee">
+                <input class="form-check-input" type="checkbox" id="no-maintenance-fee" v-model="store.isNoMaintenanceFee">
                 <label class="form-check-label px-2" for="no-maintenance-fee">관리비 없음</label>
             </div>
         </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { computed, watch } from 'vue';
+import { usePostRoomStore } from '@/modules/stores/postRoom';
 
-// 보증금
-const depositFeeMin = ref('');
-const depositFeeMax = ref('');
-const isNoDepositFee = ref(false);
-
-// 관리비
-const maintenanceFeeMin = ref('');
-const maintenanceFeeMax = ref('');
-const isNoMaintenanceFee = ref(false);
-
-//월세or전세
-const props = defineProps({
-    rentalType: {
-        type: String,
-        required: true,
-    },
-    category: {
-        type: String,
-        required: true,
-    },
-})
+const store = usePostRoomStore().basicInfo.prices;
+const rentType = computed(() => store.basicInfo.jachi.rentType);
+const category = store.category;
 </script>

@@ -1,19 +1,18 @@
 <template>
   <div>
-      <input class="form-control" type="text" v-model="postcode" placeholder="우편번호" readonly required />
+      <input class="form-control" type="text" v-model="store.basicInfo.addr.postcode" placeholder="우편번호" readonly required />
       <input class="form-control" type="button" @click="execDaumPostcode" value="우편번호 찾기" /><br>
-      <input class="form-control" type="text" v-model="address" placeholder="주소" readonly required /><br>
-      <input class="form-control" type="text" v-model="detailAddress" placeholder="상세주소" id="detailAddress" required />
+      <input class="form-control" type="text" v-model="store.basicInfo.addr.address" placeholder="주소" readonly required /><br>
+      <input class="form-control" type="text" v-model="store.basicInfo.addr.detailAddress" placeholder="상세주소" id="detailAddress" required />
       <input class="form-control" type="text" v-model="extraAddress" readonly />
   </div>
 </template>
-  
+
 <script setup>
 import { ref, onMounted } from 'vue';
+import { usePostRoomStore } from '@/modules/stores/postRoom';
+const store = usePostRoomStore();
 
-const postcode = ref('');
-const address = ref('');
-const detailAddress = ref('');
 const extraAddress = ref('');
 
 function execDaumPostcode() {
@@ -40,8 +39,8 @@ function execDaumPostcode() {
         }
       }
 
-      postcode.value = data.zonecode;
-      address.value = addr;
+      store.basicInfo.addr.postcode = data.zonecode;
+      store.basicInfo.addr.address = addr;
       extraAddress.value = extraAddr;
 
       setTimeout(() => {

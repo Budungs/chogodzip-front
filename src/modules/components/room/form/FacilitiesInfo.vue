@@ -10,7 +10,7 @@
                 <div class="row">
                   <div class="col-sm-4">
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="h-in-middle" v-model="hMiddle" >
+                      <input class="form-check-input" type="checkbox" id="h-in-middle" v-model="store.hot.control" >
                       <label class="form-check-label" for="h-in-middle">중앙난방</label>
                     </div>
                   </div>
@@ -23,7 +23,7 @@
                 <div class="row">
                   <div class="col-sm-4">
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="c-wall-aircon" v-model="cWallAC">
+                      <input class="form-check-input" type="checkbox" id="c-wall-aircon" v-model="store.cool.wallAircon">
                       <label class="form-check-label" for="c-wall-aircon">벽걸이에어컨</label>
                     </div>
                   </div>
@@ -36,35 +36,35 @@
                 <div class="row">
                   <div class="col-sm-4">
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="l-bed" v-model="lBed">
+                      <input class="form-check-input" type="checkbox" id="l-bed" v-model="store.day.bed">
                       <label class="form-check-label" for="l-bed">침대</label>
                     </div>
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="l-closet" v-model="lCloset">
+                      <input class="form-check-input" type="checkbox" id="l-closet" v-model="store.day.closet">
                       <label class="form-check-label" for="l-closet">옷장(행거)</label>
                     </div>
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="l-washing-machine" v-model="lWashingM">
+                      <input class="form-check-input" type="checkbox" id="l-washing-machine" v-model="store.day.washingM">
                       <label class="form-check-label" for="l-washing-machine">세탁기</label>
                     </div>
                   </div>
                   <div class="col-sm-4">
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="l-desk" v-model="lDesk">
+                      <input class="form-check-input" type="checkbox" id="l-desk" v-model="store.day.desk">
                       <label class="form-check-label" for="l-desk">책상</label>
                     </div>
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="l-refrigerator" v-model="lRefrig">
+                      <input class="form-check-input" type="checkbox" id="l-refrigerator" v-model="store.day.refrig">
                       <label class="form-check-label" for="l-refrigerator">냉장고</label>
                     </div>
                   </div>
                   <div class="col-sm-4">
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="l-chair" v-model="lChair">
+                      <input class="form-check-input" type="checkbox" id="l-chair" v-model="store.day.chair">
                       <label class="form-check-label" for="l-chair">의자</label>
                     </div>
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="l-induction" v-model="lInduction">
+                      <input class="form-check-input" type="checkbox" id="l-induction" v-model="store.day.induction">
                       <label class="form-check-label" for="l-induction">인덕션</label>
                     </div>
                   </div>
@@ -77,19 +77,19 @@
                 <div class="row">
                   <div class="col-sm-4">
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="s-digital-lock" v-model="sDigitLock">
+                      <input class="form-check-input" type="checkbox" id="s-digital-lock" v-model="store.security.digitLock">
                       <label class="form-check-label" for="s-digital-lock">디지털도어락</label>
                     </div>
                   </div>
                   <div class="col-sm-4">
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="s-fire-killer" v-model="sFireKiller">
+                      <input class="form-check-input" type="checkbox" id="s-fire-killer" v-model="store.security.fireKiller">
                       <label class="form-check-label" for="s-fire-killer">소화기</label>
                     </div>
                   </div>
                   <div class="col-sm-4">
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="s-public-entrance" v-model="sPublicEntr">
+                      <input class="form-check-input" type="checkbox" id="s-public-entrance" v-model="store.security.publicEntrance">
                       <label class="form-check-label" for="s-public-entrance">공동현관</label>
                     </div>
                   </div>
@@ -99,3 +99,8 @@
         </div>
     </section>
 </template>
+
+<script setup>
+import { usePostRoomStore } from '@/modules/stores/postRoom';
+const store = usePostRoomStore().facilitiesInfo;
+</script>

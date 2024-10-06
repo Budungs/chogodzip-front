@@ -24,7 +24,7 @@
           <div class="row">
             <div class="col-sm-6 mb-3">
               <label class="form-label" for="r-category">매물 유형<span class="text-danger">*</span></label>
-              <select class="form-select" id="r-category" required v-model="category" @change="fillProcessBar">
+              <select class="form-select" id="r-category" required v-model="store.category" @change="updateProgress">
                 <option value="" disabled>매물 유형을 선택해주세요.</option>
                 <option value="gosiwon">고시원</option>
                 <option value="jachiroom">자취방</option>
@@ -35,32 +35,26 @@
         </section>
 
         <!-- 세부 폼 작성: 매물 유형에 따라 표시 컴포넌트 변경 -->
-        <RoomPostForm v-if="category !== ''" :category="category" />
+        <RoomPostForm v-if="store.category !== ''" :category="store.category" />
       </div>
 
       <!-- 작성 진행 카드 -->
-      <ProgressCard :progress="progress" :categorySelected="categorySelected" />
+      <ProgressCard />
 
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
 import RoomPostForm from '@/modules/components/room/form/RoomPostForm.vue';
 import ProgressCard from '@/modules/components/room/form/ProgressCard.vue';
 
-const category = ref(''); // 주거 분류
-const categorySelected = ref(false);
-const progress = ref(0); // 작성 진행바
+import { usePostRoomStore } from '@/modules/stores/postRoom';
+const store = usePostRoomStore();
 
-// 작성 진행바 업데이트
-const fillProcessBar = () => {
-  if(category !== '') {
-    progress.value = 20; categorySelected.value = true;
-  }
-  else {
-    progress.value = 0; categorySelected.value = false;
-  }
+//작성진행바 업데이트
+const updateProgress = () => {
+  store.progress = 20;
+  store.categorySelected = true;
 }
 </script>
