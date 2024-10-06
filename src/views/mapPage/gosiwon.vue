@@ -109,7 +109,7 @@
 
               <div class="button-group">
                 <div class="submit-button-container">
-                  <button class="btn btn-submit" @click="submitFilters">필터 적용</button>
+                  <!-- <button class="btn btn-submit" @click="submitFilters">필터 적용</button> -->
                   <button class="btn btn-reset" @click="resetFilters">조건 초기화</button>
                 </div>
               </div>
@@ -137,28 +137,28 @@
           </div>
         </div>
 
-        <div v-for="(property, index) in filteredPropertiesByDistance" :key="index" class="card">
+        <div v-for="(property, index) in filteredProperties" :key="property.roomId" class="card">
           <!-- 이미지와 판매완료 오버레이 -->
           <div class="image-container">
-            <img src="https://via.placeholder.com/150" class="card-img-top" alt="Property Image">
-            
-            <!-- 판매완료 오버레이 (isSale이 false일 때만 표시) -->
-            <div v-if="!property.isSale" class="sold-overlay">
+            <img :src="property.imgId || 'https://via.placeholder.com/150'" class="card-img-top" alt="Property Image">
+        
+            <!-- 판매완료 오버레이 (판매 완료일 때 표시) -->
+            <div v-if="property.isSale == 'T'" class="sold-overlay">
               <i class="bi bi-check-circle"></i>
               <p>판매완료</p>
             </div>
         
-            <!-- 좋아요 개수와 하트 아이콘 (판매 완료가 아닌 경우에만 표시) -->
-            <div v-if="property.isSale" class="like-overlay">
+            <!-- 좋아요 개수와 하트 아이콘 (판매 완료가 아닐 때 표시) -->
+            <div v-if="property.isSale == 'F'" class="like-overlay">
               <i class="bi bi-heart-fill"></i>
               <p>{{ property.likes }}</p>
             </div>
           </div>
-          
+        
           <div class="card-body">
             <h5 class="card-title">{{ property.roomName }}</h5>
-            <p class="card-text fs-sm">전세 {{ property.depositMax }} 만원 | 월세 {{property.priceMax}}</p>
-            
+            <p class="card-text fs-sm">월세 {{ property.depositMax }} 만원 | 전세 {{ property.priceMax }} 만원</p>
+        
             <a href="#" class="btn btn-sm btn-primary">상세보기</a>
         
             <!-- 관심매물 아이콘 -->
@@ -167,6 +167,8 @@
             </div>
           </div>
         </div>
+        
+        
         
         
       </div>
@@ -271,6 +273,7 @@ const handleSearch = async () => {
       if (map.value) {
         map.value.setCenter(newCenter); // 지도 중심 이동
         console.log('Map center moved to:', newCenter);
+        await fetchGosiwonData(newCenter.getLat(), newCenter.getLng());
       } else {
         console.error('Map is not initialized.');
       }
@@ -302,9 +305,9 @@ const toggleHeartIcon = (index) => {
 // 필터 관리
 const filters = reactive({
   gender: ['남성', '여성', '남녀공용'],
-  loan: ['버팀목'], // 대출 필터 초기화
+  loan: [], // 대출 필터 초기화
   floor: ['under', '1floor'], // 방 종류 필터 초기화
-  deposit: 10000000,
+  deposit: 5000000,
   rent: 5000000,
 });
 
@@ -323,26 +326,58 @@ const setTab = (tab) => {
 // 필터 초기화
 const resetFilters = () => {
   filters.gender = ['남성', '여성', '남녀공용'];
-  filters.loan = ['버팀목'];
+  filters.loan = [];
   filters.floor = ['under', '1floor'];
-  filters.deposit = 10000000;
+  filters.deposit = 5000000;
   filters.rent = 5000000;
 };
 
-// 필터 적용된 매물 목록 계산
+// 필터링된 매물을 computed로 정의
 const filteredProperties = computed(() => {
-  return propertiesData.value.filter((property) => {
-    const matchesRent = property.priceMin <= filters.rent;
+  const filtered = propertiesData.value.filter((property) => {
+    // 방 종류 필터: 고시원(HOUTP00001) 또는 원룸텔(HOUTP00003)이 체크된 경우 해당하는 항목 필터링
+    const matchesFloor = filters.floor.length === 0 || (
+      (filters.floor.includes('고시원') && property.houseTypeCd === 'HOUTP00001') ||
+      (filters.floor.includes('원룸텔') && property.houseTypeCd === 'HOUTP00003')
+    );
+
+    // 보증금 필터: 매물의 보증금이 필터에서 설정한 값보다 작거나 같은 매물
     const matchesDeposit = property.depositMin <= filters.deposit;
-    const matchesGender =
-      filters.gender.length === 0 || filters.gender.includes(property.genderCd);
-    const matchesLoan =
-      filters.loan.length === 0 || filters.loan.includes(property.loanType); // loan 필터 적용
-    const matchesFloor =
-      filters.floor.length === 0 || filters.floor.includes(property.floorType); // floor 필터 적용
-    return matchesRent && matchesDeposit && matchesGender && matchesLoan && matchesFloor;
+
+    // 월세 필터: 매물의 월세가 필터에서 설정한 값보다 작거나 같은 매물
+    const matchesRent = property.priceMin <= filters.rent;
+
+    // 성별 필터: 선택된 성별 중 하나라도 일치하면 해당 매물 표시
+    const matchesGender = filters.gender.length === 0 || (
+      (filters.gender.includes('남성') && property.genderCd === 'GENDR00002') ||
+      (filters.gender.includes('여성') && property.genderCd === 'GENDR00003') ||
+      (filters.gender.includes('성별무관') && property.genderCd === 'GENDR00001') ||
+      (filters.gender.includes('남녀공용') && property.genderCd === 'GENDR00004')
+    );
+
+    return matchesFloor && matchesDeposit && matchesRent && matchesGender;
   });
+
+  // 정렬 로직 추가
+  return sortProperties(filtered);
 });
+
+// 정렬 로직
+const sortProperties = (properties) => {
+  switch (selectedSort.value) {
+    case 'distance':
+      return properties.sort((a, b) => a.distance - b.distance);
+    case 'highPrice':
+      return properties.sort((a, b) => b.priceMax - a.priceMax);
+    case 'lowPrice':
+      return properties.sort((a, b) => a.priceMin - b.priceMin);
+    case 'likes':
+      return properties.sort((a, b) => b.likes - a.likes);
+    default:
+      return properties;
+  }
+};
+
 
 // 필터 적용 함수
 const submitFilters = () => {
@@ -361,10 +396,11 @@ const fetchGosiwonData = async (lat, lng) => {
     propertiesData.value = data; // 받아온 데이터를 상태에 저장
     heartIcons.value = Array(data.length).fill('far fa-heart'); // 하트 아이콘 초기화
 
+    // 기존 마커 초기화
     markers.value.forEach((marker) => marker.setMap(null));
     markers.value = [];
 
-    // 마커 생성 및 customOverlay 사용
+    // 새 마커 생성
     markers.value = data.map((property) => {
       const markerPosition = new kakao.maps.LatLng(property.roomLat, property.roomLong);
       const marker = new kakao.maps.Marker({
@@ -376,10 +412,14 @@ const fetchGosiwonData = async (lat, lng) => {
       return marker;
     });
 
+    // 콘솔에서 데이터 확인 (필요시)
+    console.log('Fetched Gosiwon Data:', propertiesData.value);
+
   } catch (error) {
     console.error('고시원 데이터를 가져오는 중 오류 발생:', error);
   }
 };
+
 
 // 컴포넌트 마운트 후 지도 초기화 및 고시원 리스트 불러오기
 onMounted(async () => {
