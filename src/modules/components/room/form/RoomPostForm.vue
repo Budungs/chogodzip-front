@@ -3,6 +3,10 @@
     <LoanInfo :category="category" />
     <FacilitiesInfo />
     <BuildingInfo />
+
+    <div class="d-flex justify-content-end">
+        <button type="button" class="btn btn-translucent-accent w-25">매물 등록</button>
+    </div>
 </template>
 
 <script setup>
