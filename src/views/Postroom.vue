@@ -19,12 +19,12 @@
 
 
         <!-- 매물 유형 선택 -->
-        <section class="card card-body border-0 shadow-sm p-4 mb-4" id="room-category">
+        <section class="card card-body border-0 shadow-sm p-4 mb-4" id="r-category">
           <h2 class="h4 mb-4"><i class="fas fa-tags text-primary fs-5 mt-n1 me-2" />매물 유형을 선택해주세요.</h2>
           <div class="row">
             <div class="col-sm-6 mb-3">
-              <label class="form-label" for="ap-category">매물 유형<span class="text-danger">*</span></label>
-              <select class="form-select" id="ap-category" required v-model="category" @change="fillProcessBar">
+              <label class="form-label" for="r-category">매물 유형<span class="text-danger">*</span></label>
+              <select class="form-select" id="r-category" required v-model="category" @change="fillProcessBar">
                 <option value="" disabled>매물 유형을 선택해주세요.</option>
                 <option value="gosiwon">고시원</option>
                 <option value="jachiroom">자취방</option>

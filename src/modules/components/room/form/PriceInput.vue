@@ -2,19 +2,19 @@
     <div class="col-sm-6 mb-3 w-100">
         <h2 class="form-label pt-4 pb-0">가격</h2>
 
-        <!-- 월세 -->
+        <!-- 자취방(월세) & 고시원 & 공유주거공간 -->
         <div v-if="(rentalType === 'monthly' && category === 'jachiroom' ) || category !== 'jachiroom'"  class="form-label pt-3 pb-1">임대 가격(1개월)<span class="text-danger">*</span></div>
         <div v-if="(rentalType === 'monthly' && category === 'jachiroom' ) || category !== 'jachiroom'" class="d-flex align-items-center pb-4">
             <div class="w-50 pe-2">
                 <div class="input-group">
-                    <input class="form-control range-slider-value-min" type="text">
+                    <input class="form-control range-slider-value-min" type="number" v-model="monthlyFeeMin" required>
                     <span class="input-group-text fs-base">만원</span>
                 </div>
             </div>
             <div class="text-muted">&mdash;</div>
             <div class="w-50 ps-2">
                 <div class="input-group">
-                    <input class="form-control range-slider-value-max" type="text">
+                    <input class="form-control range-slider-value-max" type="number" v-model="monthlyFeeMax" required>
                     <span class="input-group-text fs-base">만원</span>
                 </div>
             </div>
@@ -25,14 +25,14 @@
         <div class="d-flex align-items-center g-2">
             <div class="w-50 pe-2">
                 <div class="input-group">
-                    <input class="form-control range-slider-value-min" type="text" v-model="depositFeeMin">
+                    <input class="form-control range-slider-value-min" type="number" v-model="depositFeeMin" required>
                     <span class="input-group-text fs-base">만원</span>
                 </div>
             </div>
             <div class="text-muted">&mdash;</div>
             <div class="w-50 ps-2">
                 <div class="input-group">
-                    <input class="form-control range-slider-value-max" type="text" v-model="depositFeeMax">
+                    <input class="form-control range-slider-value-max" type="number" v-model="depositFeeMax" required>
                     <span class="input-group-text fs-base">만원</span>
                 </div>
             </div>
@@ -47,14 +47,14 @@
             <div class="d-flex align-items-center g-2">
                 <div class="w-50 pe-2">
                     <div class="input-group">
-                        <input class="form-control range-slider-value-min" type="text" v-model="maintenanceFeeMin" :disabled="isNoMaintenanceFee">
+                        <input class="form-control range-slider-value-min" type="number" v-model="maintenanceFeeMin" :disabled="isNoMaintenanceFee" required>
                         <span class="input-group-text fs-base">만원</span>
                     </div>
                 </div>
                 <div class="text-muted">&mdash;</div>
                 <div class="w-50 ps-2">
                     <div class="input-group">
-                        <input class="form-control range-slider-value-max" type="text" v-model="maintenanceFeeMax" :disabled="isNoMaintenanceFee">
+                        <input class="form-control range-slider-value-max" type="number" v-model="maintenanceFeeMax" :disabled="isNoMaintenanceFee" required>
                         <span class="input-group-text fs-base">만원</span>
                     </div>
                 </div>

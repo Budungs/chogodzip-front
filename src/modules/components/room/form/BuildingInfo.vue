@@ -4,49 +4,51 @@
 
         <div class="row">
 
+            <!-- 건축물 구분 -->
             <div class="col-sm-6 mb-3 w-100">
                 <div class="form-label pt-3 pb-2 fw-bold">건축물 구분<span class="text-danger">*</span></div>
                 <div class="container row w-100">
                     <div class="form-check col-lg-4 justify-content-around">
-                        <input class="form-check-input" type="radio" id="period-one" name="ap-business-type">
-                        <label class="form-check-label" for="period-one">상가건물</label>
+                        <input class="form-check-input" type="radio" id="b-store" name="b-type" v-model="bBuildingType" value="store">
+                        <label class="form-check-label" for="b-store">상가건물</label>
                     </div>
                     <div class="form-check col-lg-4 justify-content-around">
-                        <input class="form-check-input" type="radio" id="period-one" name="ap-business-type">
-                        <label class="form-check-label" for="period-one">공동주택</label>
+                        <input class="form-check-input" type="radio" id="b-public" name="b-type" v-model="bBuildingType" value="public">
+                        <label class="form-check-label" for="b-public">공동주택</label>
                     </div>
                     <div class="form-check col-lg-4 justify-content-around">
-                        <input class="form-check-input" type="radio" id="period-one" name="ap-business-type">
-                        <label class="form-check-label" for="period-one">단독주택</label>
+                        <input class="form-check-input" type="radio" id="b-private" name="b-type" v-model="bBuildingType" value="private">
+                        <label class="form-check-label" for="b-private">단독주택</label>
                     </div>
                 </div>
             </div>
 
-
+            <!-- 주차 여부 -->
             <div class="col-sm-6 mb-3 w-100">
                 <div class="form-label pt-3 pb-2 fw-bold">주차여부</div>
                 <div class="container row w-100">
                     <div class="form-check col-lg-6 justify-content-around">
-                        <input class="form-check-input" type="radio" id="period-one" name="ap-business-type">
-                        <label class="form-check-label" for="period-one">가능</label>
+                        <input class="form-check-input" type="radio" id="b-park-o" name="b-parking" v-model="bParking" value="true">
+                        <label class="form-check-label" for="b-park-o">가능</label>
                     </div>
                     <div class="form-check col-lg-6 justify-content-around">
-                        <input class="form-check-input" type="radio" id="period-one" name="ap-business-type">
-                        <label class="form-check-label" for="period-one">불가능</label>
+                        <input class="form-check-input" type="radio" id="b-park-x" name="b-parking" v-model="bParking" value="false">
+                        <label class="form-check-label" for="b-park-x">불가능</label>
                     </div>
                 </div>
             </div>
 
+            <!-- 엘리베이터 유무 -->
             <div class="col-sm-6 mb-3 w-100">
                 <div class="form-label pt-3 pb-2 fw-bold">엘리베이터</div>
                 <div class="container row w-100">
                     <div class="form-check col-lg-6 justify-content-around">
-                        <input class="form-check-input" type="radio" id="period-one" name="ap-business-type">
-                        <label class="form-check-label" for="period-one">있음</label>
+                        <input class="form-check-input" type="radio" id="b-elevator-o" name="b-elevator" v-model="bElevator" value="true" >
+                        <label class="form-check-label" for="b-elevator-o">있음</label>
                     </div>
                     <div class="form-check col-lg-6 justify-content-around">
-                        <input class="form-check-input" type="radio" id="period-one" name="ap-business-type">
-                        <label class="form-check-label" for="period-one">없음</label>
+                        <input class="form-check-input" type="radio" id="b-elevator-x" name="b-elevator" v-model="bElevator" value="false" >
+                        <label class="form-check-label" for="b-elevator-x">없음</label>
                     </div>
                 </div>
             </div>
