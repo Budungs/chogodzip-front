@@ -11,12 +11,17 @@
 
         <div class="bx-home-search-content">
             <!-- 필터링 -->
-            <SearchNavBar />
+            <SearchNavBar @navigateToGosiwon="navigateToGosiwon"/>
             
             <!-- 검색 -->
             <div class="input-group" style="max-width:700px; height:70px">
-                <input class="form-control px-4 fs-lg" type="text" placeholder="주변 매물을 찾고 싶은 대학교나 전철역을 입력하세요." />
-                <button class="btn btn-primary" type="button">
+                <input 
+                  v-model="searchQuery" 
+                  class="form-control px-4 fs-lg" 
+                  type="text" 
+                  placeholder="주변 매물을 찾고 싶은 대학교나 전철역을 입력하세요."
+                />
+                <button class="btn btn-primary" @click="handleSearch">
                     <i class="fas fa-search display-6" />
                 </button>
             </div>
@@ -26,10 +31,40 @@
     </div>
 </template>
 
+
+
 <script setup>
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import SearchNavBar from './SearchNavBar.vue';
+import searchApi from '@/api/searchApi'; // 검색 API 불러오기
+
+const searchQuery = ref('');
+const router = useRouter();
+
+// 검색 버튼 클릭 시 실행
+const handleSearch = async () => {
+  console.log('searchQuery.value:', searchQuery.value); // 검색어 출력
+  const data = await searchApi.getOneUniversity({ name: searchQuery.value });
+  console.log('Fetched University Data:', data);
+
+  if (data && data.universityLat && data.universityLong) {
+    // 라우팅하여 고시원 지도 페이지로 이동
+    router.push({ 
+      name: 'GosiwonMap', // 등록된 경로 이름
+      query: { lat: data.universityLat, lng: data.universityLong }
+    });
+  } else {
+    console.error('해당 대학을 찾을 수 없습니다.');
+  }
+};
+
+// "고시원" 선택 시 호출될 함수
+const navigateToGosiwon = () => {
+  router.push('/houses/maps/gosiwons'); // 고시원 지도 페이지로 라우팅
+};
 </script>
-  
+
 <style scoped>
 /* 히어로 이미지 */
 .bx-home-search {
@@ -116,4 +151,3 @@ import SearchNavBar from './SearchNavBar.vue';
     gap: 20px;
 }
 </style>
-  
