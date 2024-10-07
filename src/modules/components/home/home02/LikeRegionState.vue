@@ -6,7 +6,7 @@
         </div>
 
         <!-- 본문 박스 -->
-        <div class="row g-4 justify-content-around align-items-center">
+        <div class="row g-4 justify-content-around align-items-center" style="height: 500px">
             <!-- 왼쪽 -->
             <div class="col-md-6">
                 <div class="border-0 h-100 w-100">
@@ -19,7 +19,7 @@
 
                     <!-- 통계 -->
                     <div class="h-50">
-                        <div class="card bg-size-cover bg-position-center border-0 overflow-hidden mb-4 mt-3 px-5 shadow rounded-3" style="background-image: url(src/assets/images/backgrounds/home-3.jpg);"><span class="img-gradient-overlay"></span>
+                        <div class="card bg-size-cover bg-position-center border-0 overflow-hidden mb-4 mt-3 px-5 pb-0 shadow rounded-3" style="background-image: url(src/assets/images/backgrounds/home-3.jpg);"><span class="img-gradient-overlay"></span>
                             <div class="card-body content-overlay pb-0 mt-2">
                                 <a href="#"><span class="badge bg-dark fs-sm">지역 변경</span></a>
                                 <div class="h1 text-light mb-1 mt-2">서울시 광진구</div>
@@ -34,10 +34,8 @@
             </div>
 
             <!-- 오른쪽 -->
-            <div class="col-md-6 h-100">
-                <div class="card bg-size-cover bg-position-center border-0 overflow-hidden h-100" style="height:600px">
-                    <DetailMap :latitude="37.541609091148" :longitude="127.0717799526"/>
-                </div>
+            <div class="col-md-6 h-100 pb-4">
+                <LikedMap />
             </div>
         </div>
     </div>
@@ -46,7 +44,7 @@
 <script setup>
 import RouterButton from './RouterButton.vue';
 import StatsForLikeRegion from './StatsForLikeRegion.vue';
-import DetailMap from '@/common/components/DetailMap.vue';
+import LikedMap from './LikedMap.vue';
 </script>
 
 <style scoped>
