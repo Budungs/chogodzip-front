@@ -8,23 +8,23 @@
             <ul class="list-unstyled">
             <li class="d-flex align-items-center">
                 <i class="far fa-check-circle me-2" :class="{ 'text-primary' : categorySelected }" ></i>
-                <a class="nav-link fw-normal ps-1 p-0" href="#room-category" data-scroll data-scroll-offset="20">매물 유형</a>
+                <a class="nav-link fw-normal ps-1 p-0" data-scroll data-scroll-offset="20">매물 유형</a>
             </li>
             <li class="d-flex align-items-center">
                 <i class="far fa-check-circle me-2" :class="{ 'text-primary' : basicInfoFilled }" ></i>
-                <a class="nav-link fw-normal ps-1 p-0" href="#location" data-scroll data-scroll-offset="20">이용 정보</a>
+                <a class="nav-link fw-normal ps-1 p-0" data-scroll data-scroll-offset="20">이용 정보</a>
             </li>
             <li class="d-flex align-items-center">
-                <i class="far fa-check-circle me-2"></i>
-                <a class="nav-link fw-normal ps-1 p-0" href="#location" data-scroll data-scroll-offset="20">대출 정보</a>
+                <i class="far fa-check-circle me-2" :class="{ 'text-primary' : loanInfoFilled }" ></i>
+                <a class="nav-link fw-normal ps-1 p-0" data-scroll data-scroll-offset="20">대출 정보</a>
             </li>
             <li class="d-flex align-items-center">
-                <i class="far fa-check-circle me-2"></i>
-                <a class="nav-link fw-normal ps-1 p-0" href="#location" data-scroll data-scroll-offset="20">시설 정보</a>
+                <i class="far fa-check-circle me-2" :class="{ 'text-primary' : facilitiesFilled }" ></i>
+                <a class="nav-link fw-normal ps-1 p-0" data-scroll data-scroll-offset="20">시설 정보</a>
             </li>
             <li class="d-flex align-items-center">
-                <i class="far fa-check-circle me-2"></i>
-                <a class="nav-link fw-normal ps-1 p-0" href="#location" data-scroll data-scroll-offset="20">건물 정보</a>
+                <i class="far fa-check-circle me-2" :class="{ 'text-primary' : buildingFilled }" ></i>
+                <a class="nav-link fw-normal ps-1 p-0" data-scroll data-scroll-offset="20">건물 정보</a>
             </li>
             </ul>
         </div>
@@ -39,4 +39,7 @@ const store = usePostRoomStore();
 const progress = computed(() => store.progress);
 const categorySelected = computed(() => store.categorySelected);
 const basicInfoFilled = computed(() => store.basicInfoFilled);
+const loanInfoFilled = computed(() => store.loanInfoFilled);
+const facilitiesFilled = computed(() => store.facilitiesFilled);
+const buildingFilled = computed(() => store.buildingFilled);
 </script>

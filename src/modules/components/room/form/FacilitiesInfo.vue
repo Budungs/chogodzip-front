@@ -2,7 +2,7 @@
     <section class="card card-body border-0 shadow-sm p-4 mb-4" id="room-category">
         <h2 class="h4 mb-4"><i class="fas fa-archive text-primary fs-5 mt-n1 me-2" />시설 정보를 입력해주세요.</h2>
 
-        <div class="row">
+        <div class="row" @input="store.checkFacilitiesInfo">
 
             <!-- 난방 -->
             <div class="mb-4">
@@ -10,7 +10,7 @@
                 <div class="row">
                   <div class="col-sm-4">
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="h-in-middle" v-model="store.hot.control" >
+                      <input class="form-check-input" type="checkbox" id="h-in-middle" v-model="storeFac.hot.control" >
                       <label class="form-check-label" for="h-in-middle">중앙난방</label>
                     </div>
                   </div>
@@ -23,7 +23,7 @@
                 <div class="row">
                   <div class="col-sm-4">
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="c-wall-aircon" v-model="store.cool.wallAircon">
+                      <input class="form-check-input" type="checkbox" id="c-wall-aircon" v-model="storeFac.cool.wallAircon">
                       <label class="form-check-label" for="c-wall-aircon">벽걸이에어컨</label>
                     </div>
                   </div>
@@ -36,35 +36,35 @@
                 <div class="row">
                   <div class="col-sm-4">
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="l-bed" v-model="store.day.bed">
+                      <input class="form-check-input" type="checkbox" id="l-bed" v-model="storeFac.day.bed">
                       <label class="form-check-label" for="l-bed">침대</label>
                     </div>
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="l-closet" v-model="store.day.closet">
+                      <input class="form-check-input" type="checkbox" id="l-closet" v-model="storeFac.day.closet">
                       <label class="form-check-label" for="l-closet">옷장(행거)</label>
                     </div>
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="l-washing-machine" v-model="store.day.washingM">
+                      <input class="form-check-input" type="checkbox" id="l-washing-machine" v-model="storeFac.day.washingM">
                       <label class="form-check-label" for="l-washing-machine">세탁기</label>
                     </div>
                   </div>
                   <div class="col-sm-4">
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="l-desk" v-model="store.day.desk">
+                      <input class="form-check-input" type="checkbox" id="l-desk" v-model="storeFac.day.desk">
                       <label class="form-check-label" for="l-desk">책상</label>
                     </div>
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="l-refrigerator" v-model="store.day.refrig">
+                      <input class="form-check-input" type="checkbox" id="l-refrigerator" v-model="storeFac.day.refrig">
                       <label class="form-check-label" for="l-refrigerator">냉장고</label>
                     </div>
                   </div>
                   <div class="col-sm-4">
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="l-chair" v-model="store.day.chair">
+                      <input class="form-check-input" type="checkbox" id="l-chair" v-model="storeFac.day.chair">
                       <label class="form-check-label" for="l-chair">의자</label>
                     </div>
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="l-induction" v-model="store.day.induction">
+                      <input class="form-check-input" type="checkbox" id="l-induction" v-model="storeFac.day.induction">
                       <label class="form-check-label" for="l-induction">인덕션</label>
                     </div>
                   </div>
@@ -77,19 +77,19 @@
                 <div class="row">
                   <div class="col-sm-4">
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="s-digital-lock" v-model="store.security.digitLock">
+                      <input class="form-check-input" type="checkbox" id="s-digital-lock" v-model="storeFac.security.digitLock">
                       <label class="form-check-label" for="s-digital-lock">디지털도어락</label>
                     </div>
                   </div>
                   <div class="col-sm-4">
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="s-fire-killer" v-model="store.security.fireKiller">
+                      <input class="form-check-input" type="checkbox" id="s-fire-killer" v-model="storeFac.security.fireKiller">
                       <label class="form-check-label" for="s-fire-killer">소화기</label>
                     </div>
                   </div>
                   <div class="col-sm-4">
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="s-public-entrance" v-model="store.security.publicEntrance">
+                      <input class="form-check-input" type="checkbox" id="s-public-entrance" v-model="storeFac.security.publicEntrance">
                       <label class="form-check-label" for="s-public-entrance">공동현관</label>
                     </div>
                   </div>
@@ -102,5 +102,6 @@
 
 <script setup>
 import { usePostRoomStore } from '@/modules/stores/postRoom';
-const store = usePostRoomStore().facilitiesInfo;
+const store = usePostRoomStore();
+const storeFac = store.facilitiesInfo;
 </script>

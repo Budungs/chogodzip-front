@@ -7,6 +7,9 @@ export const usePostRoomStore = defineStore('postRoom', {
         progress: 0,
         categorySelected: false,
         basicInfoFilled: false,
+        loanInfoFilled: false,
+        facilitiesFilled: false,
+        buildingFilled: false,
 
         basicInfo: {
             title: '',
@@ -69,6 +72,9 @@ export const usePostRoomStore = defineStore('postRoom', {
 
             //제공 서비스
             services: {
+                securityCom: false,
+                cleanCom: false,
+                disinfectCom: false,
                 cashReceipt: false,
                 creditCard: false,
                 welcomeBox: false,
@@ -101,6 +107,7 @@ export const usePostRoomStore = defineStore('postRoom', {
                 young100: false,
                 young80: false,
                 withstand: false,
+                none: false,
             },
             mortgage: false,
         },
@@ -132,8 +139,8 @@ export const usePostRoomStore = defineStore('postRoom', {
         //건물
         buildingInfo: {
             type: '',
-            parking: false,
-            elevator: false,
+            parking: '',
+            elevator: '',
         }
     }),
 
@@ -163,6 +170,34 @@ export const usePostRoomStore = defineStore('postRoom', {
 
             if(this.basicInfoFilled) this.progress = 40;
             else this.progress = 20;
-        }
+        },
+
+        checkLoanInfo() {
+            this.loanInfoFilled = 
+                this.loanInfo.loans.hug || this.loanInfo.loans.young100 || this.loanInfo.loans.young80
+                || this.loanInfo.loans.withstand || this.loanInfo.loans.none;
+
+            if(this.loanInfoFilled) this.progress = 60;
+            else this.progress = 40;
+        },
+
+        checkFacilitiesInfo() {
+            this.facilitiesFilled = 
+                this.facilitiesInfo.hot.control || this.facilitiesInfo.cool.wallAircon 
+                || this.facilitiesInfo.day.bed || this.facilitiesInfo.day.closet 
+                || this.facilitiesInfo.day.refrig || this.facilitiesInfo.day.chair
+                || this.facilitiesInfo.security.digitLock;
+
+            if(this.facilitiesFilled) this.progress = 80;
+            else this.progress = 60;
+        },
+
+        checkBuildingInfo() {
+            this.buildingFilled = 
+                this.buildingInfo.type !== '' && this.buildingInfo.parking !== '' && this.buildingInfo.elevator !== '';
+            
+            if(this.buildingFilled) this.progress = 100;
+            else this.progress = 80;
+        },
     },
 });
