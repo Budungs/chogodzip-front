@@ -18,8 +18,8 @@
                     </div>
 
                     <!-- 통계 -->
-                    <div class="h-50">
-                        <div class="card bg-size-cover bg-position-center border-0 overflow-hidden mb-4 mt-3 px-5 pb-0 shadow rounded-3" style="background-image: url(src/assets/images/backgrounds/home-3.jpg);"><span class="img-gradient-overlay"></span>
+                    <div style="height:245px">
+                        <div class="card h-100 bg-size-cover bg-position-center border-0 overflow-hidden mb-4 mt-0 px-5 pb-0 shadow rounded-3" style="background-image: url(src/assets/images/backgrounds/home-3.jpg);"><span class="img-gradient-overlay"></span>
                             <div class="card-body content-overlay pb-0 mt-2">
                                 <a href="#"><span class="badge bg-dark fs-sm">지역 변경</span></a>
                                 <div class="h1 text-light mb-1 mt-2">서울시 광진구</div>
