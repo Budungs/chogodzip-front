@@ -1,21 +1,21 @@
 <template>
     <div class="col">
-        <div class="card shadow-sm card-hover border-0 h-100">
+        <div class="card shadow-sm card-hover border-0" style="height:370px">
             <!-- 카드 이미지 상단 -->
-            <div class="card-img-top card-img-hover position-relative">
+            <div class="card-img-top card-img-hover position-relative" style="height:310px">
                 <a class="img-overlay" :href="item.hrefUrl"></a>
                 <!-- 배지 표시 (Verified, New) -->
                 <div class="position-absolute start-0 top-0 pt-3 ps-3">
                     <span class="d-table badge bg-accent mb-1">{{ item.roomType }}</span>
                 </div>
                 <!-- 위시리스트 버튼 -->
-                <div class="content-overlay end-0 top-0 pt-3 pe-3">
+                <div class="content-overlay end-0 top-0 pt-3 pe-3 zindex-10">
                     <button class="btn btn-icon btn-light btn-xs text-primary rounded-circle" type="button" data-bs-toggle="tooltip" data-bs-placement="left" title="Add to Wishlist">
                         <i class="far fa-heart" />
                     </button>
                 </div>
                 <!-- 이미지 삽입 -->
-                <img :src="item.imgUrl" alt="Image" class="img-fluid w-100" 
+                <img :src="item.imgUrl" alt="Image" class="img-fluid w-100 h-100 position-absolute" 
                 style="height:17vh; object-fit: cover;">
             </div>
             
@@ -45,3 +45,14 @@ const props = defineProps({
     }
 })
 </script>
+
+<style scoped>
+.card-img-top img {
+    top: 50%; 
+    left: 50%;
+    height: 100%; 
+    width: auto; 
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+}
+</style>
