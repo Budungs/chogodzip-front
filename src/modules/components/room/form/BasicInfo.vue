@@ -21,6 +21,7 @@
                 </div>
             </div>
 
+
             <!-- 자취방: 임대 유형 -->
             <div v-if="category === 'jachiroom'" class="col-sm-6 mb-3 w-100">
                 <div class="form-label pt-3 pb-2 fw-bold">임대 유형<span class="text-danger">*</span></div>
@@ -69,14 +70,14 @@
             <!-- 자취방: 최소 계약 기간 -->
             <label v-if="category === 'jachiroom'" class="form-label fw-bold" for="r-min-period">최소 계약 기간<span class="text-danger">*</span></label>
             <div v-if="category === 'jachiroom'" class="input-group mb-5">
-                <input class="form-control range-slider-value-max" type="number" v-model="store.basicInfo.jachi.minContractPeriod">
+                <input class="form-control range-slider-value-max" type="number" v-model="store.basicInfo.jachi.contractMin">
                 <span class="input-group-text fs-base">개월</span>
             </div>
           
             <!-- 자취방: 방 종류 -->
             <div v-if="category === 'jachiroom'" class="mb-4">
               <label class="form-label fw-bold" for="r-type">방 종류<span class="text-danger">*</span></label>
-              <select class="form-select" id="r-type" v-model="store.basicInfo.jachi.room.type">
+              <select class="form-select" id="r-type" v-model="store.basicInfo.jachi.room.roomType">
                 <option value="" disabled hidden>방 종류를 선택하세요</option>
                 <option value="oneRoom">원룸</option>
                 <option value="twoRoomOrBilla">투룸/빌라</option>
@@ -87,7 +88,7 @@
             <!-- 자취방: 방 구조 -->
             <div v-if="category === 'jachiroom'" class="mb-4">
               <label class="form-label fw-bold" for="r-structure">방 구조<span class="text-danger">*</span></label>
-              <select class="form-select" id="r-structure" v-model="store.basicInfo.jachi.room.structure" >
+              <select class="form-select" id="r-structure" v-model="store.basicInfo.jachi.room.roomStructure" >
                 <option value="" disabled hidden>방 구조를 선택하세요</option>
                 <option value="oneOpend">원룸(오픈형)</option>
                 <option value="oneSeparated">원룸(분리형)</option>
@@ -102,12 +103,12 @@
                 <div class="col-sm-6 mb-3">
                   <label class="form-label fw-bold" for="r-count">방 개수<span class="text-danger">*</span></label>
                   <input class="form-control" type="number" id="r-count" min="1" placeholder="방 개수를 입력하세요" 
-                    v-model="store.basicInfo.jachi.room.count" >
+                    v-model="store.basicInfo.jachi.room.roomCnt" >
                 </div>
                 <div class="col-sm-6 mb-3">
                   <label class="form-label fw-bold" for="r-toilet-count">욕실 개수<span class="text-danger">*</span></label>
                   <input class="form-control" type="number" id="r-toilet-count" min="1" placeholder="욕실 개수를 입력하세요" 
-                    v-model="store.basicInfo.jachi.room.toiletCount" >
+                    v-model="store.basicInfo.jachi.room.toiletCnt" >
                 </div>
             </div>
 
@@ -147,7 +148,7 @@
             <!-- 자취방: 주실 방향 -->
             <div v-if="category === 'jachiroom'" class="mb-3 mb-5">
               <label class="form-label fw-bold" for="r-direction">주실 방향<span class="text-danger">*</span></label>
-              <select class="form-select" id="r-direction" v-model="store.basicInfo.jachi.direction" >
+              <select class="form-select" id="r-direction" v-model="store.basicInfo.jachi.roomDirection" >
                 <option value="" disabled hidden>주실 방향을 선택하세요</option>
                 <option value="south">남향</option>
                 <option value="north">북향</option>
@@ -161,35 +162,27 @@
             <div v-if="category === 'gosiwon' || category === 'sharehouse'" class="col-sm-6 mb-4 w-100">
               <div class="form-label pt-3 pb-2 fw-bold">최소 계약 기간<span class="text-danger">*</span></div>
               <div class="container row w-100">
-                    <div class="form-check col-lg-3 justify-content-around">
-                        <input class="form-check-input" type="radio" id="period-one" name="r-min-period" v-model="store.basicInfo.shared.minContractPeriod" value="1">
-                        <label class="form-check-label" for="period-one">1개월</label>
-                    </div>
-                    <div class="form-check col-lg-3">
-                        <input class="form-check-input" type="radio" id="period-two" name="r-min-period" v-model="store.basicInfo.shared.minContractPeriod" value="2">
-                        <label class="form-check-label" for="period-two">2개월</label>
-                    </div>
-                    <div class="form-check col-lg-3">
-                        <input class="form-check-input" type="radio" id="period-three" name="r-min-period" v-model="store.basicInfo.shared.minContractPeriod" value="3">
-                        <label class="form-check-label" for="period-three">3개월</label>
-                    </div>
-                    <div class="form-check col-lg-3">
-                        <input class="form-check-input" type="radio" id="period-four" name="r-min-period" v-model="store.basicInfo.shared.minContractPeriod" value="4">
-                        <label class="form-check-label" for="period-four">4개월 이상</label>
+                    <div class="form-check col-lg-3" v-for="num in 4" :key="num">
+                        <input class="form-check-input" type="radio" :id="'period-' + num" name="r-min-period" v-model="store.basicInfo.jachiElse.contractMin" :value="num">
+                        <label class="form-check-label" :for="'period-' + num">{{ num }}개월</label>
                     </div>
               </div>
             </div>
 
             <!-- 고시원 & 공유: 이용 가능 연령 -->
-            <div v-if="category !== 'jachiroom'" class="mb-1">
-                <div>
-                    <label class="form-label fw-bold" for="r-min-age">이용 가능 연령<span class="text-danger">*</span></label>
-                    <input class="form-control" type="number" id="r-min-age" min="20" v-model="store.basicInfo.shared.age.ageLimit" value="20" :disabled="store.basicInfo.shared.age.isNoAgeLimit">
-                    <div class="form-check d-flex justify-content-end pt-2 fs-sm">
-                        <input class="form-check-input" type="checkbox" id="no-age-limit" name="no-age-limit" v-model="store.basicInfo.shared.age.isNoAgeLimit">
-                        <label class="form-check-label px-2" for="no-age-limit">연령 제한 없음</label>
-                    </div>
-                </div>
+            <div v-if="category !== 'jachiroom'" class="mb-1 row">
+              <div class="col-sm-6 mb-3">
+                <label class="form-label fw-bold" for="r-min-age">최소 이용 연령<span class="text-danger">*</span></label>
+                <input class="form-control" type="number" id="r-min-age" min="20" v-model="store.basicInfo.jachiElse.age.ageMin" value="0" :disabled="store.basicInfo.jachiElse.age.isNoAgeLimit">
+              </div>
+              <div class="col-sm-6 mb-3">
+                <label class="form-label fw-bold" for="r-max-age">최대 이용 연령<span class="text-danger">*</span></label>
+                <input class="form-control" type="number" id="r-max-age" min="20" v-model="store.basicInfo.jachiElse.age.ageMax" value="0" :disabled="store.basicInfo.jachiElse.age.isNoAgeLimit">
+              </div>
+              <div class="form-check d-flex justify-content-end pt-2 fs-sm">
+                  <input class="form-check-input" type="checkbox" id="no-age-limit" name="no-age-limit" v-model="store.basicInfo.jachiElse.age.isNoAgeLimit">
+                  <label class="form-check-label px-2" for="no-age-limit">연령 제한 없음</label>
+              </div>
             </div>
 
             <!-- 고시원 + 공유주거: 남녀 구분 -->
@@ -197,19 +190,19 @@
                 <div class="form-label pt-3 pb-2 fw-bold">성별구분<span class="text-danger">*</span></div>
                 <div class="container row w-100">
                     <div class="form-check col-lg-3 justify-content-around">
-                        <input class="form-check-input" type="radio" id="no-limit" name="r-gender" v-model="store.basicInfo.shared.genderLimit" value="no-limit">
+                        <input class="form-check-input" type="radio" id="no-limit" name="r-gender" v-model="store.basicInfo.jachiElse.genderLimit" value="no-limit">
                         <label class="form-check-label" for="no-limit">구분 없음</label>
                     </div>
                     <div class="form-check col-lg-3">
-                        <input class="form-check-input" type="radio" id="separated" name="r-gender" v-model="store.basicInfo.shared.genderLimit" value="separated">
+                        <input class="form-check-input" type="radio" id="separated" name="r-gender" v-model="store.basicInfo.jachiElse.genderLimit" value="separated">
                         <label class="form-check-label" for="separated">남녀 분리</label>
                     </div>
                     <div class="form-check col-lg-3">
-                        <input class="form-check-input" type="radio" id="f-only" name="r-gender" v-model="store.basicInfo.shared.genderLimit" value="f-only">
+                        <input class="form-check-input" type="radio" id="f-only" name="r-gender" v-model="store.basicInfo.jachiElse.genderLimit" value="f-only">
                         <label class="form-check-label" for="f-only">여성 전용</label>
                     </div>
                     <div class="form-check col-lg-3">
-                        <input class="form-check-input" type="radio" id="m-only" name="r-gender" v-model="store.basicInfo.shared.genderLimit" value="m-only">
+                        <input class="form-check-input" type="radio" id="m-only" name="r-gender" v-model="store.basicInfo.jachiElse.genderLimit" value="m-only">
                         <label class="form-check-label" for="m-only">남성 전용</label>
                     </div>
                 </div>

@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 
 export const usePostRoomStore = defineStore('postRoom', {
     state: () => ({
-        category: '',
+        category: null,
         progress: 0,
         categorySelected: false,
         basicInfoFilled: false,
@@ -14,57 +14,63 @@ export const usePostRoomStore = defineStore('postRoom', {
         basicInfo: {
             title: '',
             addr: {
-                postcode: '',
-                address: '',
+                postcode: null,
+                address: null,
                 detailAddress: '',
             },
 
             prices: {
-                monthlyFeeMin: 0,
-                monthlyFeeMax: 0,
-                depositFeeMin: 0,
-                depositFeeMax: 0,
+                priceMin: 0,
+                priceMax: 0,
+                depositMin: 0,
+                depositMax: 0,
                 isNoDepositFee: false,
                 maintenanceFeeMin: 0,
                 maintenanceFeeMax: 0,
+                maintenanceFee: 0, //고시원
                 isNoMaintenanceFee: false,
-            },
-
-            //고시원
-            gosiwon: {
-                type: '',
             },
 
             //자취방
             jachi: {
-                rentType: '',
+                rentType: null,
                 moveIn: {
-                    moveInDate: '',
+                    moveInDate: null,
                     canMoveInNow: false,
                 },
-                minContractPeriod: '',
+                contractMin: 0,
                 room: {
-                    type: '',
-                    structure: '',
-                    count: 0,
-                    toiletCount: 0,
+                    roomType: null,
+                    roomStructure: null,
+                    roomCnt: 0,
+                    toiletCnt: 0,
                     thisFloor: 0,
                     totalFloor: 0,
                     totalArea: 0,
                     privateArea: 0,
                 },
-                direction: '',
+                roomDirection: null,
+            },
+
+            //자취 외 공통
+            jachiElse: {
+                contractMin: 0,
+                age: {
+                    ageMin: 0,
+                    ageMax: 0,
+                    isNoAgeLimit: false,
+                },
+                genderLimit: null,
+            },
+
+            //고시원
+            gosiwon: {
+                type: null,
             },
 
             //공유주거
             shared: {
-                shareType: '',
-                minContractPeriod: '',
-                age: {
-                    ageLimit: 20,
-                    isNoAgeLimit: false,
-                },
-                genderLimit: '',
+                shareType: null,
                 singleRoomCount: 0,
                 twinRoomCount: 0,
             },
@@ -114,18 +120,18 @@ export const usePostRoomStore = defineStore('postRoom', {
                 withstand: false,
                 none: false,
             },
-            mortgage: false,
+            hasMortgage: null,
         },
 
         //시설
         facilitiesInfo: {
-            hot: {
+            facilityHeating: {
                 control: false,
             },
-            cool: {
+            facilityCooling: {
                 wallAircon: false,
             },
-            day: {
+            facilityLife: {
                 bed: false,
                 closet: false,
                 washingM: false,
@@ -134,7 +140,7 @@ export const usePostRoomStore = defineStore('postRoom', {
                 chair: false,
                 induction: false,
             },
-            security: {
+            facilitySecurity: {
                 digitLock: false,
                 fireKiller: false,
                 publicEntrance: false,
@@ -143,15 +149,21 @@ export const usePostRoomStore = defineStore('postRoom', {
 
         //건물
         buildingInfo: {
-            type: '',
-            parking: '',
-            elevator: '',
+            buildingType: null,
+            canParking: null,
+            hasElevator: null,
         }
     }),
 
     actions: {
         checkBasicInfo() {
-            const { title, addr, prices, jachi, shared } = this.basicInfo;
+            const { title, addr, prices, jachi, jachiElse, shared, gosiwon } = this.basicInfo;
+
+            const goshiFilled = this.category === 'gosiwon'
+                && title 
+                && addr.postcode && addr.address && addr.detailAddress
+                && jachiElse.contractMin
+                && gosiwon.type;
 
             const jachiFilled = this.category === 'jachiroom' 
                 && title 
@@ -167,11 +179,11 @@ export const usePostRoomStore = defineStore('postRoom', {
                 && title 
                 && addr.postcode && addr.address && addr.detailAddress
                 && shared.shareType
-                && shared.minContractPeriod
-                && shared.genderLimit;
+                && jachiElse.contractMin
+                && jachiElse.genderLimit;
 
             
-            this.basicInfoFilled = jachiFilled || sharedFilled;
+            this.basicInfoFilled = goshiFilled || jachiFilled || sharedFilled;
 
             if(this.basicInfoFilled) this.progress = 40;
             else this.progress = 20;
@@ -188,10 +200,10 @@ export const usePostRoomStore = defineStore('postRoom', {
 
         checkFacilitiesInfo() {
             this.facilitiesFilled = 
-                this.facilitiesInfo.hot.control || this.facilitiesInfo.cool.wallAircon 
-                || this.facilitiesInfo.day.bed || this.facilitiesInfo.day.closet 
-                || this.facilitiesInfo.day.refrig || this.facilitiesInfo.day.chair
-                || this.facilitiesInfo.security.digitLock;
+                this.facilitiesInfo.facilityHeating.control || this.facilitiesInfo.facilityCooling.wallAircon 
+                || this.facilitiesInfo.facilityLife.bed || this.facilitiesInfo.facilityLife.closet 
+                || this.facilitiesInfo.facilityLife.refrig || this.facilitiesInfo.facilityLife.chair
+                || this.facilitiesInfo.facilitySecurity.digitLock;
 
             if(this.facilitiesFilled) this.progress = 80;
             else this.progress = 60;
@@ -199,7 +211,7 @@ export const usePostRoomStore = defineStore('postRoom', {
 
         checkBuildingInfo() {
             this.buildingFilled = 
-                this.buildingInfo.type !== '' && this.buildingInfo.parking !== '' && this.buildingInfo.elevator !== '';
+                this.buildingInfo.buildingType !== '' && this.buildingInfo.canParking !== '' && this.buildingInfo.hasElevator !== '';
             
             if(this.buildingFilled) this.progress = 100;
             else this.progress = 80;

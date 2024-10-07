@@ -7,14 +7,14 @@
         <div v-if="(rentType === 'monthly' && category === 'jachiroom' ) || category !== 'jachiroom'" class="d-flex align-items-center pb-4">
             <div class="w-50 pe-2">
                 <div class="input-group">
-                    <input class="form-control range-slider-value-min" type="number" v-model="store.basicInfo.prices.monthlyFeeMin">
+                    <input class="form-control range-slider-value-min" type="number" v-model="store.basicInfo.prices.priceMin">
                     <span class="input-group-text fs-base">만원</span>
                 </div>
             </div>
             <div class="text-muted">&mdash;</div>
             <div class="w-50 ps-2">
                 <div class="input-group">
-                    <input class="form-control range-slider-value-max" type="number" v-model="store.basicInfo.prices.monthlyFeeMax">
+                    <input class="form-control range-slider-value-max" type="number" v-model="store.basicInfo.prices.priceMax">
                     <span class="input-group-text fs-base">만원</span>
                 </div>
             </div>
@@ -25,14 +25,14 @@
         <div class="d-flex align-items-center g-2">
             <div class="w-50 pe-2">
                 <div class="input-group">
-                    <input class="form-control range-slider-value-min" type="number" v-model="store.basicInfo.prices.depositFeeMin" :disabled="store.basicInfo.prices.isNoDepositFee">
+                    <input class="form-control range-slider-value-min" type="number" v-model="store.basicInfo.prices.depositMin" :disabled="store.basicInfo.prices.isNoDepositFee">
                     <span class="input-group-text fs-base">만원</span>
                 </div>
             </div>
             <div class="text-muted">&mdash;</div>
             <div class="w-50 ps-2">
                 <div class="input-group">
-                    <input class="form-control range-slider-value-max" type="number" v-model="store.basicInfo.prices.depositFeeMax" :disabled="store.basicInfo.prices.isNoDepositFee">
+                    <input class="form-control range-slider-value-max" type="number" v-model="store.basicInfo.prices.depositMax" :disabled="store.basicInfo.prices.isNoDepositFee">
                     <span class="input-group-text fs-base">만원</span>
                 </div>
             </div>
@@ -44,7 +44,7 @@
 
         <!-- 관리비 -->
         <div class="form-label pt-3 pb-1">관리비<span class="text-danger">*</span></div>
-            <div class="d-flex align-items-center g-2">
+            <div v-if="category !== 'gosiwon'" class="d-flex align-items-center g-2">
                 <div class="w-50 pe-2">
                     <div class="input-group">
                         <input class="form-control range-slider-value-min" type="number" v-model="store.basicInfo.prices.maintenanceFeeMin" :disabled="store.basicInfo.prices.isNoMaintenanceFee">
@@ -57,6 +57,12 @@
                         <input class="form-control range-slider-value-max" type="number" v-model="store.basicInfo.prices.maintenanceFeeMax" :disabled="store.basicInfo.prices.isNoMaintenanceFee">
                         <span class="input-group-text fs-base">만원</span>
                     </div>
+                </div>
+            </div>
+            <div v-else class="d-flex align-items-center">
+                <div class="input-group">
+                    <input class="form-control range-slider-value-min" type="number" v-model="store.basicInfo.prices.maintenanceFee" :disabled="store.basicInfo.prices.isNoMaintenanceFee">
+                    <span class="input-group-text fs-base">만원</span>
                 </div>
             </div>
             <div class="form-check d-flex justify-content-end pt-2 fs-sm">

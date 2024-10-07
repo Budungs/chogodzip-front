@@ -44,11 +44,11 @@
       <h2  v-if="category === 'jachiroom'" class="h4 mb-4"><i class="fas fa-money-check-alt text-primary fs-5 mt-n1 me-2" />융자금 유무를 선택해주세요<span class="span text-danger">*</span></h2>
       <div v-if="category === 'jachiroom'" class="container row w-100">
           <div class="form-check col-lg-6 justify-content-around">
-              <input class="form-check-input" type="radio" id="r-mortgage-x" name="r-mortgage" v-model="store.loanInfo.mortgage" value="false">
+              <input class="form-check-input" type="radio" id="r-mortgage-x" name="r-mortgage" v-model="store.loanInfo.hasMortgage" value="false">
               <label class="form-check-label" for="r-mortgage-x">융자 없음</label>
           </div>
           <div class="form-check col-lg-6">
-              <input class="form-check-input" type="radio" id="r-mortgage-o" name="r-mortgage" v-model="store.loanInfo.mortgage" value="true">
+              <input class="form-check-input" type="radio" id="r-mortgage-o" name="r-mortgage" v-model="store.loanInfo.hasMortgage" value="true">
               <label class="form-check-label" for="r-mortgage-o">융자 있음</label>
           </div>
       </div>
