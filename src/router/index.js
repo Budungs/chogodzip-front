@@ -10,6 +10,7 @@ import communityRoutes from './community';
 import helpRoutes from './help';
 import roomRoutes from './registRoom';
 import userRoutes from './user';
+import authRoutes from './auth';
 
 
 const router = createRouter({
@@ -28,6 +29,7 @@ const router = createRouter({
     ...helpRoutes, 
     ...roomRoutes, 
     ...userRoutes,
+    ...authRoutes,
   ],
 });
 

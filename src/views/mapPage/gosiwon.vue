@@ -8,11 +8,29 @@
         @click.prevent="setTab('gosiwon')"
       >고시원</a>
       <div class="search-form">
-        <form class="search-bar" action="/search" method="GET">
-          <input type="text" name="query" placeholder="궁금한 지역을 검색하세요">
+        <form class="search-bar" @submit.prevent="handleSearch">
+          <input
+            type="text"
+            v-model="searchQuery"
+            name="query"
+            placeholder="궁금한 역명이나 대학교를 검색하세요"
+            @input="performSearch" 
+          />
           <button type="submit">검색</button>
         </form>
+      
+        <div class="search-results-dropdown" v-if="showDropdown && searchResults.length">
+          <div class="dropdown-header">
+            <button @click="closeDropdown" class="close-btn">닫기</button>
+          </div>
+          <ul>
+            <li v-for="result in searchResults" :key="result.id" @click="selectResult(result)">
+              {{ result.universityName }} ({{ result.type }})
+            </li>
+          </ul>
+        </div>
       </div>
+      
     </div>
 
     <div class="accordion" id="exampleAccordion">
@@ -26,6 +44,35 @@
         <div id="filterCollapse" class="accordion-collapse collapse show" aria-labelledby="headingFilter" data-bs-parent="#exampleAccordion">
           <div class="accordion-body">
             <div class="filter-section">
+              <div class="row">
+                <div class="filter-box">
+                  <h5>대출</h5>
+                  <div class="checkbox-group vertical">
+                   
+                    <label>
+                      <input type="checkbox" value="버팀목" v-model="filters.loan" />
+                      &nbsp 버팀목
+                    </label>
+                    
+                  </div>
+                </div>
+
+                <div class="filter-box">
+                  <h5>방 종류</h5>
+                  <div class="checkbox-group vertical">
+                    <label>
+                      <input type="checkbox" value="under" v-model="filters.floor" />
+                      &nbsp 고시원
+                    </label>
+                    <label>
+                      <input type="checkbox" value="1floor" v-model="filters.floor" />
+                      &nbsp 원룸텔
+                    </label>
+                    
+                  </div>
+                </div>
+              </div>
+
               <div class="row">
                 <div class="filter-box">
                   <h5>성별</h5>
@@ -62,7 +109,7 @@
 
               <div class="button-group">
                 <div class="submit-button-container">
-                  <button class="btn btn-submit" @click="submitFilters">필터 적용</button>
+                  <!-- <button class="btn btn-submit" @click="submitFilters">필터 적용</button> -->
                   <button class="btn btn-reset" @click="resetFilters">조건 초기화</button>
                 </div>
               </div>
@@ -80,7 +127,6 @@
         <div class="list-header">
           <p>매물 목록</p>
     
-          <!-- Sorting Dropdown -->
           <div class="sort-dropdown">
             <select v-model="selectedSort" @change="sortProperties">
               <option value="distance">거리순</option>
@@ -91,28 +137,28 @@
           </div>
         </div>
 
-        <div v-for="(property, index) in filteredProperties" :key="index" class="card">
+        <div v-for="(property, index) in filteredProperties" :key="property.roomId" class="card">
           <!-- 이미지와 판매완료 오버레이 -->
           <div class="image-container">
-            <img src="https://via.placeholder.com/150" class="card-img-top" alt="Property Image">
-            
-            <!-- 판매완료 오버레이 (isSale이 false일 때만 표시) -->
-            <div v-if="!property.isSale" class="sold-overlay">
+            <img :src="property.imgId || 'https://via.placeholder.com/150'" class="card-img-top" alt="Property Image">
+        
+            <!-- 판매완료 오버레이 (판매 완료일 때 표시) -->
+            <div v-if="property.isSale == 'T'" class="sold-overlay">
               <i class="bi bi-check-circle"></i>
               <p>판매완료</p>
             </div>
-
-            <!-- 좋아요 개수와 하트 아이콘 (판매 완료가 아닌 경우에만 표시) -->
-            <div v-if="property.isSale" class="like-overlay">
+        
+            <!-- 좋아요 개수와 하트 아이콘 (판매 완료가 아닐 때 표시) -->
+            <div v-if="property.isSale == 'F'" class="like-overlay">
               <i class="bi bi-heart-fill"></i>
               <p>{{ property.likes }}</p>
             </div>
           </div>
-          
+        
           <div class="card-body">
-            <h5 class="card-title">{{ property.name }}</h5>
-            <p class="card-text fs-sm">전세 {{ property.price }} 만원 | 월세 {{ property.price }} 만원</p>
-            
+            <h5 class="card-title">{{ property.roomName }}</h5>
+            <p class="card-text fs-sm">월세 {{ property.depositMax }} 만원 | 전세 {{ property.priceMax }} 만원</p>
+        
             <a href="#" class="btn btn-sm btn-primary">상세보기</a>
         
             <!-- 관심매물 아이콘 -->
@@ -121,6 +167,8 @@
             </div>
           </div>
         </div>
+        
+        
         
         
       </div>
@@ -163,22 +211,90 @@
 
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue';
+import api from '@/api/mapApi'; // 고시원 데이터를 가져올 api 파일
+import markerImageSrc from '@/assets/img/room/house1.png'; // 마커 이미지
+import searchApi from '@/api/searchApi';
+
+// Search query and results
+const searchQuery = ref('');
+const searchResults = ref([]);
+const showDropdown = ref(false); 
+
+// 백엔드에서 받은 대학 데이터를 저장할 상태
+const universityData = ref([]);
+
+// 검색 로직 (백엔드에서 받은 대학 데이터를 활용하여 필터링)
+const performSearch = () => {
+  const query = searchQuery.value.trim().toLowerCase();
+  if (!query) {
+    searchResults.value = [];
+    showDropdown.value = false;
+    return;
+  }
+
+  searchResults.value = universityData.value.filter((university) =>
+    university.universityName.toLowerCase().includes(query)
+  );
+  showDropdown.value = searchResults.value.length > 0;
+};
+
+// 검색 결과 선택 시 검색창에 대학 이름 입력 및 드롭다운 닫기
+const selectResult = (result) => {
+  searchQuery.value = result.universityName;
+  console.log(searchQuery.value);
+ 
+  showDropdown.value = false; // 드롭다운 닫기
+  handleSearch();
+};
+
+const fetchUniversityData = async () => {
+  try {
+    const data = await searchApi.getUniversityList(); // API 호출 (대학 데이터 가져오기)
+    universityData.value = data; // 받아온 대학 데이터를 상태에 저장
+    console.log('Fetched University Data:', universityData.value);
+  } catch (error) {
+    console.error('대학 데이터를 가져오는 중 오류 발생:', error);
+  }
+};
+
+
+
+const handleSearch = async () => {
+  
+    console.log('searchQuery.value:', searchQuery.value); // 검색어 출력
+    const data = await searchApi.getOneUniversity({name : searchQuery.value });
+    console.log('Fetched University Data:', data);
+
+    if (data && data.universityLat && data.universityLong) {
+      // 대학의 위도 및 경도를 사용하여 새로운 지도 중심 좌표 설정
+      const newCenter = new kakao.maps.LatLng(data.universityLat, data.universityLong);
+      console.log('New center:', newCenter); // 새로운 중심 좌표 출력
+      
+      if (map.value) {
+        map.value.setCenter(newCenter); // 지도 중심 이동
+        console.log('Map center moved to:', newCenter);
+        await fetchGosiwonData(newCenter.getLat(), newCenter.getLng());
+      } else {
+        console.error('Map is not initialized.');
+      }
+    } else {
+      console.error('해당 대학을 찾을 수 없습니다.');
+    }
+ 
+};
+
+const closeDropdown = () => {
+  showDropdown.value = false;
+};
 
 // 탭 상태 관리
 const activeTab = ref('gosiwon');
-const showFilters = ref(true);
 
 // 고시원 매물 데이터 설정
-const propertiesData = {
-  gosiwon: [
-    { name: '건대 고시원',  price: 500, gender: '남성', isSale: true },
-    { name: '관악구 고시원', price: 600, gender: '여성', isSale: false },
-    { name: '낙성대 고시원', price: 550, gender: '남녀공용', isSale: true },
-  ],
-};
+const propertiesData = ref([]); // API로부터 데이터를 받을 상태
 
 // 하트 아이콘 상태 관리
-const heartIcons = ref(Array(propertiesData.gosiwon.length).fill('far fa-heart'));
+const heartIcons = ref([]);
 
 // 하트 아이콘 토글 함수
 const toggleHeartIcon = (index) => {
@@ -189,18 +305,17 @@ const toggleHeartIcon = (index) => {
 // 필터 관리
 const filters = reactive({
   gender: ['남성', '여성', '남녀공용'],
-  deposit: 10000000,
+  loan: [], // 대출 필터 초기화
+  floor: ['under', '1floor'], // 방 종류 필터 초기화
+  deposit: 5000000,
   rent: 5000000,
 });
 
 // 필터 값 형식 처리
-const formattedDeposit = computed(() => {
-  return `${(filters.deposit / 10000000).toFixed(1)}억 원`;
-});
-
-const formattedRent = computed(() => {
-  return `${(filters.rent / 10000).toFixed(1)}만원`;
-});
+const formattedDeposit = computed(
+  () => `${(filters.deposit / 10000000).toFixed(1)}억 원`
+);
+const formattedRent = computed(() => `${(filters.rent / 10000).toFixed(1)}만원`);
 
 // 탭 전환 시 필터 초기화 및 탭 변경 처리
 const setTab = (tab) => {
@@ -211,22 +326,58 @@ const setTab = (tab) => {
 // 필터 초기화
 const resetFilters = () => {
   filters.gender = ['남성', '여성', '남녀공용'];
-  filters.deposit = 100000000;
+  filters.loan = [];
+  filters.floor = ['under', '1floor'];
+  filters.deposit = 5000000;
   filters.rent = 5000000;
 };
 
-// 필터 적용된 매물 목록 계산
+// 필터링된 매물을 computed로 정의
 const filteredProperties = computed(() => {
-  const properties = propertiesData[activeTab.value];
+  const filtered = propertiesData.value.filter((property) => {
+    // 방 종류 필터: 고시원(HOUTP00001) 또는 원룸텔(HOUTP00003)이 체크된 경우 해당하는 항목 필터링
+    const matchesFloor = filters.floor.length === 0 || (
+      (filters.floor.includes('고시원') && property.houseTypeCd === 'HOUTP00001') ||
+      (filters.floor.includes('원룸텔') && property.houseTypeCd === 'HOUTP00003')
+    );
 
-  return properties.filter((property) => {
-    const matchesRent = property.price <= filters.rent;
-    const matchesDeposit = filters.deposit === 0 || property.price <= filters.deposit;
-    const matchesGender =
-      filters.gender.length === 0 || filters.gender.includes(property.gender);
-    return matchesRent && matchesDeposit && matchesGender;
+    // 보증금 필터: 매물의 보증금이 필터에서 설정한 값보다 작거나 같은 매물
+    const matchesDeposit = property.depositMin <= filters.deposit;
+
+    // 월세 필터: 매물의 월세가 필터에서 설정한 값보다 작거나 같은 매물
+    const matchesRent = property.priceMin <= filters.rent;
+
+    // 성별 필터: 선택된 성별 중 하나라도 일치하면 해당 매물 표시
+    const matchesGender = filters.gender.length === 0 || (
+      (filters.gender.includes('남성') && property.genderCd === 'GENDR00002') ||
+      (filters.gender.includes('여성') && property.genderCd === 'GENDR00003') ||
+      (filters.gender.includes('성별무관') && property.genderCd === 'GENDR00001') ||
+      (filters.gender.includes('남녀공용') && property.genderCd === 'GENDR00004')
+    );
+
+    return matchesFloor && matchesDeposit && matchesRent && matchesGender;
   });
+
+  // 정렬 로직 추가
+  return sortProperties(filtered);
 });
+
+// 정렬 로직
+const sortProperties = (properties) => {
+  switch (selectedSort.value) {
+    case 'distance':
+      return properties.sort((a, b) => a.distance - b.distance);
+    case 'highPrice':
+      return properties.sort((a, b) => b.priceMax - a.priceMax);
+    case 'lowPrice':
+      return properties.sort((a, b) => a.priceMin - b.priceMin);
+    case 'likes':
+      return properties.sort((a, b) => b.likes - a.likes);
+    default:
+      return properties;
+  }
+};
+
 
 // 필터 적용 함수
 const submitFilters = () => {
@@ -237,88 +388,153 @@ const submitFilters = () => {
 const map = ref(null);
 const markers = ref([]);
 
-onMounted(() => {
+const fetchGosiwonData = async (lat, lng) => {
+  try {
+    const params = { lat, lng }; 
+    const data = await api.getGosiwonList({ params }); 
+
+    propertiesData.value = data; // 받아온 데이터를 상태에 저장
+    heartIcons.value = Array(data.length).fill('far fa-heart'); // 하트 아이콘 초기화
+
+    // 기존 마커 초기화
+    markers.value.forEach((marker) => marker.setMap(null));
+    markers.value = [];
+
+    // 새 마커 생성
+    markers.value = data.map((property) => {
+      const markerPosition = new kakao.maps.LatLng(property.roomLat, property.roomLong);
+      const marker = new kakao.maps.Marker({
+        position: markerPosition,
+        title: property.roomName,
+        image: new kakao.maps.MarkerImage(markerImageSrc, new kakao.maps.Size(30, 35)),
+      });
+      marker.setMap(map.value); 
+      return marker;
+    });
+
+    // 콘솔에서 데이터 확인 (필요시)
+    console.log('Fetched Gosiwon Data:', propertiesData.value);
+
+  } catch (error) {
+    console.error('고시원 데이터를 가져오는 중 오류 발생:', error);
+  }
+};
+
+
+// 컴포넌트 마운트 후 지도 초기화 및 고시원 리스트 불러오기
+onMounted(async () => {
+  // 대학 데이터를 받아오는 함수 (백엔드 API 사용)
+
   const container = document.getElementById('map');
   const options = {
-    center: new kakao.maps.LatLng(37.5665, 126.9780),
-    level: 5,
+    center: new kakao.maps.LatLng(37.5665, 126.9780), // 초기 지도 중심 좌표 (서울 기준)
+    level: 5, // 지도 확대 레벨
   };
 
   map.value = new kakao.maps.Map(container, options);
 
-  const clusterer = new kakao.maps.MarkerClusterer({
-    map: map.value,
-    averageCenter: true,
-    minLevel: 7,
+  // 초기 로드 시 지도 중심 좌표를 사용하여 고시원 데이터 가져오기
+  const center = map.value.getCenter();
+  await fetchGosiwonData(center.getLat(), center.getLng());
+
+  // 지도 드래그 완료 후, 새로운 중심 좌표로 고시원 데이터 가져오기
+  kakao.maps.event.addListener(map.value, 'dragend', async () => {
+    console.log('지도 드래그가 끝났습니다.');
+    const center = map.value.getCenter(); // 드래그 후 중심 좌표
+    await fetchGosiwonData(center.getLat(), center.getLng()); // 중심 좌표로부터 고시원 데이터 가져오기
   });
 
-  const markerData = [
-    { lat: 37.5665, lng: 126.9780, title: 'Marker 1' },
-    { lat: 37.5655, lng: 126.9760, title: 'Marker 2' },
-    { lat: 37.5645, lng: 126.9750, title: 'Marker 3' },
-  ];
-
-  markers.value = markerData.map(({ lat, lng, title }) => {
-    const markerPosition = new kakao.maps.LatLng(lat, lng);
-    const marker = new kakao.maps.Marker({ position: markerPosition, title });
-    return marker;
-  });
-
-  clusterer.addMarkers(markers.value);
+  await fetchUniversityData();
 });
 
 // 상태 관리
 const selectedCity = ref('서울시');
 const selectedDistrict = ref('');
+const selectedNeighborhood = ref(''); // 선택된 동을 관리하는 변수
 const showDistrictSelect = ref(false);
 
 // 서울시의 구 리스트
 const districts = [
-  '강남구', '강동구', '강북구', '강서구', '관악구', '광진구', '구로구', '금천구',
-  '노원구', '도봉구', '동대문구', '동작구', '마포구', '서대문구', '서초구', '성동구',
-  '성북구', '송파구', '양천구', '영등포구', '용산구', '은평구', '종로구', '중구', '중랑구'
+  '강남구',
+  '강동구',
+  '강북구',
+  '강서구',
+  '관악구',
+  '광진구',
+  '구로구',
+  '금천구',
+  '노원구',
+  '도봉구',
+  '동대문구',
+  '동작구',
+  '마포구',
+  '서대문구',
+  '서초구',
+  '성동구',
+  '성북구',
+  '송파구',
+  '양천구',
+  '영등포구',
+  '용산구',
+  '은평구',
+  '종로구',
+  '중구',
+  '중랑구',
 ];
+
+// 각 구의 좌표 설정
+const districtCoordinates = {
+  강남구: { lat: 37.5172, lng: 127.0473 },
+  강동구: { lat: 37.5301, lng: 127.1238 },
+  강북구: { lat: 37.6396, lng: 127.0257 },
+  강서구: { lat: 37.5509, lng: 126.8495 },
+  관악구: { lat: 37.4784, lng: 126.9514 },
+  광진구: { lat: 37.5384, lng: 127.0823 },
+  구로구: { lat: 37.4955, lng: 126.8875 },
+  금천구: { lat: 37.4569, lng: 126.8955 },
+  노원구: { lat: 37.6544, lng: 127.0564 },
+  도봉구: { lat: 37.6688, lng: 127.0466 },
+  동대문구: { lat: 37.5744, lng: 127.0399 },
+  동작구: { lat: 37.5124, lng: 126.9393 },
+  마포구: { lat: 37.5638, lng: 126.9084 },
+  서대문구: { lat: 37.5791, lng: 126.9368 },
+  서초구: { lat: 37.4836, lng: 127.0327 },
+  성동구: { lat: 37.5502, lng: 127.0413 },
+  성북구: { lat: 37.5894, lng: 127.0167 },
+  송파구: { lat: 37.5145, lng: 127.1054 },
+  양천구: { lat: 37.5162, lng: 126.8665 },
+  영등포구: { lat: 37.5262, lng: 126.8962 },
+  용산구: { lat: 37.5324, lng: 126.9903 },
+  은평구: { lat: 37.6176, lng: 126.9227 },
+  종로구: { lat: 37.5735, lng: 126.9792 },
+  중구: { lat: 37.5637, lng: 126.9973 },
+  중랑구: { lat: 37.6063, lng: 127.0923 },
+};
+
+const selectedSort = ref('distance');
 
 // 구 선택 처리
 const setDistrict = (district) => {
   selectedDistrict.value = district;
   selectedNeighborhood.value = '';
   showDistrictSelect.value = false;
-};
-const selectedNeighborhood = ref('');
 
-// Sorting Options
-const selectedSort = ref('distance'); // Default sorting by distance
-
-const sortedProperties = computed(() => {
-  const properties = [...filteredProperties.value]; // Copy the filtered properties
-
-  switch (selectedSort.value) {
-    case 'highPrice':
-      return properties.sort((a, b) => b.price - a.price);
-    case 'lowPrice':
-      return properties.sort((a, b) => a.price - b.price);
-    case 'likes':
-      return properties.sort((a, b) => (b.likes || 0) - (a.likes || 0)); // Assuming properties have a 'likes' field
-    case 'distance':
-    default:
-      return properties.sort((a, b) => (a.distance || 0) - (b.distance || 0)); // Assuming properties have a 'distance' field
+  // 선택한 구의 좌표로 지도 중심 이동
+  const coordinates = districtCoordinates[district];
+  if (coordinates) {
+    console.log(coordinates.lat, coordinates.lng);
+    const newCenter = new kakao.maps.LatLng(coordinates.lat, coordinates.lng);
+    if (map.value) {
+      map.value.setCenter(newCenter); // 지도 중심을 이동
+      fetchGosiwonData(newCenter.getLat(), newCenter.getLng()); // 이동 후 새로운 중심 좌표로 데이터 가져오기
+    } else {
+      console.error('Map is not initialized');
+    }
   }
-});
-
-// Mock 'likes' and 'distance' data
-propertiesData.gosiwon = propertiesData.gosiwon.map((property, index) => ({
-  ...property,
-  likes: Math.floor(Math.random() * 100), // Random likes data for demo
-  distance: Math.random() * 10, // Random distance data for demo (in km)
-}));
-
-const sortProperties = () => {
-  console.log(`Sorted by: ${selectedSort.value}`);
 };
-
 
 </script>
+
 
 <style scoped>
 @import "../../assets/css/mapPage/gosiwon.css";
