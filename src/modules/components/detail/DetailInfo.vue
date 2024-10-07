@@ -1,30 +1,34 @@
 <template>
     <div class="white-box p-5 mb-4">
-        <div class="d-flex justify-content-center h4"><span>서울시 광진구 화양동 144-1</span><span>다세대(빌라/연립)</span></div>
+        <div class="d-flex justify-content-center h4">
+            <span>{{ cardData.roomAddrFl }}</span><span>다세대(빌라/연립)</span>
+        </div>
+
+        <!-- Conditionally render features based on parsed tags -->
         <div class="features d-flex justify-content-between">
             <div class="feature">
                 <img :src="ApartmentIcon" alt="Loan Icon" />
-                <span>개인화장실</span>
+                <span>{{ parsedTags.includes('개인화장실') ? '개인화장실' : '공용화장실' }}</span>
             </div>
             <div class="feature">
                 <img :src="FoodIcon" height="45" width="45" alt="식사" />
-                <span>식사제공</span>
+                <span>{{ parsedTags.includes('식사제공') ? '식사제공' : '식사 미제공' }}</span>
             </div>
             <div class="feature">
                 <img :src="DepartmentIcon" alt="Room Icon" />
-                <span>2~3층</span>
+                <span>{{ cardData.floor }}층</span>
             </div>
             <div class="feature">
                 <img :src="DepartmentIcon" alt="Area Icon" />
-                <span>방 12개</span>
+                <span>방 {{ cardData.roomCnt }} 개</span>
             </div>
             <div class="feature">
                 <img :src="ParkingIcon" alt="Parking Icon" />
-                <span>주차가능</span>
+                <span>{{ parsedTags.includes('주차') ? '주차가능' : '주차불가능' }}</span>
             </div>
             <div class="feature">
-                <img :src="ToiletIcon" alt="Pets Icon" />
-                <span>남녀공용</span>
+                <img :src="ToiletIcon" alt="Gender Icon" />
+                <span>{{ genderType }}</span>
             </div>
         </div>
 
@@ -40,23 +44,40 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import ApartmentIcon from '@/assets/img/detail/Apartment.png';
 import DepartmentIcon from '@/assets/img/detail/Department.png';
 import ParkingIcon from '@/assets/img/detail/Parking.png';
 import ToiletIcon from '@/assets/img/detail/Toilet.png';
 import FoodIcon from '@/assets/img/detail/Food.png';
+import { computed } from 'vue';
+import { defineProps } from 'vue';
 
-export default {
-    data() {
-        return {
-            ApartmentIcon,
-            DepartmentIcon,
-            ParkingIcon,
-            ToiletIcon, FoodIcon
-        }
+const props = defineProps({
+    cardData: {
+        type: Object,
+        required: true
     }
-}
+});
+
+// Parse tags from cardData
+const parsedTags = computed(() => {
+    return props.cardData.tags ? props.cardData.tags.split('|') : [];
+});
+
+// Determine gender type based on genderCd
+const genderType = computed(() => {
+    switch (props.cardData.genderCd) {
+        case 'GENDR00002':
+            return '남성전용';
+        case 'GENDR00003':
+            return '여성전용';
+        case 'GENDR00004':
+            return '남녀분리';
+        default:
+            return '남녀공용';
+    }
+});
 </script>
 
 <style scoped>

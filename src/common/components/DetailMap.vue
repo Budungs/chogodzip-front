@@ -3,25 +3,32 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue';
+import { onMounted, watch } from 'vue';
 import hospitalImage from '@/assets/img/hospital.png';
 import martImage from '@/assets/img/shop.png';
 import subwayImage from '@/assets/img/subway.png';
 
 const props = defineProps({
     latitude: {
-        type: Number,
+        type: Number, // Updated to Number to ensure it's treated correctly
         required: true
     },
     longitude: {
-        type: Number,
+        type: Number, // Updated to Number to ensure it's treated correctly
         required: true
     }
 });
 
 onMounted(() => {
-    // Kakao 지도 API 스크립트 동적으로 로드
+    loadMap(); // Load map when the component is mounted
+});
 
+// Watch for changes to latitude and longitude, and update the map if needed
+watch(() => [props.latitude, props.longitude], () => {
+    loadMap(); // Reload the map if coordinates change
+});
+
+function loadMap() {
     const markerImages = {
         HP8: hospitalImage,
         PM9: hospitalImage,
@@ -30,34 +37,33 @@ onMounted(() => {
         SW8: subwayImage
     };
 
-    // 마커를 클릭하면 장소명을 표출할 인포윈도우 입니다
     var infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
 
-    var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
-        mapOption = {
-            center: new kakao.maps.LatLng(props.latitude, props.longitude), // 지도의 중심좌표
-            level: 3 // 지도의 확대 레벨
-        };
+    var mapContainer = document.getElementById('map');
+    if (!mapContainer) return; // Ensure the map container is available
 
-    // 지도를 생성합니다    
+    var mapOption = {
+        center: new kakao.maps.LatLng(props.latitude, props.longitude), // Center map with props
+        level: 3 // Map zoom level
+    };
+
+    // Create the map
     var map = new kakao.maps.Map(mapContainer, mapOption);
 
+    // Add a marker at the center
     var marker = new kakao.maps.Marker({
         map: map,
         position: new kakao.maps.LatLng(props.latitude, props.longitude)
     });
 
-    // 장소 검색 객체를 생성합니다
     var ps = new kakao.maps.services.Places(map);
 
-    // 카테고리로 은행을 검색합니다
-    ps.categorySearch('MT1', placesSearchCB, { useMapBounds: true });
-    ps.categorySearch('CS2', placesSearchCB, { useMapBounds: true });
-    ps.categorySearch('HP8', placesSearchCB, { useMapBounds: true });
-    ps.categorySearch('PM9', placesSearchCB, { useMapBounds: true });
-    ps.categorySearch('SW8', placesSearchCB, { useMapBounds: true });
+    // Search categories (you can add or remove categories as needed)
+    const categories = ['MT1', 'CS2', 'HP8', 'PM9', 'SW8'];
+    categories.forEach(category => {
+        ps.categorySearch(category, placesSearchCB, { useMapBounds: true });
+    });
 
-    // 키워드 검색 완료 시 호출되는 콜백함수 입니다
     function placesSearchCB(data, status, pagination) {
         if (status === kakao.maps.services.Status.OK) {
             for (var i = 0; i < data.length; i++) {
@@ -67,25 +73,20 @@ onMounted(() => {
     }
 
     function displayMarker(place) {
-        // 카테고리에 맞는 마커 이미지 선택 (예: 은행이면 다른 아이콘)
-        let markerImage = markerImages[place.category_group_code]; // 기본값: 병원 이미지 사용
+        let markerImage = markerImages[place.category_group_code] || hospitalImage; // Default image
 
-        // 마커를 생성하고 지도에 표시합니다
         var marker = new kakao.maps.Marker({
             map: map,
             position: new kakao.maps.LatLng(place.y, place.x),
-            image: new kakao.maps.MarkerImage(markerImage, new kakao.maps.Size(40, 40)) // 마커 이미지 설정
+            image: new kakao.maps.MarkerImage(markerImage, new kakao.maps.Size(40, 40)) // Marker size
         });
 
-        // 마커에 클릭이벤트를 등록합니다
         kakao.maps.event.addListener(marker, 'click', function () {
-            // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
             infowindow.setContent('<div style="padding:5px;font-size:12px;">' + place.place_name + '</div>');
             infowindow.open(map, marker);
         });
     }
-
-});
+}
 </script>
 
 <style scoped>
