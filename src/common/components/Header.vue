@@ -7,12 +7,12 @@
             </a>
 
             <!-- 로그인했을 경우 마이페이지 라우터 모달: 닉네임, 프로필 사진 표시 -->
-            <div v-if="isUser" class="dropdown d-none d-lg-block order-lg-3 my-n2 me-3">
+            <div v-if="islogin == true" class="dropdown d-none d-lg-block order-lg-3 my-n2 me-3">
                 <a class="d-block py-2" href="#"><img class="rounded-circle" src="@/assets/images/pfp/pfp01.png" width="40" alt="User"></a>
                 <div class="dropdown-menu dropdown-menu-end">
                     <div class="d-flex align-items-start border-bottom px-3 py-1 mb-2" style="width: 16rem;"><img class="rounded-circle" src="@/assets/images/pfp/pfp01.png" width="48" alt="User">
                         <div class="ps-2">
-                            <h6 class="fs-base mb-0">제갈민수</h6>
+                            <h6 class="fs-base mb-0">{{id}}</h6>
                             <div class="fs-xs py-0">관심지역: 서울시 광진구</div>
                         </div>
                     </div>
@@ -30,10 +30,8 @@
             </div>
 
             <!-- 로그인 / 회원가입 버튼 -->
-            <!-- 임시 로그인 버튼 (로그인 구현 후 삭제)-->
-            <div v-if="!isUser" class="btn btn btn-outline-accent btn-sm rounded-pill ms-2 order-lg-3" @click="signIn">임시 로그인 버튼(이후 삭제)</div>
             <!-- 임시 상태변화용 요소 -->
-            <a v-if="!isUser" class="btn btn btn-outline-accent btn-sm rounded-pill ms-2 order-lg-3" href="login">
+            <a v-if="islogin == false" class="btn btn btn-outline-accent btn-sm rounded-pill ms-2 order-lg-3" href="/auth/login">
                 로그인 | <span class='d-none d-sm-inline'>회원 가입</span>
             </a>
 
@@ -73,11 +71,27 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { useAuthStore } from '@/stores/auth';
+import { computed } from 'vue';
 
-// 임시 로그인 - 로그아웃 처리
-let isUser = ref(false);
+// kakao login - 로그인 감지
+// const { login, join } = config.accoutMenus;
+const auth = useAuthStore();
 
-const signIn = () => isUser.value = true;
-const signOut = () => isUser.value = false;
+let islogin = computed(() => auth.isLogin); // islogin 을 직접 바꿀 수는 없음. (computed 속성) - 값을 바꾸려면 auth.isLogin 값을 바꿔야 함.
+console.log('islogin : ' + islogin.value);
+const id = computed(() => auth.id); // id 을 직접 바꿀 수는 없음. (computed 속성)  - 값을 바꾸려면 auth.id 값을 바꿔야 함.
+console.log('id : ' + id.value);
+
+// (임시) 로그아웃
+// const signOut = () => {
+//     auth.isLogin = false; 
+//     console.log("로그아웃했음" + islogin);
+// };
+
+const signOut = () => {
+    auth.logout(); // Pinia의 logout action 호출 (stores/auth.js)
+    console.log("로그아웃했음");
+};
+
 </script>
