@@ -3,28 +3,28 @@
         <div class="d-flex justify-content-center h4"><span>서울시 광진구 화양동 144-1</span><span>다세대(빌라/연립)</span></div>
         <div class="features d-flex justify-content-between">
             <div class="feature">
-                <img :src="ApartmentIcon" alt="Loan Icon" />
-                <span>개인화장실</span>
+                <img :src="PaperIcon" alt="전세대출" />
+                <span>전세대출가능</span>
             </div>
             <div class="feature">
-                <img :src="FoodIcon" height="45" width="45" alt="식사" />
-                <span>식사제공</span>
+                <img :src="BankIcon" alt="융자" />
+                <span>저융자</span>
             </div>
             <div class="feature">
-                <img :src="DepartmentIcon" alt="Room Icon" />
-                <span>2~3층</span>
+                <img :src="DepartmentIcon" alt="방구조" />
+                <span>원룸(복층형)</span>
             </div>
             <div class="feature">
-                <img :src="DepartmentIcon" alt="Area Icon" />
-                <span>방 12개</span>
+                <img :src="RoomIcon" alt="평수" />
+                <span>8평(27m2)</span>
             </div>
             <div class="feature">
-                <img :src="ParkingIcon" alt="Parking Icon" />
+                <img :src="ParkingIcon" alt="주차" />
                 <span>주차가능</span>
             </div>
             <div class="feature">
-                <img :src="ToiletIcon" alt="Pets Icon" />
-                <span>남녀공용</span>
+                <img :src="AnimalIcon" alt="애완동물" />
+                <span>동물가능</span>
             </div>
         </div>
 
@@ -41,19 +41,22 @@
 </template>
 
 <script>
-import ApartmentIcon from '@/assets/img/detail/Apartment.png';
-import DepartmentIcon from '@/assets/img/detail/Department.png';
+import RoomIcon from '@/assets/img/detail/Room.png';
+import PaperIcon from '@/assets/img/detail/Paper.png';
 import ParkingIcon from '@/assets/img/detail/Parking.png';
-import ToiletIcon from '@/assets/img/detail/Toilet.png';
-import FoodIcon from '@/assets/img/detail/Food.png';
+import DepartmentIcon from '@/assets/img/detail/Department.png';
+import BankIcon from '@/assets/img/detail/Bank.png';
+import AnimalIcon from '@/assets/img/detail/Animal.png';
 
 export default {
     data() {
         return {
-            ApartmentIcon,
-            DepartmentIcon,
+            RoomIcon,
+            PaperIcon,
             ParkingIcon,
-            ToiletIcon, FoodIcon
+            DepartmentIcon,
+            BankIcon,
+            AnimalIcon
         }
     }
 }
