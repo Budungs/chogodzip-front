@@ -30,6 +30,11 @@ export const usePostRoomStore = defineStore('postRoom', {
                 isNoMaintenanceFee: false,
             },
 
+            //고시원
+            gosiwon: {
+                type: '',
+            },
+
             //자취방
             jachi: {
                 rentType: '',

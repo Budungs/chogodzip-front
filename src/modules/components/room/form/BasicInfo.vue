@@ -6,6 +6,21 @@
             <!-- 제목 & 주소-->
             <NameAddressInput />
 
+            <!-- 고시원: 타입 -->
+            <div v-if="category === 'gosiwon'"  class="col-sm-6 mb-3 w-100">
+                <div class="form-label pt-3 pb-2 fw-bold">타입<span class="text-danger">*</span></div>
+                <div class="container row w-100">
+                    <div class="form-check col-lg-3 justify-content-around">
+                        <input class="form-check-input" type="radio" id="gosiwon" name="r-gosiwon-type" v-model="store.basicInfo.gosiwon.type" value="gosiwon">
+                        <label class="form-check-label" for="gosiwon">고시원</label>
+                    </div>
+                    <div class="form-check col-lg-3">
+                        <input class="form-check-input" type="radio" id="oneroomtel" name="r-gosiwon-type" v-model="store.basicInfo.gosiwon.type" value="oneroomtel">
+                        <label class="form-check-label" for="oneroomtel">원룸텔</label>
+                    </div>
+                </div>
+            </div>
+
             <!-- 자취방: 임대 유형 -->
             <div v-if="category === 'jachiroom'" class="col-sm-6 mb-3 w-100">
                 <div class="form-label pt-3 pb-2 fw-bold">임대 유형<span class="text-danger">*</span></div>
