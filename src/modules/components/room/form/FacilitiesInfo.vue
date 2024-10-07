@@ -10,8 +10,14 @@
                 <div class="row">
                   <div class="col-sm-4">
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="h-in-middle" v-model="storeFac.facilityHeating.control" >
-                      <label class="form-check-label" for="h-in-middle">중앙난방</label>
+                      <input class="form-check-input" type="checkbox" id="h-in-center" v-model="storeFac.facilityHeating.center" >
+                      <label class="form-check-label" for="h-in-center">중앙난방</label>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="h-in-personal" v-model="storeFac.facilityHeating.personal" >
+                      <label class="form-check-label" for="h-in-personal">개인난방</label>
                     </div>
                   </div>
                 </div>
@@ -23,8 +29,14 @@
                 <div class="row">
                   <div class="col-sm-4">
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="c-wall-aircon" v-model="storeFac.facilityCooling.wallAircon">
-                      <label class="form-check-label" for="c-wall-aircon">벽걸이에어컨</label>
+                      <input class="form-check-input" type="checkbox" id="c-in-center" v-model="storeFac.facilityCooling.center">
+                      <label class="form-check-label" for="c-in-center">중앙냉방</label>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="c-in-personal" v-model="storeFac.facilityCooling.personal">
+                      <label class="form-check-label" for="c-in-personal">개인냉방</label>
                     </div>
                   </div>
                 </div>
@@ -44,8 +56,16 @@
                       <label class="form-check-label" for="l-closet">옷장(행거)</label>
                     </div>
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="l-washing-machine" v-model="storeFac.facilityLife.washingM">
+                      <input class="form-check-input" type="checkbox" id="l-washing-machine" v-model="storeFac.facilityLife.washingMachine">
                       <label class="form-check-label" for="l-washing-machine">세탁기</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="l-table" v-model="storeFac.facilityLife.table">
+                      <label class="form-check-label" for="l-table">식탁</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="l-micro-wave" v-model="storeFac.facilityLife.microwave">
+                      <label class="form-check-label" for="l-micro-wave">전자레인지</label>
                     </div>
                   </div>
                   <div class="col-sm-4">
@@ -57,6 +77,14 @@
                       <input class="form-check-input" type="checkbox" id="l-refrigerator" v-model="storeFac.facilityLife.refrig">
                       <label class="form-check-label" for="l-refrigerator">냉장고</label>
                     </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="l-dryer" v-model="storeFac.facilityLife.dryer">
+                      <label class="form-check-label" for="l-dryer">건조기</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="l-air-con" v-model="storeFac.facilityLife.airCon">
+                      <label class="form-check-label" for="l-air-con">에어컨</label>
+                    </div>
                   </div>
                   <div class="col-sm-4">
                     <div class="form-check">
@@ -66,6 +94,14 @@
                     <div class="form-check">
                       <input class="form-check-input" type="checkbox" id="l-induction" v-model="storeFac.facilityLife.induction">
                       <label class="form-check-label" for="l-induction">인덕션</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="l-hair-dryer" v-model="storeFac.facilityLife.hairDryer">
+                      <label class="form-check-label" for="l-hair-dryer">헤어 드라이기</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="l-tv" v-model="storeFac.facilityLife.tv">
+                      <label class="form-check-label" for="l-tv">TV</label>
                     </div>
                   </div>
                 </div>
@@ -80,17 +116,29 @@
                       <input class="form-check-input" type="checkbox" id="s-digital-lock" v-model="storeFac.facilitySecurity.digitLock">
                       <label class="form-check-label" for="s-digital-lock">디지털도어락</label>
                     </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="s-cctv" v-model="storeFac.facilitySecurity.cctv">
+                      <label class="form-check-label" for="s-cctv">CCTV</label>
+                    </div>
                   </div>
                   <div class="col-sm-4">
                     <div class="form-check">
                       <input class="form-check-input" type="checkbox" id="s-fire-killer" v-model="storeFac.facilitySecurity.fireKiller">
                       <label class="form-check-label" for="s-fire-killer">소화기</label>
                     </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="s-spring-cooler" v-model="storeFac.facilitySecurity.springCooler">
+                      <label class="form-check-label" for="s-spring-cooler">스프링쿨러</label>
+                    </div>
                   </div>
                   <div class="col-sm-4">
                     <div class="form-check">
                       <input class="form-check-input" type="checkbox" id="s-public-entrance" v-model="storeFac.facilitySecurity.publicEntrance">
                       <label class="form-check-label" for="s-public-entrance">공동현관</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="s-fire-alarm" v-model="storeFac.facilitySecurity.fireAlarm">
+                      <label class="form-check-label" for="s-fire-alarm">화재 경보 시스템</label>
                     </div>
                   </div>
                 </div>

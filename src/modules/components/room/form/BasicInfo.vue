@@ -270,8 +270,12 @@
                       <label class="form-check-label" for="cash-receipt">현금영수증</label>
                     </div>
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="creditCard" v-model="store.basicInfo.services.creditCard">
-                      <label class="form-check-label" for="creditCard">신용카드</label>
+                      <input class="form-check-input" type="checkbox" id="credit-card" v-model="store.basicInfo.services.creditCard">
+                      <label class="form-check-label" for="credit-card">신용카드</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="manless-delivery-box" v-model="store.basicInfo.services.manlessDeliveryBox">
+                      <label class="form-check-label" for="manless-delivery-box">무인택배함</label>
                     </div>
                   </div>
 

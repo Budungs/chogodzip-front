@@ -90,6 +90,7 @@ export const usePostRoomStore = defineStore('postRoom', {
                 creditCard: false,
                 welcomeBox: false,
                 freeMeal: false,
+                manlessDeliveryBox: false,
             },
 
             //외국어 응대
@@ -126,24 +127,35 @@ export const usePostRoomStore = defineStore('postRoom', {
         //시설
         facilitiesInfo: {
             facilityHeating: {
-                control: false,
+                center: false,
+                personal: false,
             },
             facilityCooling: {
-                wallAircon: false,
+                center: false,
+                personal: false,
             },
             facilityLife: {
                 bed: false,
                 closet: false,
-                washingM: false,
+                washingMachine: false,
                 desk: false,
                 refrig: false,
                 chair: false,
                 induction: false,
+                dryer: false,
+                hairDryer: false,
+                table: false,
+                airCon: false,
+                tv: false,
+                microwave:false,
             },
             facilitySecurity: {
                 digitLock: false,
                 fireKiller: false,
                 publicEntrance: false,
+                cctv: false,
+                springCooler: false,
+                fireAlarm: false,
             },
         },
 
@@ -200,10 +212,12 @@ export const usePostRoomStore = defineStore('postRoom', {
 
         checkFacilitiesInfo() {
             this.facilitiesFilled = 
-                this.facilitiesInfo.facilityHeating.control || this.facilitiesInfo.facilityCooling.wallAircon 
-                || this.facilitiesInfo.facilityLife.bed || this.facilitiesInfo.facilityLife.closet 
+                this.facilitiesInfo.facilityHeating.center || this.facilitiesInfo.facilityHeating.personal
+                || this.facilitiesInfo.facilityCooling.center || this.facilitiesInfo.facilityCooling.personal
+                || this.facilitiesInfo.facilityLife.table || this.facilitiesInfo.facilityLife.closet 
                 || this.facilitiesInfo.facilityLife.refrig || this.facilitiesInfo.facilityLife.chair
-                || this.facilitiesInfo.facilitySecurity.digitLock;
+                || this.facilitiesInfo.facilitySecurity.digitLock || this.facilitiesInfo.facilitySecurity.cctv
+                || this.facilitiesInfo.facilitySecurity.fireKiller || this.facilitiesInfo.facilitySecurity.springCooler;
 
             if(this.facilitiesFilled) this.progress = 80;
             else this.progress = 60;
