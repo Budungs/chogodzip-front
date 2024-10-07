@@ -11,6 +11,7 @@ import helpRoutes from './help';
 import roomRoutes from './registRoom';
 import userRoutes from './user';
 import authRoutes from './auth';
+import errorRoutes from './error';
 
 
 const router = createRouter({
@@ -30,6 +31,7 @@ const router = createRouter({
     ...roomRoutes, 
     ...userRoutes,
     ...authRoutes,
+    ...errorRoutes,
   ],
 });
 
