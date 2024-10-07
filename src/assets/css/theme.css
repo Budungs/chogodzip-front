@@ -5618,9 +5618,6 @@ fieldset:disabled .btn {
   float: left;
   padding-right: 0.625rem;
   color: #9691a4;
-  content: var(--bs-breadcrumb-divider, "\e952")
-    /* rtl: var(--bs-breadcrumb-divider, "\e951") */
-  ;
 }
 
 .breadcrumb-item.active {
