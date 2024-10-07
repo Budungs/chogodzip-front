@@ -3,6 +3,7 @@
 import { reactive, ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import authApi from '@/api/authApi';
+import AddressAPI from '@/common/components/AddressAPI.vue';
 
 const router = useRouter();
 const route = useRoute();
@@ -54,6 +55,7 @@ const join = async () => {
     router.push({ name: 'home' });
   } catch (e) {
     console.error(e);
+    router.push({ path: '/error' });
   }
 };
 
@@ -131,7 +133,60 @@ onMounted(async () => {
         </label>
         <input type="password" class="form-control" placeholder="비밀번호 확인" id="password2" v-model="member.password2" />
       </div>
+      <!-- 실거주지 주소 입력 -->
+      <label for="password" class="form-label">
+        <i class="fa-solid fa-lock"></i>
+        실거주지 주소
+      </label>
+          <!-- daum map search -->
+      <div class="mb-3 pb-3">
+        <AddressAPI />
+      </div>
 
+      <!-- 관심 지역 -->
+      <label for="password" class="form-label">
+        <i class="fa-solid fa-lock"></i>
+        관심 지역
+      </label>
+      <div class="d-flex mb-3">
+          <div class="input-group input-group-sm mb-3">
+              <input placeholder="시/군" class="form-control" name="interestArea" aria-label="Sizing example input"
+                  aria-describedby="inputGroup-sizing-default" value="서울시" readonly>
+          </div>
+          <div class="input-group input-group-sm mb-3">
+              <select class="form-control" aria-label="Sizing example select" aria-describedby="inputGroup-sizing-default">
+                  <option value="" disabled selected>구 선택</option>
+                  <option value="강남구">강남구</option>
+                  <option value="강동구">강동구</option>
+                  <option value="강북구">강북구</option>
+                  <option value="강서구">강서구</option>
+                  <option value="관악구">관악구</option>
+                  <option value="광진구">광진구</option>
+                  <option value="구로구">구로구</option>
+                  <option value="금천구">금천구</option>
+                  <option value="노원구">노원구</option>
+                  <option value="도봉구">도봉구</option>
+                  <option value="동대문구">동대문구</option>
+                  <option value="동작구">동작구</option>
+                  <option value="마포구">마포구</option>
+                  <option value="서대문구">서대문구</option>
+                  <option value="서초구">서초구</option>
+                  <option value="성동구">성동구</option>
+                  <option value="성북구">성북구</option>
+                  <option value="송파구">송파구</option>
+                  <option value="양천구">양천구</option>
+                  <option value="영등포구">영등포구</option>
+                  <option value="용산구">용산구</option>
+                  <option value="은평구">은평구</option>
+                  <option value="종로구">종로구</option>
+                  <option value="중구">중구</option>
+                  <option value="중랑구">중랑구</option>
+                </select>
+                
+          </div>
+        </div>
+
+      <!-- 확인 버튼 -->
       <button type="submit" class="btn btn-primary mt-4" :disabled="disableSubmit">
         <i class="fa-solid fa-user-plus"></i>
         확인
