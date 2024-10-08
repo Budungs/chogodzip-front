@@ -13,7 +13,7 @@
                             style="height: 30rem; object-fit: cover;">
                     </a>
                 </div>
-                <DetailCard :cardData="house" />
+                <DetailCard :cardData="house" :nearestSubway="nearestSubway" :walkTime="walkTime" />
             </div>
         </section>
     </div>
@@ -28,7 +28,7 @@
 </template>
 
 <script setup>
-import { reactive, onMounted } from 'vue';
+import { reactive, onMounted,ref } from 'vue';
 import { useRoute } from 'vue-router';
 import DetailCard from '@/modules/components/detail/DetailCard.vue';
 import DetailInfo from "@/modules/components/detail/DetailInfo.vue";
@@ -38,22 +38,6 @@ import GosiwonTable from "@/modules/components/detail/table/GosiwonTable.vue";
 import api from '@/api/detailRoom';
 
 const route = useRoute();
-// Reactive data
-const cardData = reactive({
-    depositMin: '10',
-    depositMax: '20',
-    priceMin: '50',
-    priceMax: '100',
-    location: '홍제동',
-    type: '공유주거공간',
-    subways: [
-        { name: '홍제역', walkTime: '10분' },
-    ],
-    managementFee: '12만원',
-    likes: 116,
-    averagePrices: [97, 97, 97],
-    detailedLocation: '서울시 광진구 화양동',
-});
 
 const house = reactive({
     roomId: '',
@@ -79,18 +63,60 @@ const house = reactive({
     updatedAt: ''
 });
 
-// Fetch data on mount
+// Reactive state for subway data
+const nearestSubway = ref({ name: '', distance: Infinity });
+const walkTime = ref(0);
+
+// Function to calculate the nearest subway station
+function findNearbySubway(latitude, longitude) {
+    const ps = new kakao.maps.services.Places();
+    
+    // 지하철역 키워드 검색
+    ps.keywordSearch('지하철역', function (data, status) {
+        if (status === kakao.maps.services.Status.OK) {
+            data.forEach(subway => {
+                const distance = calculateDistance(latitude, longitude, subway.y, subway.x);
+                
+                // 가장 가까운 역 업데이트
+                if (distance < nearestSubway.value.distance) {
+                    nearestSubway.value = { name: subway.place_name, distance: distance };
+                    walkTime.value = Math.round((distance / 4800) * 60); // 도보 시간 계산
+                }
+            });
+        } else {
+            console.error('지하철역 검색 실패:', status);
+        }
+    }, { location: new kakao.maps.LatLng(latitude, longitude), radius: 1000 });
+}
+
+// Fetch data and calculate subway info on mount
 onMounted(async () => {
     try {
         const roomIds = route.params.id;
-        console.log(route.params.id);
         const data = await api.getOneGosiwon(roomIds); 
         Object.assign(house, data); 
-        console.log('Fetched Gosiwon:', house);
+        
+        // 지하철역 계산
+        findNearbySubway(house.roomLat, house.roomLong);
     } catch (error) {
         console.log('Failed to fetch Gosiwon data:', error);
     }
 });
+
+// Distance calculation function
+function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371000; // Earth radius in meters
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+
+    const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return R * c;
+}
 </script>
 
 <style scoped>
