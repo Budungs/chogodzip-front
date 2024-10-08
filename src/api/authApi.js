@@ -21,6 +21,15 @@ export default {
     return data;
   },
 
+  ///////////////  회원 kakao id중복 체크   ////////////////////////
+
+  async checkKakaoId(id) {
+    const { data } = await api.get(`${BASE_URL}/checkkakaoid/${id}`);
+    console.log('AUTH GET CHECK ID', data);
+    return data;
+  },
+
+
  ///////////////  회원 정보 조회（ｕｓｅｒｎａｍｅ ＝＝ ｉｄ） ////////////////////////
   async get(id) {
     const { data } = await api.get(`${BASE_URL}/${id}`);

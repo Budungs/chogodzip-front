@@ -64,6 +64,17 @@ onMounted(async () => {
 
   if(route.query.code != null){
     const data = await authApi.getKakaoInfo(route.query.code);
+    // alert(data.id);
+
+    const data2 = await authApi.checkKakaoId(data.id);
+    // alert(data2);
+
+    if(data2 == true){
+      alert('이미 카카오 아이디로 가입된 회원입니다.');
+      router.push({ name: 'home' });
+      return;
+    }
+
     console.log(data.email)
     member.email = data.email;
     member.name = data.nickname;

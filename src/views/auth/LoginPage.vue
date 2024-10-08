@@ -21,18 +21,15 @@ const login = async () => {
   console.log(member);
   try {
     await auth.login(member);
-    if (router.query.next) {
-      router.push({ name: route.query.next });
-    } else {
-      // 일반
-      router.push('/');
-    }
+    alert('로그인을 완료하였습니다.');
+    router.push('/');
   } catch (e) {
     // 로그인 에러
     console.log('에러=======', e);
     error.value = e.response.data;
   }
 };
+
   //////////////////////////////////////////////////////////
 </script>
 
