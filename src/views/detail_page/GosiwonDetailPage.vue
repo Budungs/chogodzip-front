@@ -3,96 +3,120 @@
         <section class="container" style="margin-top: 40px;">
             <nav aria-label="breadcrumb" style="margin-bottom:1rem;">
                 <ol class="breadcrumb" style="margin:0px;">
-                    <li class="breadcrumb-item"><a href="http://localhost:5173/houses/maps/sharehouses">고시원</a></li>
-                    <li class="breadcrumb-item active">고시원</li>
+                    <li class="breadcrumb-item active">{{ house.houseTypeNms }}</li>
                 </ol>
             </nav>
             <div class="row">
                 <div class="col-md-7">
-                    <a class="gallery-item rounded" :href="house.TITLE_IMAGE">
-                        <img :src="house.TITLE_IMAGE" alt="타이틀 이미지" class="img-fluid rounded"
+                    <a class="gallery-item rounded" :href="house.imgId">
+                        <img :src="house.imgId" alt="타이틀 이미지" class="img-fluid rounded"
                             style="height: 30rem; object-fit: cover;">
                     </a>
                 </div>
-                <DetailCard :cardData="cardData" />
+                <DetailCard :cardData="house" :nearestSubway="nearestSubway" :walkTime="walkTime" />
             </div>
         </section>
     </div>
     <div class="gray-container">
         <div class="container">
-            <DetailInfo />
-            <GosiwonTable />
-            <DetailMap />
+            <DetailInfo :cardData="house"/>
+            <GosiwonTable :cardData = "house"/>
+            <DetailMap :cardData = "house"/>
         </div>
     </div>
     <ReviewTab />
 </template>
 
-<script>
+<script setup>
+import { reactive, onMounted,ref } from 'vue';
+import { useRoute } from 'vue-router';
 import DetailCard from '@/modules/components/detail/DetailCard.vue';
 import DetailInfo from "@/modules/components/detail/DetailInfo.vue";
-import DetailMap from "@/modules/components/detail/DetailMap.vue"
+import DetailMap from "@/modules/components/detail/DetailMap.vue";
 import ReviewTab from "@/modules/components/detail/ReviewTab.vue";
 import GosiwonTable from "@/modules/components/detail/table/GosiwonTable.vue";
+import api from '@/api/detailRoom';
 
-export default {
-    components: {
-        DetailMap,
-        DetailCard,
-        DetailInfo,
-        ReviewTab,
-        GosiwonTable
-    },
-    data() {
-        return {
-            activeTab: 'pros',
-            cardData: {
-                depositMin: '10',
-                depositMax: '20',
-                priceMin: '50',
-                priceMax: '100',
-                location: '홍제동',
-                type: '공유주거공간',
-                subways: [
-                    { name: '홍제역', walkTime: '10분' },
-                ],
-                managementFee: '12만원',
-                likes: 116,
-                averagePrices: [97, 97, 97],
-                detailedLocation: '서울시 광진구 화양동',
-            },
-            house: {
-                ROOM_CNT: "39",
-                nearSubways: [
-                    [
-                        {
-                            distance: "0.2682673564953376",
-                            LINE: "수도권3호선",
-                            FULL_NAME: "수도권3호선_홍제역",
-                            LINE_SHORT: "3호선",
-                            NAME: "홍제역",
-                        },
-                    ],
-                ],
-                NAME: "everyspace (방배)",
-                HOUSE_TYPE_NMS: "쉐어하우스",
-                HOUSE_TYPE_CD: "HOUTP00008",
-                ADDR_DETAIL: "3층",
-                FLOOR: "3|3",
-                TITLE_IMAGE:
-                    "https://image.neoflat.net/XgJgIpc_kWfzAjKs0JqzbIiE7VU=/1440x/filters:no_upscale():watermark(/resource/gobang.png,center,center,0,20,none)/house/4090/bf533c6a-3608-4e47-84b7-992b0e0e8437.png",
-                GENDER_TYPE_NM: "성별무관",
-                PRICE_MAX: "62",
-                PRICE_MIN: "45",
-                DEPOSIT_MAX: "75",
-                DEPOSIT_MIN: "49",
-                LATITUDE: "37.5874508664436",
-                LONGITUDE: "126.941627260178",
-                ADDR_FULL_ROAD: "서울 용산구 백범로79길 81",
-            },
-        };
-    },
-};
+const route = useRoute();
+
+const house = reactive({
+    roomId: '',
+    userId: '',
+    roomCnt: '',
+    roomName: '',
+    floor: '',
+    houseTypeCd: '',
+    houseTypeNms: '',
+    genderCd: '',
+    tags: '',
+    imgId: '',
+    roomAddr: '',
+    roomAddrFl: '',
+    roomLat: '',
+    roomLong: '',
+    depositMax: '',
+    depositMin: '',
+    priceMax: '',
+    priceMin: '',
+    isSoldOut: '',
+    createdAt: '',
+    updatedAt: ''
+});
+
+// Reactive state for subway data
+const nearestSubway = ref({ name: '', distance: Infinity });
+const walkTime = ref(0);
+
+// Function to calculate the nearest subway station
+function findNearbySubway(latitude, longitude) {
+    const ps = new kakao.maps.services.Places();
+    
+    // 지하철역 키워드 검색
+    ps.keywordSearch('지하철역', function (data, status) {
+        if (status === kakao.maps.services.Status.OK) {
+            data.forEach(subway => {
+                const distance = calculateDistance(latitude, longitude, subway.y, subway.x);
+                
+                // 가장 가까운 역 업데이트
+                if (distance < nearestSubway.value.distance) {
+                    nearestSubway.value = { name: subway.place_name, distance: distance };
+                    walkTime.value = Math.round((distance / 4800) * 60); // 도보 시간 계산
+                }
+            });
+        } else {
+            console.error('지하철역 검색 실패:', status);
+        }
+    }, { location: new kakao.maps.LatLng(latitude, longitude), radius: 1000 });
+}
+
+// Fetch data and calculate subway info on mount
+onMounted(async () => {
+    try {
+        const roomIds = route.params.id;
+        const data = await api.getOneGosiwon(roomIds); 
+        Object.assign(house, data); 
+        
+        // 지하철역 계산
+        findNearbySubway(house.roomLat, house.roomLong);
+    } catch (error) {
+        console.log('Failed to fetch Gosiwon data:', error);
+    }
+});
+
+// Distance calculation function
+function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371000; // Earth radius in meters
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+
+    const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return R * c;
+}
 </script>
 
 <style scoped>

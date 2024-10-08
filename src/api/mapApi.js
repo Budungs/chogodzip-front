@@ -10,6 +10,11 @@ export default {
         const { data } = await api.get(`${BASE_URL}/gosiwon`, params);
         console.log('GOSIWON GET LIST: ', data);
         return data;
+    },
+    async getList(params){
+        const { data } = await api.get(`${BASE_URL}/filter`,params);
+        console.log('filter Gosiwon : ', data);
+        return data;
     }
 
 

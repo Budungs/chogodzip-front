@@ -12,7 +12,6 @@ const member = reactive({
   code: '',
 });
 
-
 onMounted(async () => {
   try {
     member.code = route.query.code;
