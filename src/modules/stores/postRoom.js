@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue'
+import axios from 'axios';
 import { defineStore } from 'pinia'
 
 export const usePostRoomStore = defineStore('postRoom', {
@@ -17,6 +17,8 @@ export const usePostRoomStore = defineStore('postRoom', {
                 postcode: null,
                 address: null,
                 detailAddress: '',
+                roomLat: null, //위도
+                roomLong: null, //경도
             },
 
             prices: {
@@ -230,5 +232,24 @@ export const usePostRoomStore = defineStore('postRoom', {
             if(this.buildingFilled) this.progress = 100;
             else this.progress = 80;
         },
+
+        //폼 제출
+        async submitForm() {
+            try {
+                const response = await axios.post('/api/rooms', {
+                    category: this.category,
+                    basicInfo: this.basicInfo,
+                    loanInfo: this.loanInfo,
+                    facilitiesInfo: this.facilitiesInfo,
+                    buildingInfo: this.buildingInfo
+                });
+
+                if (response.status === 200) {
+                    console.log('::::::::     SUCCESSED  (o w o) // ))    ::::::::', response.data);
+                }
+            } catch (err) {
+                console.error('>>>>>>>>    FAILED  (- ^ -)    <<<<<<<<<', err);
+            }
+        }
     },
 });
