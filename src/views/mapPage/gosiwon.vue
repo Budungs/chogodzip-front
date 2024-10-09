@@ -25,7 +25,7 @@
           </div>
           <ul>
             <li v-for="result in searchResults" :key="result.id" @click="selectResult(result)">
-              {{ result.universityName }} ({{ result.type }})
+              {{ result.name }} {{ result.line }} ({{ result.type }})
             </li>
           </ul>
         </div>
@@ -109,7 +109,7 @@
 
               <div class="button-group">
                 <div class="submit-button-container">
-                  <!-- <button class="btn btn-submit" @click="submitFilters">필터 적용</button> -->
+                  <button class="btn btn-submit" @click="submitFilters">필터 적용</button>
                   <button class="btn btn-reset" @click="resetFilters">조건 초기화</button>
                 </div>
               </div>
@@ -137,38 +137,39 @@
           </div>
         </div>
 
-        <div v-for="(property, index) in filteredProperties" :key="property.roomId" class="card">
+        <div v-for="(property, index) in filteredProperties" :key="property.roomId" 
+            class="card"
+            @mouseover="logRoomId(property.roomId, index)">
           <!-- 이미지와 판매완료 오버레이 -->
           <div class="image-container">
             <img :src="property.imgId || 'https://via.placeholder.com/150'" class="card-img-top" alt="Property Image">
-        
+            
             <!-- 판매완료 오버레이 (판매 완료일 때 표시) -->
-            <div v-if="property.isSale == 'T'" class="sold-overlay">
+            <div v-if="property.isSoldOut == 'T'" class="sold-overlay">
               <i class="bi bi-check-circle"></i>
               <p>판매완료</p>
             </div>
-        
+            
             <!-- 좋아요 개수와 하트 아이콘 (판매 완료가 아닐 때 표시) -->
-            <div v-if="property.isSale == 'F'" class="like-overlay">
+            <div v-if="property.isSoldOut == 'F'" class="like-overlay">
               <i class="bi bi-heart-fill"></i>
-              <p>{{ property.likes }}</p>
+              <p :style="{ color: 'white' }">{{ favoriteCnt[index] }}</p> 
             </div>
           </div>
-        
+  
           <div class="card-body">
             <h5 class="card-title">{{ property.roomName }}</h5>
             <p class="card-text fs-sm">월세 {{ property.depositMax }} 만원 | 전세 {{ property.priceMax }} 만원</p>
-        
-            <a href="#" class="btn btn-sm btn-primary">상세보기</a>
-        
+          
+            <router-link :to="`/houses/gosiwons/${property.roomId}`" class="btn btn-sm btn-primary">상세보기</router-link>
+
             <!-- 관심매물 아이콘 -->
             <div class="interest-icon mt-2">
               <i :class="heartIcons[index]" @click="toggleHeartIcon(index)"></i>
             </div>
           </div>
         </div>
-        
-        
+
         
         
       </div>
@@ -233,14 +234,14 @@ const performSearch = () => {
   }
 
   searchResults.value = universityData.value.filter((university) =>
-    university.universityName.toLowerCase().includes(query)
+    university.name.toLowerCase().includes(query)
   );
   showDropdown.value = searchResults.value.length > 0;
 };
 
 // 검색 결과 선택 시 검색창에 대학 이름 입력 및 드롭다운 닫기
 const selectResult = (result) => {
-  searchQuery.value = result.universityName;
+  searchQuery.value = result.name;
   console.log(searchQuery.value);
  
   showDropdown.value = false; // 드롭다운 닫기
@@ -257,17 +258,25 @@ const fetchUniversityData = async () => {
   }
 };
 
-
+const favoriteCnt = ref([]);
+const logRoomId = async (roomId, index) => {
+  try {
+    const data = await api.getFavoriteCnt(roomId);
+    favoriteCnt.value[index] = data; // 매물의 인덱스에 맞게 좋아요 개수 저장
+    console.log(`Room ID: ${roomId}, Likes: ${data}`);
+  } catch (error) {
+    console.error('좋아요 개수를 받을 수 없음.');
+  }
+  console.log('Room ID:', roomId);
+};
 
 const handleSearch = async () => {
-  
     console.log('searchQuery.value:', searchQuery.value); // 검색어 출력
     const data = await searchApi.getOneUniversity({name : searchQuery.value });
     console.log('Fetched University Data:', data);
 
-    if (data && data.universityLat && data.universityLong) {
-      // 대학의 위도 및 경도를 사용하여 새로운 지도 중심 좌표 설정
-      const newCenter = new kakao.maps.LatLng(data.universityLat, data.universityLong);
+    if (data && data.lat && data.lng) {
+      const newCenter = new kakao.maps.LatLng(data.lat, data.lng);
       console.log('New center:', newCenter); // 새로운 중심 좌표 출력
       
       if (map.value) {
@@ -280,7 +289,6 @@ const handleSearch = async () => {
     } else {
       console.error('해당 대학을 찾을 수 없습니다.');
     }
- 
 };
 
 const closeDropdown = () => {
@@ -302,67 +310,66 @@ const toggleHeartIcon = (index) => {
     heartIcons.value[index] === 'far fa-heart' ? 'fas fa-heart' : 'far fa-heart';
 };
 
-// 필터 관리
-const filters = reactive({
-  gender: ['남성', '여성', '남녀공용'],
-  loan: [], // 대출 필터 초기화
-  floor: ['under', '1floor'], // 방 종류 필터 초기화
+// 필터링 전 임시로 선택된 필터 값
+const tempFilters = reactive({
+  gender: [],
+  loan: [],
+  floor: [],
   deposit: 5000000,
   rent: 5000000,
 });
 
-// 필터 값 형식 처리
-const formattedDeposit = computed(
-  () => `${(filters.deposit / 10000000).toFixed(1)}억 원`
-);
-const formattedRent = computed(() => `${(filters.rent / 10000).toFixed(1)}만원`);
+// 필터 적용 시 실제로 사용될 필터 값
+const filters = reactive({
+  gender: [],
+  loan: [],
+  floor: [],
+  deposit: 5000000,
+  rent: 5000000,
+});
 
-// 탭 전환 시 필터 초기화 및 탭 변경 처리
-const setTab = (tab) => {
-  activeTab.value = tab;
-  resetFilters();
-};
 
 // 필터 초기화
 const resetFilters = () => {
-  filters.gender = ['남성', '여성', '남녀공용'];
-  filters.loan = [];
-  filters.floor = ['under', '1floor'];
-  filters.deposit = 5000000;
-  filters.rent = 5000000;
+  tempFilters.gender = [];
+  tempFilters.loan = [];
+  tempFilters.floor = [];
+  tempFilters.deposit = 5000000;
+  tempFilters.rent = 5000000;
 };
 
 // 필터링된 매물을 computed로 정의
 const filteredProperties = computed(() => {
   const filtered = propertiesData.value.filter((property) => {
-    // 방 종류 필터: 고시원(HOUTP00001) 또는 원룸텔(HOUTP00003)이 체크된 경우 해당하는 항목 필터링
+    // 방 종류 필터: 고시원(HOUTP00001) 또는 원룸텔(HOUTP00003)이 체크된 경우 해당하는 항목만 필터링
     const matchesFloor = filters.floor.length === 0 || (
-      (filters.floor.includes('고시원') && property.houseTypeCd === 'HOUTP00001') ||
-      (filters.floor.includes('원룸텔') && property.houseTypeCd === 'HOUTP00003')
+      filters.floor.includes('고시원') && property.houseTypeNms === '고시원'
+    ) || (
+      filters.floor.includes('원룸텔') && property.houseTypeNms === '원룸텔'
     );
 
-    // 보증금 필터: 매물의 보증금이 필터에서 설정한 값보다 작거나 같은 매물
+    // 보증금 필터: 매물의 보증금이 필터에서 설정한 값보다 작은지 확인
     const matchesDeposit = property.depositMin <= filters.deposit;
 
-    // 월세 필터: 매물의 월세가 필터에서 설정한 값보다 작거나 같은 매물
+    // 월세 필터: 매물의 월세가 필터에서 설정한 값보다 작은지 확인
     const matchesRent = property.priceMin <= filters.rent;
 
-    // 성별 필터: 선택된 성별 중 하나라도 일치하면 해당 매물 표시
+    // 성별 필터: 선택된 성별에 맞는지 확인
     const matchesGender = filters.gender.length === 0 || (
       (filters.gender.includes('남성') && property.genderCd === 'GENDR00002') ||
       (filters.gender.includes('여성') && property.genderCd === 'GENDR00003') ||
-      (filters.gender.includes('성별무관') && property.genderCd === 'GENDR00001') ||
-      (filters.gender.includes('남녀공용') && property.genderCd === 'GENDR00004')
+      (filters.gender.includes('성별무관') && property.genderCd === 'GENDR00001')
     );
 
     return matchesFloor && matchesDeposit && matchesRent && matchesGender;
   });
 
-  // 정렬 로직 추가
-  return sortProperties(filtered);
+  return sortProperties(filtered);  // 정렬 적용 후 반환
 });
 
+
 // 정렬 로직
+const selectedSort = ref('distance');
 const sortProperties = (properties) => {
   switch (selectedSort.value) {
     case 'distance':
@@ -376,12 +383,6 @@ const sortProperties = (properties) => {
     default:
       return properties;
   }
-};
-
-
-// 필터 적용 함수
-const submitFilters = () => {
-  console.log('Filters Applied:', filters);
 };
 
 // Kakao 지도 설정 및 마커 데이터 관리
@@ -412,7 +413,6 @@ const fetchGosiwonData = async (lat, lng) => {
       return marker;
     });
 
-    // 콘솔에서 데이터 확인 (필요시)
     console.log('Fetched Gosiwon Data:', propertiesData.value);
 
   } catch (error) {
@@ -420,11 +420,8 @@ const fetchGosiwonData = async (lat, lng) => {
   }
 };
 
-
 // 컴포넌트 마운트 후 지도 초기화 및 고시원 리스트 불러오기
 onMounted(async () => {
-  // 대학 데이터를 받아오는 함수 (백엔드 API 사용)
-
   const container = document.getElementById('map');
   const options = {
     center: new kakao.maps.LatLng(37.5665, 126.9780), // 초기 지도 중심 좌표 (서울 기준)
@@ -433,53 +430,29 @@ onMounted(async () => {
 
   map.value = new kakao.maps.Map(container, options);
 
-  // 초기 로드 시 지도 중심 좌표를 사용하여 고시원 데이터 가져오기
   const center = map.value.getCenter();
   await fetchGosiwonData(center.getLat(), center.getLng());
 
-  // 지도 드래그 완료 후, 새로운 중심 좌표로 고시원 데이터 가져오기
   kakao.maps.event.addListener(map.value, 'dragend', async () => {
     console.log('지도 드래그가 끝났습니다.');
-    const center = map.value.getCenter(); // 드래그 후 중심 좌표
-    await fetchGosiwonData(center.getLat(), center.getLng()); // 중심 좌표로부터 고시원 데이터 가져오기
+    const center = map.value.getCenter();
+    await fetchGosiwonData(center.getLat(), center.getLng());
   });
 
-  await fetchUniversityData();
+  await fetchUniversityData();  
 });
 
 // 상태 관리
 const selectedCity = ref('서울시');
 const selectedDistrict = ref('');
-const selectedNeighborhood = ref(''); // 선택된 동을 관리하는 변수
+const selectedNeighborhood = ref('');
 const showDistrictSelect = ref(false);
 
 // 서울시의 구 리스트
 const districts = [
-  '강남구',
-  '강동구',
-  '강북구',
-  '강서구',
-  '관악구',
-  '광진구',
-  '구로구',
-  '금천구',
-  '노원구',
-  '도봉구',
-  '동대문구',
-  '동작구',
-  '마포구',
-  '서대문구',
-  '서초구',
-  '성동구',
-  '성북구',
-  '송파구',
-  '양천구',
-  '영등포구',
-  '용산구',
-  '은평구',
-  '종로구',
-  '중구',
-  '중랑구',
+  '강남구', '강동구', '강북구', '강서구', '관악구', '광진구', '구로구', '금천구',
+  '노원구', '도봉구', '동대문구', '동작구', '마포구', '서대문구', '서초구', '성동구',
+  '성북구', '송파구', '양천구', '영등포구', '용산구', '은평구', '종로구', '중구', '중랑구',
 ];
 
 // 각 구의 좌표 설정
@@ -511,15 +484,12 @@ const districtCoordinates = {
   중랑구: { lat: 37.6063, lng: 127.0923 },
 };
 
-const selectedSort = ref('distance');
-
 // 구 선택 처리
 const setDistrict = (district) => {
   selectedDistrict.value = district;
   selectedNeighborhood.value = '';
   showDistrictSelect.value = false;
 
-  // 선택한 구의 좌표로 지도 중심 이동
   const coordinates = districtCoordinates[district];
   if (coordinates) {
     console.log(coordinates.lat, coordinates.lng);
@@ -532,8 +502,8 @@ const setDistrict = (district) => {
     }
   }
 };
-
 </script>
+
 
 
 <style scoped>
