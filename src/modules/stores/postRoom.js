@@ -13,11 +13,11 @@ export const usePostRoomStore = defineStore('postRoom', {
         buildingFilled: false,
 
         basicInfo: {
-            title: '',
+            title: null,
             addr: {
                 postcode: null,
                 address: null,
-                detailAddress: '',
+                detailAddress: null,
                 roomLat: null, //위도
                 roomLong: null, //경도
             },
@@ -57,7 +57,7 @@ export const usePostRoomStore = defineStore('postRoom', {
 
             //자취 외 공통
             jachiElse: {
-                contractMin: 0,
+                contractMin: null,
                 age: {
                     ageMin: 0,
                     ageMax: 0,
@@ -264,12 +264,34 @@ export const usePostRoomStore = defineStore('postRoom', {
             this.facilitiesInfo.facilitySecurity.res = this.convertToString(this.facilitiesInfo.facilitySecurity);
         },
 
+        //유효성 검사
+        checkGosiwonValue() {
+            if (this.basicInfo.title === null || this.basicInfo.title.trim() === '') throw new Error('이름을 입력해주세요.');
+            if (this.basicInfo.addr.postcode === null || this.basicInfo.addr.address === null || this.basicInfo.detailAddress === null) throw new Error('주소를 모두 입력해주세요.');
+            if (this.basicInfo.price.priceMin <= 0 || this.basicInfo.price.priceMax <= 0
+                || this.basicInfo.depositMin < 0 || this.basicInfo.depositMax < 0
+                || this.basicInfo.price.maintenanceFeeMin < 0 || this.basicInfo.price.maintenanceFeeMax < 0
+                || this.basicInfo.price.maintenanceFee < 0) throw new Error('올바른 가격을 입력해주세요.');
+            if (this.basicInfo.price.priceMin > this.basicInfo.price.priceMax) throw new Error('최소 임대 가격은 최대 임대 가격 이상으로 입력해주세요.');
+            if (this.basicInfo.price.depositMin > this.basicInfo.price.depositMax) throw new Error('최대 보증금은 최소 보증금 이상으로 입력해주세요.');
+            if (this.basicInfo.price.maintenanceFeeMin > this.basicInfo.price.maintenanceFeeMax) throw new Error('최대 관리비는 최소 관리비 이상으로 입력해주세요.');
+            if (this.basicInfo.jachiElse.contractMin === null) throw new Error('최소 계약 기간을 선택해주세요.');
+            if (this.basicInfo.jachiElse.age.ageMin < 0 || this.basicInfo.jachiElse.age.ageMax < 0) throw new Error('올바른 연령을 입력해주세요.');
+            if (this.basicInfo.jachiElse.age.ageMin > this.basicInfo.jachiElse.age.ageMax) throw new Error('최대 이용 연령은 최소 이용 연령 이상으로 입력해주세요.');
+            if (this.basicInfo.genderLimit === null) throw new Error('성별구분을 선택해주세요.');
+            if (this.basicInfo.gosiwon.type === null) throw new Error('타입을 선택해주세요.');
+            if (this.loanInfo.loans.res === null) throw new Error('가능한 대출 종류를 선택해주세요. 없으면 "없음"을 선택해주세요.');
+            if (this.buildingInfo.buildingType === null) throw new Error('건축물 구분을 선택해주세요.');
+            if (this.buildingInfo.canParking === null) throw new Error('주차여부를 선택해주세요.');
+            if (this.buildingInfo.hasElevator === null) throw new Error('엘리베이터 유무를 선택해주세요.');
+        },
 
         //폼 제출
         async submitForm() {
             try {
                 //체크목록 문자열화 (값|값|값)
                 this.convertTo();
+                this.checkGosiwonValue();
 
                 const response = await axios.post('/api/rooms', {
                     category: this.category,
@@ -284,7 +306,7 @@ export const usePostRoomStore = defineStore('postRoom', {
                 }
             } catch (err) {
                 console.error('>>>>>>>>    ROOM SUBMIT FAILED  (- ^ -)    <<<<<<<<<', err);
-                alert('매물 작성에 실패했습니다.');
+                alert(`매물 작성에 실패했습니다. ${err.message}`);
             }
         }
     },
