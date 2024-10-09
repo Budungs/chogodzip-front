@@ -173,11 +173,11 @@
             <div v-if="category !== 'jachiroom'" class="mb-1 row">
               <div class="col-sm-6 mb-3">
                 <label class="form-label fw-bold" for="r-min-age">최소 이용 연령<span class="text-danger">*</span></label>
-                <input class="form-control" type="number" id="r-min-age" min="20" v-model="store.basicInfo.jachiElse.age.ageMin" value="0" :disabled="store.basicInfo.jachiElse.age.isNoAgeLimit">
+                <input class="form-control" type="number" id="r-min-age" min="0" v-model="store.basicInfo.jachiElse.age.ageMin" value="0" :disabled="store.basicInfo.jachiElse.age.isNoAgeLimit">
               </div>
               <div class="col-sm-6 mb-3">
                 <label class="form-label fw-bold" for="r-max-age">최대 이용 연령<span class="text-danger">*</span></label>
-                <input class="form-control" type="number" id="r-max-age" min="20" v-model="store.basicInfo.jachiElse.age.ageMax" value="0" :disabled="store.basicInfo.jachiElse.age.isNoAgeLimit">
+                <input class="form-control" type="number" id="r-max-age" min="0" v-model="store.basicInfo.jachiElse.age.ageMax" value="0" :disabled="store.basicInfo.jachiElse.age.isNoAgeLimit">
               </div>
               <div class="form-check d-flex justify-content-end pt-2 fs-sm">
                   <input class="form-check-input" type="checkbox" id="no-age-limit" name="no-age-limit" v-model="store.basicInfo.jachiElse.age.isNoAgeLimit">

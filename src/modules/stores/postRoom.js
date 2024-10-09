@@ -21,7 +21,7 @@ export const usePostRoomStore = defineStore('postRoom', {
                 roomLong: null, //경도
             },
 
-            prices: {
+            price: {
                 priceMin: 0,
                 priceMax: 0,
                 depositMin: 0,
@@ -81,6 +81,7 @@ export const usePostRoomStore = defineStore('postRoom', {
             privateFacilities: {
                 priToilet: false,
                 priShower: false,
+                res: null,
             },
 
             //제공 서비스
@@ -93,6 +94,7 @@ export const usePostRoomStore = defineStore('postRoom', {
                 welcomeBox: false,
                 freeMeal: false,
                 manlessDeliveryBox: false,
+                res: null,
             },
 
             //외국어 응대
@@ -100,6 +102,7 @@ export const usePostRoomStore = defineStore('postRoom', {
                 eng: false,
                 chn: false,
                 jpn: false,
+                res: null,
             },
 
             //기타
@@ -107,6 +110,7 @@ export const usePostRoomStore = defineStore('postRoom', {
                 allowMoveIn: false,
                 allowForeigner: false,
                 allowPet: false,
+                res: null,
             },
 
             //상세 설명, 사진
@@ -122,6 +126,7 @@ export const usePostRoomStore = defineStore('postRoom', {
                 young80: false,
                 withstand: false,
                 none: false,
+                res: null,
             },
             hasMortgage: null,
         },
@@ -131,10 +136,12 @@ export const usePostRoomStore = defineStore('postRoom', {
             facilityHeating: {
                 center: false,
                 personal: false,
+                res: null,
             },
             facilityCooling: {
                 center: false,
                 personal: false,
+                res: null,
             },
             facilityLife: {
                 bed: false,
@@ -150,6 +157,7 @@ export const usePostRoomStore = defineStore('postRoom', {
                 airCon: false,
                 tv: false,
                 microwave:false,
+                res: null,
             },
             facilitySecurity: {
                 digitLock: false,
@@ -158,6 +166,7 @@ export const usePostRoomStore = defineStore('postRoom', {
                 cctv: false,
                 springCooler: false,
                 fireAlarm: false,
+                res: null,
             },
         },
 
@@ -170,6 +179,7 @@ export const usePostRoomStore = defineStore('postRoom', {
     }),
 
     actions: {
+        // 작성폼 진행상황 카드 표시 확인용
         checkBasicInfo() {
             const { title, addr, prices, jachi, jachiElse, shared, gosiwon } = this.basicInfo;
 
@@ -202,7 +212,6 @@ export const usePostRoomStore = defineStore('postRoom', {
             if(this.basicInfoFilled) this.progress = 40;
             else this.progress = 20;
         },
-
         checkLoanInfo() {
             this.loanInfoFilled = 
                 this.loanInfo.loans.hug || this.loanInfo.loans.young100 || this.loanInfo.loans.young80
@@ -211,7 +220,6 @@ export const usePostRoomStore = defineStore('postRoom', {
             if(this.loanInfoFilled) this.progress = 60;
             else this.progress = 40;
         },
-
         checkFacilitiesInfo() {
             this.facilitiesFilled = 
                 this.facilitiesInfo.facilityHeating.center || this.facilitiesInfo.facilityHeating.personal
@@ -224,7 +232,6 @@ export const usePostRoomStore = defineStore('postRoom', {
             if(this.facilitiesFilled) this.progress = 80;
             else this.progress = 60;
         },
-
         checkBuildingInfo() {
             this.buildingFilled = 
                 this.buildingInfo.buildingType !== '' && this.buildingInfo.canParking !== '' && this.buildingInfo.hasElevator !== '';
@@ -233,9 +240,36 @@ export const usePostRoomStore = defineStore('postRoom', {
             else this.progress = 80;
         },
 
+        //체크리스트 -> 문자열
+        convertToString(infoType) {
+            let val = '';
+            const info = infoType;
+            for(let key in info) {
+                if(info[key]) val += `${key}|`;
+            }
+            return val.trim().substring(0, val.length-1);
+        },
+        convertTo() {
+            this.basicInfo.privateFacilities.res = this.convertToString(this.basicInfo.privateFacilities);
+            this.basicInfo.services.res = this.convertToString(this.basicInfo.services);
+            this.basicInfo.languages.res = this.convertToString(this.basicInfo.languages);
+            this.basicInfo.etc.res = this.convertToString(this.basicInfo.etc);
+
+            this.loanInfo.loans.res = this.convertToString(this.loanInfo.loans);
+
+            this.facilitiesInfo.facilityHeating.res = this.convertToString(this.facilitiesInfo.facilityHeating);
+            this.facilitiesInfo.facilityCooling.res = this.convertToString(this.facilitiesInfo.facilityCooling);
+            this.facilitiesInfo.facilityLife.res = this.convertToString(this.facilitiesInfo.facilityLife);
+            this.facilitiesInfo.facilitySecurity.res = this.convertToString(this.facilitiesInfo.facilitySecurity);
+        },
+
+
         //폼 제출
         async submitForm() {
             try {
+                //체크목록 문자열화 (값|값|값)
+                this.convertTo();
+
                 const response = await axios.post('/api/rooms', {
                     category: this.category,
                     basicInfo: this.basicInfo,
