@@ -4,6 +4,7 @@ import { useAuthStore } from '@/stores/auth';
 import router from '@/router';
 import qs from "qs";
 
+//
 axios.defaults.paramsSerializer = params => {
   return qs.stringify(params);
 }
