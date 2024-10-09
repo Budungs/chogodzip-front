@@ -121,10 +121,10 @@ export const usePostRoomStore = defineStore('postRoom', {
         //대출
         loanInfo: {
             loans: {
-                hug: false,
-                young100: false,
-                young80: false,
-                withstand: false,
+                4: false, //LH HUG
+                3: false, //중기청 100
+                2: false, //중기청 80
+                1: false, //버팀목
                 none: false,
                 res: null,
             },

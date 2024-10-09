@@ -8,25 +8,25 @@
             <div class="row">
               <div v-if="category === 'jachiroom'" class="col-sm-6">
                 <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="r-loan-hug" v-model="store.loanInfo.loans.hug">
-                  <label class="form-check-label" for="r-loan-hug">HUG</label>
+                  <input class="form-check-input" type="checkbox" id="r-loan-hug" v-model="store.loanInfo.loans[4]">
+                  <label class="form-check-label" for="r-loan-hug">LH HUG</label>
                 </div>
               </div>
               <div v-if="category === 'jachiroom'" class="col-sm-6">
                 <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="r-loan-y-100" v-model="store.loanInfo.loans.young100">
+                  <input class="form-check-input" type="checkbox" id="r-loan-y-100" v-model="store.loanInfo.loans[3]">
                   <label class="form-check-label" for="r-loan-y-100">중소기업청년대출 100%</label>
                 </div>
               </div>
               <div class="col-sm-6">
                 <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="r-loan-withstand" v-model="store.loanInfo.loans.withstand">
+                  <input class="form-check-input" type="checkbox" id="r-loan-withstand" v-model="store.loanInfo.loans[1]">
                   <label class="form-check-label" for="r-loan-withstand">버팀목</label>
                 </div>
               </div>
               <div v-if="category === 'jachiroom'" class="col-sm-6">
                 <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="r-loan-y-80" v-model="store.loanInfo.loans.young80">
+                  <input class="form-check-input" type="checkbox" id="r-loan-y-80" v-model="store.loanInfo.loans[2]">
                   <label class="form-check-label" for="r-loan-y-80">중소기업청년대출 80%</label>
                 </div>
               </div>
