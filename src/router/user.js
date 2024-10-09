@@ -18,10 +18,10 @@ export default [
       name: 'users/welcome',
       component: () => import('../views/login_regist/RegistComplete.vue'),
     },
-    // login 페이지로 이동
-    {
-      path: '/login',
-      name: 'login',
-      component: () => import('../views/login_regist/KakaoLogin.vue'),
-    },
+    // // login 페이지로 이동
+    // {
+    //   path: '/login',
+    //   name: 'login',
+    //   component: () => import('../views/login_regist/KakaoLogin.vue'),
+    // },
   ];
