@@ -245,7 +245,7 @@ export const usePostRoomStore = defineStore('postRoom', {
             let val = '';
             const info = infoType;
             for(let key in info) {
-                if(info[key]) val += `${key}|`;
+                if(key !== "res" && info[key]) val += `${key}|`;
             }
             return val.trim().substring(0, val.length-1);
         },

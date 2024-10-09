@@ -190,19 +190,19 @@
                 <div class="form-label pt-3 pb-2 fw-bold">성별구분<span class="text-danger">*</span></div>
                 <div class="container row w-100">
                     <div class="form-check col-lg-3 justify-content-around">
-                        <input class="form-check-input" type="radio" id="no-limit" name="r-gender" v-model="store.basicInfo.jachiElse.genderLimit" value="no-limit">
+                        <input class="form-check-input" type="radio" id="no-limit" name="r-gender" v-model="store.basicInfo.jachiElse.genderLimit" value="0">
                         <label class="form-check-label" for="no-limit">구분 없음</label>
                     </div>
                     <div class="form-check col-lg-3">
-                        <input class="form-check-input" type="radio" id="separated" name="r-gender" v-model="store.basicInfo.jachiElse.genderLimit" value="separated">
+                        <input class="form-check-input" type="radio" id="separated" name="r-gender" v-model="store.basicInfo.jachiElse.genderLimit" value="1">
                         <label class="form-check-label" for="separated">남녀 분리</label>
                     </div>
                     <div class="form-check col-lg-3">
-                        <input class="form-check-input" type="radio" id="f-only" name="r-gender" v-model="store.basicInfo.jachiElse.genderLimit" value="f-only">
+                        <input class="form-check-input" type="radio" id="f-only" name="r-gender" v-model="store.basicInfo.jachiElse.genderLimit" value="2">
                         <label class="form-check-label" for="f-only">여성 전용</label>
                     </div>
                     <div class="form-check col-lg-3">
-                        <input class="form-check-input" type="radio" id="m-only" name="r-gender" v-model="store.basicInfo.jachiElse.genderLimit" value="m-only">
+                        <input class="form-check-input" type="radio" id="m-only" name="r-gender" v-model="store.basicInfo.jachiElse.genderLimit" value="3">
                         <label class="form-check-label" for="m-only">남성 전용</label>
                     </div>
                 </div>
