@@ -24,7 +24,7 @@
             <DetailMap :cardData = "house"/>
         </div>
     </div>
-    <ReviewTab />
+    <ReviewTab :reviews="reviews" />
 </template>
 
 <script setup>
@@ -98,6 +98,10 @@ onMounted(async () => {
         
         // 지하철역 계산
         findNearbySubway(house.roomLat, house.roomLong);
+        reviews.value = await api.getAllReview(roomIds);
+        console.log('fdfd : ', reviews.value);
+
+
     } catch (error) {
         console.log('Failed to fetch Gosiwon data:', error);
     }
@@ -117,6 +121,10 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 
     return R * c;
 }
+
+// 리뷰 데이터를 저장할 상태 변수
+const reviews = ref([]);
+
 </script>
 
 <style scoped>

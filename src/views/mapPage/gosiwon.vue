@@ -137,39 +137,39 @@
           </div>
         </div>
 
-        <div v-for="(property, index) in filteredProperties" :key="property.roomId" class="card">
+        <div v-for="(property, index) in filteredProperties" :key="property.roomId" 
+            class="card"
+            @mouseover="logRoomId(property.roomId, index)">
           <!-- 이미지와 판매완료 오버레이 -->
           <div class="image-container">
             <img :src="property.imgId || 'https://via.placeholder.com/150'" class="card-img-top" alt="Property Image">
-        
+            
             <!-- 판매완료 오버레이 (판매 완료일 때 표시) -->
-            <div v-if="property.isSale == 'T'" class="sold-overlay">
+            <div v-if="property.isSoldOut == 'T'" class="sold-overlay">
               <i class="bi bi-check-circle"></i>
               <p>판매완료</p>
             </div>
-        
+            
             <!-- 좋아요 개수와 하트 아이콘 (판매 완료가 아닐 때 표시) -->
-            <div v-if="property.isSale == 'F'" class="like-overlay">
+            <div v-if="property.isSoldOut == 'F'" class="like-overlay">
               <i class="bi bi-heart-fill"></i>
-              <p>{{ property.likes }}</p>
+              <p :style="{ color: 'white' }">{{ favoriteCnt[index] }}</p> 
             </div>
           </div>
-        
+  
           <div class="card-body">
             <h5 class="card-title">{{ property.roomName }}</h5>
             <p class="card-text fs-sm">월세 {{ property.depositMax }} 만원 | 전세 {{ property.priceMax }} 만원</p>
-        
+          
             <router-link :to="`/houses/gosiwons/${property.roomId}`" class="btn btn-sm btn-primary">상세보기</router-link>
 
-        
             <!-- 관심매물 아이콘 -->
             <div class="interest-icon mt-2">
               <i :class="heartIcons[index]" @click="toggleHeartIcon(index)"></i>
             </div>
           </div>
         </div>
-        
-        
+
         
         
       </div>
@@ -256,6 +256,18 @@ const fetchUniversityData = async () => {
   } catch (error) {
     console.error('대학 데이터를 가져오는 중 오류 발생:', error);
   }
+};
+
+const favoriteCnt = ref([]);
+const logRoomId = async (roomId, index) => {
+  try {
+    const data = await api.getFavoriteCnt(roomId);
+    favoriteCnt.value[index] = data; // 매물의 인덱스에 맞게 좋아요 개수 저장
+    console.log(`Room ID: ${roomId}, Likes: ${data}`);
+  } catch (error) {
+    console.error('좋아요 개수를 받을 수 없음.');
+  }
+  console.log('Room ID:', roomId);
 };
 
 const handleSearch = async () => {

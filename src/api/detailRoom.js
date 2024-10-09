@@ -16,6 +16,11 @@ export default {
         const {data} = await api.get(`${BASE_URL}/gosiwons/${no}`);
         console.log('ONE GOSIWON : ', data);
         return data;
+    },
+    async getAllReview(no){
+        const {data} = await api.get(`${BASE_URL}/review/${no}`);
+        console.log('review : ',data);
+        return data;
     }
 
 
