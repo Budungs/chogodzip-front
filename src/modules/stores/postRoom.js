@@ -1,3 +1,4 @@
+import router from '@/router';
 import axios from 'axios';
 import { defineStore } from 'pinia'
 
@@ -279,10 +280,11 @@ export const usePostRoomStore = defineStore('postRoom', {
                 });
 
                 if (response.status === 200) {
-                    console.log('::::::::     SUCCESSED  (o w o) // ))    ::::::::', response.data);
+                    router.push(`/houses/rooms/${response.data}`);
                 }
             } catch (err) {
-                console.error('>>>>>>>>    FAILED  (- ^ -)    <<<<<<<<<', err);
+                console.error('>>>>>>>>    ROOM SUBMIT FAILED  (- ^ -)    <<<<<<<<<', err);
+                alert('매물 작성에 실패했습니다.');
             }
         }
     },
