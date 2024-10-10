@@ -1,30 +1,30 @@
 <template>
     <div class="white-box p-5 mb-4">
         <div class="d-flex justify-content-center h4">
-            <span>{{ cardData.roomAddrFl }}</span><span>다세대(빌라/연립)</span>
+            <span>{{ cardData.address }} {{ cardData.detailAddress }}</span>
         </div>
 
-        <!-- Conditionally render features based on parsed tags -->
+        <!-- Conditionally render features based on parsed facilities and services -->
         <div class="features d-flex justify-content-between">
             <div class="feature">
                 <img :src="ApartmentIcon" alt="Loan Icon" />
-                <span>{{ parsedTags.includes('개인화장실') ? '개인화장실' : '공용화장실' }}</span>
+                <span>{{ parsedPrivateFacilities.includes('개인화장실') ? '개인화장실' : '공용화장실' }}</span>
             </div>
             <div class="feature">
                 <img :src="FoodIcon" height="45" width="45" alt="식사" />
-                <span>{{ parsedTags.includes('식사제공') ? '식사제공' : '식사 미제공' }}</span>
+                <span>{{ parsedServices.includes('식사제공') ? '식사제공' : '식사 미제공' }}</span>
             </div>
             <div class="feature">
                 <img :src="DepartmentIcon" alt="Room Icon" />
-                <span>{{ cardData.floor }}층</span>
+                <span>{{ cardData.floor || 'N/A' }}층</span>
             </div>
             <div class="feature">
                 <img :src="DepartmentIcon" alt="Area Icon" />
-                <span>방 {{ cardData.roomCnt }} 개</span>
+                <span>방 개수 정보 없음</span>
             </div>
             <div class="feature">
                 <img :src="ParkingIcon" alt="Parking Icon" />
-                <span>{{ parsedTags.includes('주차') ? '주차가능' : '주차불가능' }}</span>
+                <span>{{ cardData.canParking ? '주차가능' : '주차불가능' }}</span>
             </div>
             <div class="feature">
                 <img :src="ToiletIcon" alt="Gender Icon" />
@@ -33,13 +33,8 @@
         </div>
 
         <div class="description">
-            <p>침대대출가능 모두가능 저융자 안전한방</p>
-            <p>복층형 원룸 단독타입(사무 등록 저융자로 공감으로, 크지 않습니다)</p>
-            <p>반려동물 협의 (고양이 가능, 장애있는 소형견입주 협의 가능)</p>
-            <p>임대인 국세, 저융세 협박 확인 (쉽게 연락가능)</p>
-            <p>임대차 보호 특별법에 의해 임차인 보호 특약 대상 많이 넣어드립니다</p>
-            <p>훌륭한 전세시장은 침착히 보증보험 가입해서 저희와 보증금 안전하게 지키세요!</p>
-            <div class="more-button main1 mt-2" type="button"><strong>소개 더보기</strong></div>
+            <p>{{ cardData.desc }}</p>
+            <!-- <div class="more-button main1 mt-2" type="button"><strong>소개 더보기</strong></div> -->
         </div>
     </div>
 </template>
@@ -57,22 +52,27 @@ const props = defineProps({
     cardData: {
         type: Object,
         required: true
-    }
+    },
+    
 });
 
-// Parse tags from cardData
-const parsedTags = computed(() => {
-    return props.cardData.tags ? props.cardData.tags.split('|') : [];
+// Parse private facilities and services from cardData
+const parsedPrivateFacilities = computed(() => {
+    return props.cardData.privateFacilities ? props.cardData.privateFacilities.split('|') : [];
 });
 
-// Determine gender type based on genderCd
+const parsedServices = computed(() => {
+    return props.cardData.services ? props.cardData.services.split('|') : [];
+});
+
+// Determine gender type based on genderLimit
 const genderType = computed(() => {
-    switch (props.cardData.genderCd) {
-        case 'GENDR00002':
+    switch (props.cardData.genderLimit) {
+        case 1:
             return '남성전용';
-        case 'GENDR00003':
+        case 2:
             return '여성전용';
-        case 'GENDR00004':
+        case 3:
             return '남녀분리';
         default:
             return '남녀공용';
