@@ -1,9 +1,9 @@
 <template>
     <div class="card bg-secondary mb-2" :data-bs-toggle="'collapse'" :data-bs-target="`#${collapseId}`">
         <div class="card-body">
-            <div class="d-flex justify-content-between mb-2" :class="item.category === '부동산' ? 'far fa-building' : 'fas fa-piggy-bank'">
+            <div class="d-flex justify-content-between mb-2"> 
                 <div class="d-flex align-items-center">
-                    <i class="me-2" />
+                    <i class="me-2 mb-1" :class="item.category === '부동산' ? 'far fa-building' : 'fas fa-piggy-bank'"/>
                     <span class="fs-sm text-dark opacity-80 ps-1">
                         <span style="color:var(--caution)">{{ item.agenda }}</span>에 관한 퀴즈입니다. 
                     </span>
