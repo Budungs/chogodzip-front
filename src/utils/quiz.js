@@ -4,13 +4,24 @@ import OpenAI from 'openai'
 // chatGPT description
 const fetchQuizs = () => {
     const quizs = ref(null);
+
     const getGPTResponse = async () => {
+
+      // 세션에 저장된 퀴즈 조회
+      const storedQuizs = sessionStorage.getItem('quizs');
+
+      // 이미 퀴즈가 존재하면 중지
+      if (storedQuizs) {
+        quizs.value = JSON.parse(storedQuizs);
+        console.log("기존 퀴즈 데이터가 존재합니다.", quizs.value);
+        return;
+      } 
+
         try {
           const openai = new OpenAI({
             apiKey: `${import.meta.env.VITE_GPT_KEY}`,
             dangerouslyAllowBrowser: true,
           })
-
       
           const prompt = 
             `
@@ -32,7 +43,7 @@ const fetchQuizs = () => {
           });
 
           quizs.value = JSON.parse(response.choices[0].message.content);
-          console.log('chatGPT 결과: ', quizs.value);
+          sessionStorage.setItem('quizs', JSON.stringify(quizs.value)); //세션에 퀴즈 저장
 
         } catch (error) {
           console.log('chatGPT: 🚨 에러가 발생했습니다.', error.message);
