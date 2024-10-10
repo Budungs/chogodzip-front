@@ -15,10 +15,9 @@
                 <!-- 뉴스 -->
                 <div class="col-md-5 mb-3 mb-md-0 h-100">
                     <div class="h3 d-flex justify-content-center mb-5 pt-2">오늘의 최신 뉴스 🔥</div>
-
                     <div class="card shadow-sm p-lg-3 mt-4 mb-lg-0">
-                        <div class="card-body p-lg-4" >
-                            <TodayLatestNewsItem v-for="(item, idx) in newsItemList" :key="idx" :item="item" />
+                        <div class="card-body p-lg-4 w-100" >
+                            <TodayLatestNewsItem v-for="(item, idx) in items" :key="idx" :item="item" />
                         </div>
                     </div>
                 </div>
@@ -31,6 +30,12 @@
 <script setup>
 import TodayQuizItem from './TodayQuizItem.vue';
 import TodayLatestNewsItem from './TodayLatestNewsItem.vue';
+import fetchNews from '@/utils/news.js';
+import { onMounted } from 'vue';
+
+//최신 뉴스 데이터 조회
+const { items, getNewsList } = fetchNews();
+onMounted(getNewsList);
 
 // 임시 퀴즈 데이터
 const quizItems = [
@@ -52,40 +57,6 @@ const quizItems = [
     },
 ];
 
-
-//임시 뉴스 데이터
-const newsItemList = [
-    {
-        href: 'https://n.news.naver.com/mnews/article/023/0003861674',
-        category: '경제',
-        title: '한발 물러선 20대… 빚으로 서울 주택 구매하는 비율 감소',
-        date: '2024.10.02',
-    },
-    {
-        href: 'https://n.news.naver.com/mnews/article/009/0005372695',
-        category: 'IT/과학',
-        title: '경제 효과 131조·일자리 55만개 창출”…구글 20년 발자취 따라가보니',
-        date: '2024.10.02',
-    },
-    {
-        href: 'https://n.news.naver.com/mnews/article/374/0000404034',
-        category: 'IT/과학',
-        title: '구글, 태국 클라우드 AI 인프라에 1조3천억 투자',
-        date: '2024.10.02',
-    },
-    {
-        href: 'https://n.news.naver.com/mnews/article/629/0000325651',
-        category: '경제',
-        title: '억대 시세 차익 \'무순위 청약\' 열풍 여전',
-        date: '2024.10.02',
-    },
-    {
-        href: 'https://n.news.naver.com/mnews/article/448/0000480489',
-        category: '경제',
-        title: '시중은행, 대출금리 또 줄줄이 인상…금리 인하기에 배불리나?',
-        date: '2024.10.02',
-    },
-]
 </script>
 
 <style scoped>
