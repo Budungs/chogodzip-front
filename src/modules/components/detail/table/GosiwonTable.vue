@@ -16,7 +16,7 @@
                             </tr>
                             <tr>
                                 <th>관리비</th>
-                                <td>{{ cardData.maintainCost ? cardData.maintainCost : '없음' }} 만원</td>
+                                <td>{{ cardData.maintenanceFee ? cardData.maintenanceFee : '없음' }} 만원</td>
                             </tr>
                             <tr>
                                 <th>이용기간<br />(계약기간)</th>
@@ -24,15 +24,15 @@
                             </tr>
                             <tr>
                                 <th>이용연령</th>
-                                <td>연령제한 없음</td>
+                                <td>{{ cardData.ageMin && cardData.ageMax ? `${cardData.ageMin} ~ ${cardData.ageMax}세` : '연령제한 없음' }}</td>
                             </tr>
                             <tr>
                                 <th>개인화장실 여부</th>
-                                <td>{{ parsedTags.includes('개인화장실') ? '있음' : '없음' }}</td>
+                                <td>{{ parsedPrivateFacilities.includes('개인화장실') ? '있음' : '없음' }}</td>
                             </tr>
                             <tr>
                                 <th>개인샤워부스 여부</th>
-                                <td>{{ parsedTags.includes('개인샤워부스') ? '있음' : '없음' }}</td>
+                                <td>{{ parsedPrivateFacilities.includes('개인샤워실') ? '있음' : '없음' }}</td>
                             </tr>
                             <tr>
                                 <th>남녀구분</th>
@@ -40,15 +40,15 @@
                             </tr>
                             <tr>
                                 <th>기타사항</th>
-                                <td>{{ parsedTags.includes('주소이전') ? '주소이전 가능' : '주소이전 불가능' }}</td>
+                                <td>{{ cardData.etc ? cardData.etc : '없음' }}</td>
                             </tr>
                             <tr>
                                 <th>제공 서비스</th>
-                                <td>{{ parsedTags.includes('청소업체') ? '청소업체' : '청소서비스 없음' }}</td>
+                                <td>{{ parsedServices.includes('식사제공') ? '식사제공' : '식사 미제공' }}</td>
                             </tr>
                             <tr>
                                 <th>외국어 응대</th>
-                                <td>{{ parsedTags.includes('외국어 응대') ? '영어, 일본어' : '불가능' }}</td>
+                                <td>{{ cardData.languages ? cardData.languages : '불가능' }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -64,31 +64,31 @@
                         <tbody>
                             <tr>
                                 <th>난방시설</th>
-                                <td>{{ parsedTags.includes('난방시설') ? '중앙난방' : '난방시설 없음' }}</td>
+                                <td>{{ cardData.facilityHeating ? cardData.facilityHeating : '난방시설 없음' }}</td>
                             </tr>
                             <tr>
                                 <th>세탁시설</th>
-                                <td>{{ parsedTags.includes('세탁시설') ? '세탁기, 건조기, 다리미' : '세탁시설 없음' }}</td>
+                                <td>{{ cardData.facilityLife.includes('세탁기') ? '세탁기, 건조기' : '세탁시설 없음' }}</td>
                             </tr>
                             <tr>
                                 <th>주방시설</th>
-                                <td>{{ parsedTags.includes('주방시설') ? '전자레인지, 전기밥솥, 정수기, 가스레인지' : '주방시설 없음' }}</td>
+                                <td>{{ cardData.facilityLife.includes('전자레인지') ? '전자레인지, 전기밥솥' : '주방시설 없음' }}</td>
                             </tr>
                             <tr>
                                 <th>생활시설</th>
-                                <td>{{ parsedTags.includes('생활시설') ? '제공' : '없음' }}</td>
+                                <td>{{ formattedLifeFacilities}}</td>
                             </tr>
                             <tr>
                                 <th>안전시설</th>
-                                <td>{{ parsedTags.includes('안전시설') ? '제공' : '없음' }}</td>
+                                <td>{{ formattedSecurityFacilities }}</td>
                             </tr>
                             <tr>
                                 <th>별도 전용공간</th>
-                                <td>{{ parsedTags.includes('전용공간') ? '제공' : '없음' }}</td>
+                                <td>{{ cardData.facilityLife.includes('전용공간') ? '제공' : '없음' }}</td>
                             </tr>
                             <tr>
                                 <th>제공비품</th>
-                                <td>{{ parsedTags.includes('제공비품') ? '제공' : '없음' }}</td>
+                                <td>{{ cardData.facilityLife ? '제공' : '없음' }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -100,15 +100,15 @@
                         <tbody>
                             <tr>
                                 <th>건물형태</th>
-                                <td>{{ cardData.buildingType ? cardData.buildingType : '상가건물' }}</td>
+                                <td>{{ buildingTypeLabel }}</td>
                             </tr>
                             <tr>
                                 <th>주차</th>
-                                <td>{{ parsedTags.includes('주차') ? '가능' : '불가능' }}</td>
+                                <td>{{ canParkingLabel }}</td>
                             </tr>
                             <tr>
-                                <th>엘레베이터</th>
-                                <td>{{ parsedTags.includes('엘레베이터') ? '있음' : '없음' }}</td>
+                                <th>엘리베이터</th>
+                                <td>{{hasElevatorLabel }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -129,24 +129,59 @@ const props = defineProps({
     }
 });
 
-// Parse tags from cardData
-const parsedTags = computed(() => {
-    return props.cardData.tags ? props.cardData.tags.split('|') : [];
+// Parse private facilities and services
+const parsedPrivateFacilities = computed(() => {
+    return props.cardData.privateFacilities ? props.cardData.privateFacilities.split('|') : [];
 });
 
-// Determine gender type based on genderCd
+const parsedServices = computed(() => {
+    return props.cardData.services ? props.cardData.services.split('|') : [];
+});
+
+const formattedLifeFacilities = computed(() => {
+    return props.cardData.facilityLife ? props.cardData.facilityLife.split('|').join(', ') : '없음';
+});
+
+const formattedSecurityFacilities = computed(() => {
+    return props.cardData.facilitySecurity ? props.cardData.facilitySecurity.split('|').join(', ') : '없음';
+});
+
+// Determine gender type based on genderLimit
 const genderType = computed(() => {
-    switch (props.cardData.genderCd) {
-        case 'GENDR00002':
-            return '남성전용';
-        case 'GENDR00003':
-            return '여성전용';
-        case 'GENDR00004':
-            return '남녀분리';
+    switch (props.cardData.genderLimit) {
+        case 0:
+            return '성별 무관';
+        case 1:
+            return '남녀 분리';
+        case 2:
+            return '여성 전용';
+        case 3:
+            return '남성 전용';
         default:
             return '성별무관';
     }
 });
+
+const buildingTypeLabel = computed(() => {
+    switch (props.cardData.buildingType) {
+        case 0:
+            return '상가건물';
+        case 1:
+            return '공동주택';
+        case 2:
+            return '단독주택';   
+        default:
+            return '상가건물';
+    }
+});
+
+const canParkingLabel = computed(() => {
+    return props.cardData.canParking === 0 ? '가능' : '불가능';
+});
+
+const hasElevatorLabel = computed(() => {
+    return props.cardData.hasElevator === 0 ? '없음' : '있음';
+})
 </script>
 
 <style scoped>
