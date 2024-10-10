@@ -12,11 +12,7 @@ import roomRoutes from './registRoom';
 import userRoutes from './user';
 import authRoutes from './auth';
 import Chat from '@/views/Chat.vue';
-<<<<<<< HEAD
 import ChatTest from '@/views/ChatTest.vue';
-=======
-import errorRoutes from './error';
->>>>>>> 37ff5374aefb4238bf9e5897d6b5e78886a76e11
 
 
 const router = createRouter({
