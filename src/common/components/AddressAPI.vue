@@ -43,11 +43,29 @@ function execDaumPostcode() {
       store.basicInfo.addr.address = addr;
       extraAddress.value = extraAddr;
 
+      getCoordinates(addr); //위도, 경도
+
       setTimeout(() => {
         document.getElementById('detailAddress').focus();
       }, 0);
     }
   }).open();
+}
+
+// Kakao 지도 API: 주소의 위도 & 경도 추출
+function getCoordinates(address) {
+  const geocoder = new window.daum.maps.services.Geocoder();
+  
+  geocoder.addressSearch(address, (result, status) => {
+    if (status === window.daum.maps.services.Status.OK) {
+      const { y: lat, x: lon } = result[0];
+      store.basicInfo.addr.roomLat = lat;  
+      store.basicInfo.addr.roomLong = lon;
+
+    } else {
+      console.error('Geocode was not successful for the following reason: ' + status);
+    }
+  });
 }
 
 onMounted(() => {
