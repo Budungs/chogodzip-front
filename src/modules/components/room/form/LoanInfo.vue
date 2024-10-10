@@ -8,25 +8,25 @@
             <div class="row">
               <div v-if="category === 'jachiroom'" class="col-sm-6">
                 <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="r-loan-hug" v-model="store.loanInfo.loans.hug">
-                  <label class="form-check-label" for="r-loan-hug">HUG</label>
+                  <input class="form-check-input" type="checkbox" id="r-loan-hug" v-model="store.loanInfo.loans[4]">
+                  <label class="form-check-label" for="r-loan-hug">LH HUG</label>
                 </div>
               </div>
               <div v-if="category === 'jachiroom'" class="col-sm-6">
                 <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="r-loan-y-100" v-model="store.loanInfo.loans.young100">
+                  <input class="form-check-input" type="checkbox" id="r-loan-y-100" v-model="store.loanInfo.loans[3]">
                   <label class="form-check-label" for="r-loan-y-100">중소기업청년대출 100%</label>
                 </div>
               </div>
               <div class="col-sm-6">
                 <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="r-loan-withstand" v-model="store.loanInfo.loans.withstand">
+                  <input class="form-check-input" type="checkbox" id="r-loan-withstand" v-model="store.loanInfo.loans[1]">
                   <label class="form-check-label" for="r-loan-withstand">버팀목</label>
                 </div>
               </div>
               <div v-if="category === 'jachiroom'" class="col-sm-6">
                 <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="r-loan-y-80" v-model="store.loanInfo.loans.young80">
+                  <input class="form-check-input" type="checkbox" id="r-loan-y-80" v-model="store.loanInfo.loans[2]">
                   <label class="form-check-label" for="r-loan-y-80">중소기업청년대출 80%</label>
                 </div>
               </div>
@@ -44,11 +44,11 @@
       <h2  v-if="category === 'jachiroom'" class="h4 mb-4"><i class="fas fa-money-check-alt text-primary fs-5 mt-n1 me-2" />융자금 유무를 선택해주세요<span class="span text-danger">*</span></h2>
       <div v-if="category === 'jachiroom'" class="container row w-100">
           <div class="form-check col-lg-6 justify-content-around">
-              <input class="form-check-input" type="radio" id="r-mortgage-x" name="r-mortgage" v-model="store.loanInfo.mortgage" value="false">
+              <input class="form-check-input" type="radio" id="r-mortgage-x" name="r-mortgage" v-model="store.loanInfo.hasMortgage" value="false">
               <label class="form-check-label" for="r-mortgage-x">융자 없음</label>
           </div>
           <div class="form-check col-lg-6">
-              <input class="form-check-input" type="radio" id="r-mortgage-o" name="r-mortgage" v-model="store.loanInfo.mortgage" value="true">
+              <input class="form-check-input" type="radio" id="r-mortgage-o" name="r-mortgage" v-model="store.loanInfo.hasMortgage" value="true">
               <label class="form-check-label" for="r-mortgage-o">융자 있음</label>
           </div>
       </div>

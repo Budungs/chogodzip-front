@@ -61,79 +61,49 @@
         </div>
         <div class="accordion-holder">
           <div class="accordion-section">
-
-            <div class="first-chart">
-
-              <div class="stats-box">
-                <div class="stats-header">
-
-                  <span class="type-span">매매</span>
-                  <span>전월세 대비 변동률</span>
-                </div>
-
-                <div class="stats-header">
-                  <div class="category">
-                    <span>연립/다세대</span>
-                    <span class="increase">0.83% 상승</span>
-                  </div>
-                  <div class="category">
-                    <span>오피스텔</span>
-                    <span class="decrease">-0.83% 상승</span>
-                  </div>
-                </div>
-              </div>
-
-
-            </div>
-
-
-
             <h4>🔎 지역별 가격 현황</h4>
+            <br />
             <div class="second-chart">
               <div class="td-chart">
                 <div class="map-container">
                   <svg ref="svgMap" width="100%" height="600"></svg>
                 </div>
                 <div v-if="!showAllGu" class="return-button">
-                  <button @click="resetToAllGu">되돌리기</button>
+                  <button type="button" class="btn btn-outline-secondary mb-3" @click="resetToAllGu">되돌리기</button>
                 </div>
               </div>
-
             </div>
+            <br /><br />
+            <div v-if="selectedDong">
+              <h4>🔎 {{ locationStats }}</h4>
+              <div class="third-chart">
+                <div class="fc-chart">
 
-            <h4>🔎 연립/다세대 & 오피스텔 통계 비교</h4>
-            <div class="third-chart">
-              <div class="fc-chart">
+                  <canvas id="line-chart" style="height: 12rem;"></canvas>
+                  <br>
+                </div>
 
-                <canvas id="line-chart"></canvas>
-                <br>
-                <p>최근 6개월 간 평균 월세가 추이</p>
+                <div class="fc-chart">
+
+                  <canvas id="bar-chart"></canvas>
+                  <br>
+                </div>
+
+
               </div>
 
-              <div class="fc-chart">
+              <div class="third-chart">
+                <div class="fc-chart">
+                  <canvas id="second-line-chart"></canvas>
+                  <br>
+                </div>
 
-                <canvas id="bar-chart"></canvas>
-                <br>
-                <p>최근 6개월 간 평균 전세가 추이</p>
-              </div>
-
-
-            </div>
-
-            <div class="third-chart">
-              <div class="fc-chart">
-                <canvas id="second-line-chart"></canvas>
-                <br>
-                <p>최근 6개월 간 매매 대비 전세가 변동 추이</p>
-              </div>
-
-              <div class="fc-chart">
-                <canvas id="third-line-chart"></canvas>
-                <br>
-                <p>최근 6개월 간 평균 전세보증금 변동 추이</p>
+                <div class="fc-chart">
+                  <canvas id="bar-chart2"></canvas>
+                  <br>
+                </div>
               </div>
             </div>
-
           </div>
         </div>
       </div>
@@ -191,6 +161,10 @@ const toggleAccordion = (index) => {
   activeAccordion.value = activeAccordion.value == index ? null : index;
 }
 
+const locationStats = computed(() => {
+  return `${adm_gu.value} ${adm_dong.value}의 통계 비교`;
+})
+
 // 데이터 (임의로 작성된 질문 및 답변 데이터)
 const dictionaryData = ref([
   { question: '매매가란 무엇인가요?', answer: '집이나 땅을 사고팔 때 실제로 거래되는 가격을 말합니다.' },
@@ -245,14 +219,103 @@ const dictionaryData = ref([
 ]);
 
 
-
 let lineChart = null;
-let barChart = null; // Reference for the bar chart
-let secondLineChart = null; // Reference for second line chart
-let thirdLineChart = null;  // Reference for third line chart
+let barChart = null;
+let secondLineChart = null;
+let thirdLineChart = null;
 
-// 차트를 그리는 함수 (기존 line chart)
-const drawLineChart = () => {
+const normalizeDongName = (dongName) => {
+  return dongName.replace(/[0-9]동$/, '동'); // "역삼1동"을 "역삼동"으로 변환
+};
+
+const processDataByDate = (data, targetDong) => {
+  const normalizedDong = normalizeDongName(targetDong);
+  const filteredData = data.filter(item => normalizeDongName(item.STDG_NM) === normalizedDong);
+
+  const dailyData = {};
+
+  filteredData.forEach(item => {
+    const date = item.CTRT_DAY;
+    if (!dailyData[date]) {
+      dailyData[date] = {
+        detached: { // 단독다가구/연립다세대
+          jeonseDepositTotal: 0,
+          jeonseCount: 0,
+          rentDepositTotal: 0,
+          rentTotal: 0,
+          rentCount: 0
+        },
+        officetel: { // 오피스텔
+          jeonseDepositTotal: 0,
+          jeonseCount: 0,
+          rentDepositTotal: 0,
+          rentTotal: 0,
+          rentCount: 0
+        }
+      };
+    }
+
+    const deposit = parseFloat(item.GRFE);
+    const rentAmount = parseFloat(item.RTFE);
+
+
+    if (item.BLDG_USG === '단독다가구' || item.BLDG_USG === '연립다세대') {
+      if (item.RENT_SE === '전세') {
+        dailyData[date].detached.jeonseDepositTotal += deposit;
+        dailyData[date].detached.jeonseCount += 1;
+      } else if (item.RENT_SE === '월세') {
+        dailyData[date].detached.rentDepositTotal += deposit;
+        dailyData[date].detached.rentTotal += rentAmount;
+        dailyData[date].detached.rentCount += 1;
+      }
+    } else if (item.BLDG_USG === '오피스텔') {
+      if (item.RENT_SE === '전세') {
+        dailyData[date].officetel.jeonseDepositTotal += deposit;
+        dailyData[date].officetel.jeonseCount += 1;
+      } else if (item.RENT_SE === '월세') {
+        dailyData[date].officetel.rentDepositTotal += deposit;
+        dailyData[date].officetel.rentTotal += rentAmount;
+        dailyData[date].officetel.rentCount += 1;
+      }
+    }
+  });
+
+  const labels = [];
+  const detachedAvgJeonseDeposit = [];
+  const detachedAvgRentDeposit = [];
+  const detachedAvgRentAmount = [];
+  const officetelAvgJeonseDeposit = [];
+  const officetelAvgRentDeposit = [];
+  const officetelAvgRentAmount = [];
+
+
+  Object.keys(dailyData).sort().forEach(date => {
+    labels.push(date);
+
+    detachedAvgJeonseDeposit.push(dailyData[date].detached.jeonseDepositTotal / dailyData[date].detached.jeonseCount || 0);
+    detachedAvgRentDeposit.push(dailyData[date].detached.rentDepositTotal / dailyData[date].detached.rentCount || 0);
+    detachedAvgRentAmount.push(dailyData[date].detached.rentTotal / dailyData[date].detached.rentCount || 0);
+
+    officetelAvgJeonseDeposit.push(dailyData[date].officetel.jeonseDepositTotal / dailyData[date].officetel.jeonseCount || 0);
+    officetelAvgRentDeposit.push(dailyData[date].officetel.rentDepositTotal / dailyData[date].officetel.rentCount || 0);
+    officetelAvgRentAmount.push(dailyData[date].officetel.rentTotal / dailyData[date].officetel.rentCount || 0);
+  });
+
+  return {
+    labels,
+    detachedAvgJeonseDeposit,
+    detachedAvgRentDeposit,
+    detachedAvgRentAmount,
+    officetelAvgJeonseDeposit,
+    officetelAvgRentDeposit,
+    officetelAvgRentAmount
+  };
+};
+
+
+
+// 월세 보증금 
+const drawLineChart = ({ labels, detachedAvgRentDeposit, officetelAvgRentDeposit }) => {
   const canvas = document.getElementById('line-chart');
 
   if (!canvas) {
@@ -262,27 +325,26 @@ const drawLineChart = () => {
 
   const ctx = canvas.getContext('2d');
 
-  // If a chart instance already exists, destroy it to prevent duplication
   if (lineChart) {
     lineChart.destroy();
   }
 
   const data = {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+    labels: labels,
     datasets: [
       {
-        label: '2024',
-        data: [65, 59, 80, 81, 56, 55, 40],
+        label: '단독다가구•연립다세대 평균 월세 보증금',
+        data: detachedAvgRentDeposit,
+        borderColor: 'rgb(255, 99, 132)', // 빨간색
+        tension: 0, // 직선 연결
         fill: false,
-        borderColor: 'rgb(75, 192, 192)',
-        tension: 0.1
       },
       {
-        label: '2024 중위 가격',
-        data: [75, 69, 90, 71, 66, 45, 50],
+        label: '오피스텔 평균 월세 보증금',
+        data: officetelAvgRentDeposit,
+        borderColor: 'rgb(75, 192, 192)', // 파란색
+        tension: 0, // 직선 연결
         fill: false,
-        borderColor: 'rgb(255, 99, 132)',
-        tension: 0.1
       }
     ]
   };
@@ -292,24 +354,93 @@ const drawLineChart = () => {
     data: data,
     options: {
       responsive: true,
-      plugins: {
-        legend: {
-          position: 'top',
-        },
-        title: {
-          display: true,
-          text: '평균/중위(월세) 가격 비교'
+      scales: {
+        x: {
+          type: 'category',
+          labels: labels,
+          ticks: {
+            maxTicksLimit: 10, // 레이블이 많을 때 겹침 방지
+          }
         }
+      },
+      plugins: {
+        legend: { position: 'top' },
+        title: { display: true, text: `${normalizeDongName(adm_dong.value)}의 날짜별 평균 월세 보증금 비교` }
       }
     }
   };
 
-  // Create the Chart.js chart and store the instance
   lineChart = new Chart(ctx, config);
 };
 
-// 차트를 그리는 함수 (새로운 바 차트)
-const drawBarChart = () => {
+const drawJeonseChart = ({ labels, detachedAvgJeonseDeposit, officetelAvgJeonseDeposit }) => {
+  const canvas = document.getElementById('second-line-chart');
+  if (!canvas) return console.error('Canvas element with id "second-line-chart" not found.');
+
+  const ctx = canvas.getContext('2d');
+  if (secondLineChart) secondLineChart.destroy();
+
+  secondLineChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: '단독다가구•연립다세대 평균 전세가',
+          data: detachedAvgJeonseDeposit,
+          borderColor: 'rgb(255, 99, 132)',
+          tension: 0.1,
+          fill: false,
+        },
+        {
+          label: '오피스텔 평균 전세가',
+          data: officetelAvgJeonseDeposit,
+          borderColor: 'rgb(75, 192, 192)',
+          tension: 0.1,
+          fill: false,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        x: {
+          type: 'category',
+          labels: labels,
+          ticks: {
+            maxTicksLimit: 10,
+          }
+        }
+      },
+      plugins: {
+        legend: { position: 'top' },
+        title: { display: true, text: `${normalizeDongName(adm_dong.value)}의 날짜별 평균 전세가 비교` }
+      }
+    }
+  });
+};
+
+const fetchData = async () => {
+  const url = createApiUrl();
+  try {
+    const response = await fetch(url);
+    const text = await response.text();
+
+    const data = JSON.parse(text).tbLnOpendataRentV.row;
+    const dailyData = processDataByDate(data, adm_dong.value);
+    const topDongPercentages = calculateTopDongPercentages(data, adm_gu.value);
+
+    drawLineChart(dailyData);
+    drawJeonseChart(dailyData);
+    drawBarChart(dailyData);
+    drawBarChart2(topDongPercentages);
+
+  } catch (error) {
+    console.error("API 요청 오류 또는 JSON 파싱 오류:", error);
+  }
+};
+
+const drawBarChart = ({ labels, detachedAvgRentAmount, officetelAvgRentAmount }) => {
   const canvas = document.getElementById('bar-chart');
 
   if (!canvas) {
@@ -319,31 +450,143 @@ const drawBarChart = () => {
 
   const ctx = canvas.getContext('2d');
 
-  // Destroy previous chart if it exists
   if (barChart) {
     barChart.destroy();
   }
 
-  const data = {
-    labels: ['강남구', '서초구', '송파구', '마포구', '영등포구'], // Example districts
+  const maxYValue = Math.max(...detachedAvgRentAmount, ...officetelAvgRentAmount) * 1.2;
+
+  barChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: '단독다가구•연립다세대 평균 월세가',
+          data: detachedAvgRentAmount,
+          borderColor: 'rgb(255, 99, 132)',
+          tension: 0.1,
+          fill: false,
+        },
+        {
+          label: '오피스텔 평균 월세가',
+          data: officetelAvgRentAmount,
+          borderColor: 'rgb(75, 192, 192)',
+          tension: 0.1,
+          fill: false,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        x: {
+          type: 'category',
+          labels: labels,
+          ticks: {
+            maxTicksLimit: 10,
+          }
+        },
+        y: {
+          beginAtZero: true,
+          max: maxYValue || 1000,
+          ticks: {
+            stepSize: 50,  // 원하는 간격을 설정합니다.
+          }
+        }
+      },
+      plugins: {
+        legend: { position: 'top' },
+        title: { display: true, text: `${normalizeDongName(adm_dong.value)}의 날짜별 평균 월세 비교` }
+      }
+    }
+  });
+};
+
+
+
+// 선택된 구에서 상위 4개와 기타 동의 거래 건수 비율을 계산하는 함수
+const calculateTopDongPercentages = (data, targetGu) => {
+  // 선택된 구 기준으로 데이터 필터링
+  const filteredData = data.filter(item => item.CGG_NM === targetGu);
+
+  // 각 동의 거래 수 계산
+  const dongCounts = filteredData.reduce((acc, item) => {
+    const dong = item.STDG_NM;
+    acc[dong] = (acc[dong] || 0) + 1;
+    return acc;
+  }, {});
+
+  // 거래 수에 따라 정렬하고 상위 4개 동과 기타로 분류
+  const sortedDongs = Object.entries(dongCounts).sort((a, b) => b[1] - a[1]);
+  const topDongs = sortedDongs.slice(0, 4);
+  const otherCount = sortedDongs.slice(4).reduce((acc, [, count]) => acc + count, 0);
+
+  // 총 거래 건수로 비율 계산
+  const totalTransactions = sortedDongs.reduce((acc, [, count]) => acc + count, 0);
+
+  const percentages = topDongs.map(([dong, count]) => ({
+    dong,
+    percentage: (count / totalTransactions) * 100
+  }));
+
+  if (otherCount > 0) {
+    percentages.push({
+      dong: '기타',
+      percentage: (otherCount / totalTransactions) * 100
+    });
+  }
+
+  return percentages;
+};
+
+// 차트를 그리는 함수 (새로운 바 차트)
+const drawBarChart2 = (dongPercentages) => {
+  const canvas = document.getElementById('bar-chart2');
+
+  if (!canvas) {
+    console.error('Canvas element with id "bar-chart2" not found.');
+    return;
+  }
+
+  const ctx = canvas.getContext('2d');
+
+  // 기존 차트가 있다면 파괴
+  if (window.barChart2) {
+    window.barChart2.destroy();
+  }
+
+  const labels = dongPercentages.map(d => d.dong);
+  const data = dongPercentages.map(d => d.percentage);
+
+  // 동별 고유 색상을 할당
+  const colors = [
+    'rgba(75, 192, 192, 0.2)',
+    'rgba(255, 159, 64, 0.2)',
+    'rgba(255, 205, 86, 0.2)',
+    'rgba(201, 203, 207, 0.2)',
+    'rgba(54, 162, 235, 0.2)'
+  ];
+  const borderColors = [
+    'rgba(75, 192, 192, 1)',
+    'rgba(255, 159, 64, 1)',
+    'rgba(255, 205, 86, 1)',
+    'rgba(201, 203, 207, 1)',
+    'rgba(54, 162, 235, 1)'
+  ];
+
+  // colors 배열의 개수를 동 개수에 맞춰 동적으로 반복
+  const backgroundColors = data.map((_, index) => colors[index % colors.length]);
+  const borderColorArray = data.map((_, index) => borderColors[index % borderColors.length]);
+
+  const chartData = {
+    labels: labels,
     datasets: [
       {
-        label: '거래량',
-        data: [120, 95, 78, 63, 47], // Example data for transaction volume
-        backgroundColor: [
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(255, 159, 64, 0.2)',
-          'rgba(255, 205, 86, 0.2)',
-          'rgba(201, 203, 207, 0.2)',
-          'rgba(54, 162, 235, 0.2)'
-        ],
-        borderColor: [
-          'rgba(75, 192, 192, 1)',
-          'rgba(255, 159, 64, 1)',
-          'rgba(255, 205, 86, 1)',
-          'rgba(201, 203, 207, 1)',
-          'rgba(54, 162, 235, 1)'
-        ],
+        label: '거래량 (%)',
+        data: data,
+        backgroundColor: backgroundColors, // 동별 배경색
+        borderColor: borderColorArray, // 동별 경계선 색
         borderWidth: 1
       }
     ]
@@ -351,7 +594,7 @@ const drawBarChart = () => {
 
   const config = {
     type: 'bar',
-    data: data,
+    data: chartData,
     options: {
       responsive: true,
       plugins: {
@@ -360,134 +603,23 @@ const drawBarChart = () => {
         },
         title: {
           display: true,
-          text: '서울시 상위 5개 거래량'
+          text: `${adm_gu.value} 동별 거래량 (%) - 상위 4개 및 기타`
         }
       },
       scales: {
         y: {
-          beginAtZero: true
+          beginAtZero: true,
+          max: 100
         }
       }
     }
   };
 
-  // Create the Chart.js bar chart and store the instance
-  barChart = new Chart(ctx, config);
+  // 차트 생성
+  window.barChart2 = new Chart(ctx, config);
 };
 
-// 두 번째 라인 차트 그리는 함수
-const drawSecondLineChart = () => {
-  const canvas = document.getElementById('second-line-chart');
 
-  if (!canvas) {
-    console.error('Canvas element with id "second-line-chart" not found.');
-    return;
-  }
-
-  const ctx = canvas.getContext('2d');
-
-  // If a chart instance already exists, destroy it to prevent duplication
-  if (secondLineChart) {
-    secondLineChart.destroy();
-  }
-
-  const data = {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June'],
-    datasets: [
-      {
-        label: '매매 대비 전세가 변동 추이',
-        data: [60, 62, 58, 65, 63, 70],
-        fill: false,
-        borderColor: 'rgb(54, 162, 235)',
-        tension: 0.1
-      },
-      {
-        label: '2024 중위 가격',
-        data: [75, 69, 90, 71, 66, 45, 50],
-        fill: false,
-        borderColor: 'rgb(255, 99, 132)',
-        tension: 0.1
-      }
-    ]
-  };
-
-  const config = {
-    type: 'line',
-    data: data,
-    options: {
-      responsive: true,
-      plugins: {
-        legend: {
-          position: 'top',
-        },
-        title: {
-          display: true,
-          text: '최근 6개월 간 매매 대비 전세가 변동 추이'
-        }
-      }
-    }
-  };
-
-  // Create the Chart.js chart and store the instance
-  secondLineChart = new Chart(ctx, config);
-};
-
-// 세 번째 라인 차트 그리는 함수
-const drawThirdLineChart = () => {
-  const canvas = document.getElementById('third-line-chart');
-
-  if (!canvas) {
-    console.error('Canvas element with id "third-line-chart" not found.');
-    return;
-  }
-
-  const ctx = canvas.getContext('2d');
-
-  // If a chart instance already exists, destroy it to prevent duplication
-  if (thirdLineChart) {
-    thirdLineChart.destroy();
-  }
-
-  const data = {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June'],
-    datasets: [
-      {
-        label: '평균 전세보증금 변동 추이',
-        data: [75, 73, 77, 72, 79, 74],
-        fill: false,
-        borderColor: 'rgb(255, 206, 86)',
-        tension: 0.1
-      },
-      {
-        label: '2024 중위 가격',
-        data: [75, 69, 90, 71, 66, 45, 50],
-        fill: false,
-        borderColor: 'rgb(255, 99, 132)',
-        tension: 0.1
-      }
-    ]
-  };
-
-  const config = {
-    type: 'line',
-    data: data,
-    options: {
-      responsive: true,
-      plugins: {
-        legend: {
-          position: 'top',
-        },
-        title: {
-          display: true,
-          text: '최근 6개월 간 평균 전세보증금 변동 추이'
-        }
-      }
-    }
-  };
-
-  // Create the Chart.js chart and store the instance
-  thirdLineChart = new Chart(ctx, config);
-};
 
 // 탭 전환 시 필터 초기화 및 탭 변경 처리
 const setTab = (tab) => {
@@ -501,6 +633,7 @@ const setTab = (tab) => {
 const svgMap = ref(null); // SVG 요소를 참조하는 ref
 const selectedGu = ref(null); // 사용자가 선택한 구
 const showAllGu = ref(true);  // true면 모든 구를 보여주고, false면 선택한 구의 동들을 보여줌
+const selectedDong = ref(false);
 
 // 구 경계를 그리는 함수
 const drawGuMap = () => {
@@ -530,15 +663,15 @@ const drawGuMap = () => {
     .enter()
     .append("path")
     .attr("d", path)
-    .attr("fill", "lightblue") // 구역 채우기 색상
+    .attr("fill", "#F2ECF9") // 구역 채우기 색상
     .attr("stroke", "black")   // 경계선 색상
     .attr("stroke-width", 1)
     // 마우스 호버 이벤트 추가
     .on("mouseover", function () {
-      d3.select(this).attr("fill", "orange"); // 마우스 오버 시 색상 변경
+      d3.select(this).attr("fill", "#9D7AC3"); // 마우스 오버 시 색상 변경
     })
     .on("mouseout", function () {
-      d3.select(this).attr("fill", "lightblue"); // 마우스 아웃 시 원래 색상으로 돌아옴
+      d3.select(this).attr("fill", "#F2ECF9"); // 마우스 아웃 시 원래 색상으로 돌아옴
     })
     // 구 클릭 시 해당 구의 동 경계를 그리도록 변경
     .on("click", (event, d) => {
@@ -556,6 +689,7 @@ const drawGuMap = () => {
     .attr("y", d => projection(d3.geoCentroid(d))[1] + 10) // 구역 중심 Y 좌표
     .attr("text-anchor", "middle") // 텍스트 중앙 정렬
     .attr("font-size", "12px") // 텍스트 크기
+    .attr("font-weight", "bold")
     .attr("fill", "black") // 텍스트 색상
     .text(d => d.properties.SIG_KOR_NM); // 구 이름 표시
 };
@@ -595,19 +729,31 @@ const drawDongMap = () => {
     .enter()
     .append("path")
     .attr("d", path)
-    .attr("fill", "#ACF797") // 구역 채우기 색상
+    .attr("fill", "#F2ECF9") // 구역 채우기 색상
     .attr("stroke", "black")   // 경계선 색상
     .attr("stroke-width", 1)
     // 마우스 호버 이벤트 추가
     .on("mouseover", function () {
-      d3.select(this).attr("fill", "orange"); // 마우스 오버 시 색상 변경
+      d3.select(this).attr("fill", "#9D7AC3"); // 마우스 오버 시 색상 변경
     })
     .on("mouseout", function () {
-      d3.select(this).attr("fill", "#ACF797"); // 마우스 아웃 시 원래 색상으로 돌아옴
+      d3.select(this).attr("fill", "#F2ECF9"); // 마우스 아웃 시 원래 색상으로 돌아옴
     })
+
     // 클릭 이벤트 추가
     .on("click", (event, d) => {
+      const [si, gu, dong] = (d.properties.adm_nm).split(" ");
+
+      adm_si.value = si;
+      adm_gu.value = gu;
+      adm_dong.value = dong;
+
+      selectedDong.value = true;
+
+      console.log(`시: ${adm_si.value}, 구: ${adm_gu.value}, 동: ${adm_dong.value}`)
       alert(`${d.properties.adm_nm} 클릭됨`);
+
+      fetchData();
     });
 
   // 선택된 구의 동 이름 텍스트 추가
@@ -644,6 +790,23 @@ watch(activeTab, async (newTab) => {
 onMounted(() => {
   drawGuMap();
 });
+
+const adm_si = ref(null);
+const adm_gu = ref(null);
+const adm_dong = ref(null);
+
+const createApiUrl = (dongName) => {
+  const API_KEY = '71434f686774617933387952755651';
+  const START_INDEX = 1;
+  const END_INDEX = 1000;
+  const TYPE = 'json';
+
+  const url = `http://openapi.seoul.go.kr:8088/${API_KEY}/${TYPE}/tbLnOpendataRentV/${START_INDEX}/${END_INDEX}/2024/%20/${adm_gu.value}`;
+  console.log("API 요청 URL:", url);
+  return url;
+};
+
+
 </script>
 
 

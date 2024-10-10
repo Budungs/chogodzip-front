@@ -151,7 +151,7 @@ hr {
   /* 차트의 너비를 설정 */
   margin: 10px;
 
-  border: 1px solid black;
+  border: 1px solid #A0A0A0;
   border-radius: 5px;
   padding: 20px;
 }
@@ -175,8 +175,9 @@ hr {
   /* 수평 중앙 정렬 */
   width: 100%;
   margin: 5px;
-  border: 1px solid black;
+  border: 1px solid #A0A0A0;
   border-radius: 5px;
+  padding: 1rem;
 
 }
 
@@ -208,7 +209,7 @@ hr {
 }
 
 .divide-cht {
-  border: 1px solid black;
+  border: 1px solid #A0A0A0;
   border-radius: 5px;
   padding: 20px;
 }
