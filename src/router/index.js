@@ -13,7 +13,7 @@ import userRoutes from './user';
 import authRoutes from './auth';
 import Chat from '@/views/Chat.vue';
 import ChatTest from '@/views/ChatTest.vue';
-
+import errorRoutes from './error';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
