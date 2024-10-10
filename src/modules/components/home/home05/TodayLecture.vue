@@ -7,7 +7,7 @@
                 <div class="col-md-7 mb-3 mb-md-0 h-100">     
                     <div class="h3 d-flex justify-content-center mb-5 pt-2">오늘의 간단 부동산 지식 퀴즈 🤔</div>
 
-                    <div v-for="(item, idx) in quizItems" :key="idx">
+                    <div v-for="(item, idx) in quizs" :key="idx">
                         <TodayQuizItem :item="item" :collapseId="`jobCollapse${idx}`" />
                     </div>
                 </div>
@@ -31,11 +31,14 @@
 import TodayQuizItem from './TodayQuizItem.vue';
 import TodayLatestNewsItem from './TodayLatestNewsItem.vue';
 import fetchNews from '@/utils/news.js';
+import fetchQuizs from '@/utils/quiz.js';
 import { onMounted } from 'vue';
 
 //최신 뉴스 데이터 조회
 const { items, getNewsList } = fetchNews();
-onMounted(getNewsList);
+const { quizs, getGPTResponse } = fetchQuizs();
+
+onMounted(getNewsList(), getGPTResponse());
 
 // 임시 퀴즈 데이터
 const quizItems = [
