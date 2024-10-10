@@ -35,7 +35,7 @@
         </section>
 
         <!-- 세부 폼 작성: 매물 유형에 따라 표시 컴포넌트 변경 -->
-        <RoomPostForm v-if="store.category !== ''" :category="store.category" />
+        <RoomPostForm v-if="store.category !== null" :category="store.category" />
       </div>
 
       <!-- 작성 진행 카드 -->

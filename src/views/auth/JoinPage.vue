@@ -67,7 +67,7 @@ const join = async () => {
         <label for="id" class="form-label">
           <i class="fa-solid fa-user"></i>
           사용자 ID :
-          <button type="button" class="btn btn-success btn-sm py-0 me-2" @click="checkId">ID 중복 확인</button>
+          <button type="button" class="btn btn-success btn-sm py-0 me-2" @click="checkId">ID 중복 확인22222</button>
           <span :class="disableSubmit.value ? 'text-primary' : 'text-danger'">{{ checkError }}</span>
         </label>
         <input type="text" class="form-control" placeholder="사용자 ID" id="id" @input="changeId" v-model="member.id" />
@@ -118,6 +118,7 @@ const join = async () => {
         확인
       </button>
     </form>
+    
 
 </div>
 </template>

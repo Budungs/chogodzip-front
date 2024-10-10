@@ -6,10 +6,8 @@
                 <span class="h5">한눈에 보는 장단점 </span>
             </h3>
             <div class="toggle-bar" style="display:flex; width:100%;">
-                <button style="  flex: 1;" :class="{ active: activeTab === 'pros' }"
-                    @click="activeTab = 'pros'">장점</button>
-                <button style="  flex: 1;" :class="{ active: activeTab === 'cons' }"
-                    @click="activeTab = 'cons'">단점</button>
+                <button style="flex: 1;" :class="{ active: activeTab === 'pros' }" @click="activeTab = 'pros'">장점</button>
+                <button style="flex: 1;" :class="{ active: activeTab === 'cons' }" @click="activeTab = 'cons'">단점</button>
             </div>
 
             <transition name="fade" mode="out-in">
@@ -50,61 +48,72 @@
     </div>
     <div class="container">
         <div class="mb-5">
-            <div class="tab-content pt-2">
-                <div class="tab-pane fade show active" id="reviews-about-you" role="tabpanel">
-
-                    <div class="mb-3 position-relative pt-2 pb-2">
-                        <input style="height: 100px; width: 100%;" class="form-control" id="input-normal" type="text">
-                        <button class="pt-2 btn"
-                            style="background: #68C9CB; color:white; position: absolute; right: 10px; bottom: 15px; padding: 5px 10px; font-size: 0.9rem;"
-                            type="submit">작성</button>
+          <div class="tab-content pt-2">
+            <div class="tab-pane fade show active" id="reviews-about-you" role="tabpanel">
+              <div class="mb-3 position-relative pt-2 pb-2">
+                <input style="height: 100px; width: 100%;" class="form-control" id="input-normal" type="text">
+                <button class="pt-2 btn"
+                  style="background: #68C9CB; color:white; position: absolute; right: 10px; bottom: 15px; padding: 5px 10px; font-size: 0.9rem;"
+                  type="submit">작성</button>
+              </div>
+    
+              <!-- 리뷰 데이터 렌더링 -->
+              <div v-if="reviews && reviews.length > 0">
+                <div v-for="review in reviews" :key="review.reviewId" class="mb-4 pb-4 border-bottom">
+                  <div class="d-flex justify-content-between">
+                    <div class="d-flex align-items-center">
+                      <img class="rounded-circle me-1"
+                        src="https://i.namu.wiki/i/Vj5qbEFSnNirgU_WzuKbQmLd20hbM6QyNGHb8f87wB4iUuMA-OliDHoQMBnxu7jSowmBl5R-wBKXIb5Voe1bxw.webp"
+                        width="40" height="40" alt="Avatar" style="width:50px; height:50px;">
+                      <div class="ps-2">
+                        <h6 class="fs-base mb-0">{{ review.userId }}</h6> <!-- 사용자 ID -->
+                        <span class="text-muted fs-sm">{{ formatDate(review.createdAt) }}</span> 
+                     </div>
                     </div>
-
-
-                    <div class="mb-4 pb-4 border-bottom" v-for="review in 3" :key="review">
-                        <div class="d-flex justify-content-between">
-                            <div class="d-flex align-items-center pe-2"><img class="rounded-circle me-1"
-                                    src="https://i.namu.wiki/i/Vj5qbEFSnNirgU_WzuKbQmLd20hbM6QyNGHb8f87wB4iUuMA-OliDHoQMBnxu7jSowmBl5R-wBKXIb5Voe1bxw.webp"
-                                    width="40" height="40" alt="Avatar"
-                                    style="width:50px !important; height:50px !important;">
-                                <div class="ps-2">
-                                    <h6 class="fs-base mb-0">말리부</h6><span class="star-rating"></span>
-                                </div>
-                            </div><span class="text-muted fs-sm">Jan 17, 2021</span>
-                        </div>
-                        <p style="margin-left:4rem;">집주인이 친절하세요. 이번에 전등 나갔을 때도 친절히 수정 도와주셨어요 ! 근처 공원이 있는 점도 마음에 듭니다.</p>
-
-                    </div>
-
-                    <nav class="mt-2" aria-label="Reviews pagination">
-                        <ul class="pagination">
-                            <li class="page-item d-sm-none"><span class="page-link page-link-static">1 /
-                                    5</span></li>
-                            <li class="page-item active d-none d-sm-block" aria-current="page"><span
-                                    class="page-link">1<span class="visually-hidden">(current)</span></span>
-                            </li>
-                            <li class="page-item d-none d-sm-block"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item d-none d-sm-block"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item d-none d-sm-block">...</li>
-                            <li class="page-item d-none d-sm-block"><a class="page-link" href="#">8</a></li>
-                            <li class="page-item"><a class="page-link" href="#" aria-label="Next"></a></li>
-                        </ul>
-                    </nav>
+                  </div>
+                  <p style="margin-left:4rem;">{{ review.reviewContent }}</p> <!-- 리뷰 내용 -->
                 </div>
+              </div>
+              <p v-else>아직 리뷰가 없습니다.</p>
+    
+              <!-- <nav class="mt-2" aria-label="Reviews pagination">
+                <ul class="pagination">
+                  <li class="page-item d-sm-none"><span class="page-link page-link-static">1 /
+                      5</span></li>
+                  <li class="page-item active d-none d-sm-block" aria-current="page"><span
+                      class="page-link">1<span class="visually-hidden">(current)</span></span>
+                  </li>
+                  <li class="page-item d-none d-sm-block"><a class="page-link" href="#">2</a></li>
+                  <li class="page-item d-none d-sm-block"><a class="page-link" href="#">3</a></li>
+                  <li class="page-item d-none d-sm-block">...</li>
+                  <li class="page-item d-none d-sm-block"><a class="page-link" href="#">8</a></li>
+                  <li class="page-item"><a class="page-link" href="#" aria-label="Next"></a></li>
+                </ul>
+              </nav> -->
             </div>
+          </div>
         </div>
-    </div>
+      </div>
 </template>
 
-<script>
-export default {
-    data() {
-        return {
-            activeTab: 'pros',
-        }
-    }
-}
+<script setup>
+import { ref } from 'vue';
+
+const props = defineProps({
+  reviews: {
+    type: Array,
+    default: () => []
+  }
+});
+
+const activeTab = ref('pros');
+
+const formatDate = (timestamp) => {
+  const date = new Date(timestamp);
+  return date.toLocaleDateString();
+};
 </script>
+
 
 <style scoped>
 .ai-card {
