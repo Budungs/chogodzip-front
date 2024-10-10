@@ -31,9 +31,14 @@ const fetchNews = () => {
                 }
                 if(words.trim() === '') words = '경제';
 
+                //html태그 제거
+                const title = document.createElement('div');
+                title.innerHTML = response.data.items[i].title;
+                const cleanedTitle = title.innerText || title.textContent;
+
                 const item = {
                     category: words,
-                    title: response.data.items[i].title,
+                    title: cleanedTitle,
                     href: response.data.items[i].link,
                     date: response.data.items[i].pubDate,
                 };
