@@ -255,8 +255,8 @@ const processDataByDate = (data, targetDong) => {
       };
     }
 
-    const deposit = parseFloat(item.GRFE);
-    const rentAmount = parseFloat(item.RTFE);
+    const deposit = parseFloat(item.GRFE);  // 보증금
+    const rentAmount = parseFloat(item.RTFE); //월세가
 
 
     if (item.BLDG_USG === '단독다가구' || item.BLDG_USG === '연립다세대') {

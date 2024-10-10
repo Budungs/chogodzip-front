@@ -21,7 +21,15 @@ export default {
         const {data} = await api.get(`${BASE_URL}/review/${no}`);
         console.log('review : ',data);
         return data;
+    },
+    async getGosiwonStatus(location) {
+        const { data } = await api.get(`${BASE_URL}/status`, {
+            params: { location }
+        });
+        console.log('status : ', data);
+        return data;
     }
+    
 
 
 
