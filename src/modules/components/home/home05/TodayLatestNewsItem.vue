@@ -1,8 +1,9 @@
 <template>
-    <a :href="item.href" class="news-link-a"> 
-        <p class="mb-3">
-            <span class="me-3">{{ item.category }}</span> {{ item.title }} 
-        </p>
+    <a :href="item.href" class="news-link-a" > 
+        <div class="mb-3 d-flex flex-row">
+            <div class="text-danger" style="min-width:70px">{{ item.category }}</div> 
+            <div class="news-title">{{ item.title }}</div>
+        </div>
     </a>
 </template>
 
@@ -20,13 +21,10 @@ const props = defineProps({
     text-decoration: none; color: #3d3d3d;
 }
 
-.news-link-a > p {
-    white-space: nowrap;  
-    overflow: hidden;    
+.news-title {
+    white-space: nowrap;
+    overflow: hidden;
     text-overflow: ellipsis;
-}
-
-.news-link-a > p > span {
-    color: var(--caution);
+    flex-grow: 1;
 }
 </style>
