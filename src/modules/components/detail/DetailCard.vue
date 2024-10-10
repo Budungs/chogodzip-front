@@ -1,12 +1,12 @@
 <template>
     <aside class="col-md-5" style="display: flex; flex-direction: column;">
         <div style="margin-left: 1rem; flex-grow: 1;">
-            <p class="fs-lg">매물 이름 : {{ cardData.roomName }}</p>
+            <p class="fs-lg">매물 이름 : {{ cardData.title }}</p>
             <h4>월세 {{ cardData.depositMin }}-{{ cardData.depositMax }} / 보증금 {{ cardData.priceMin }}-{{ cardData.priceMax }} 만원</h4>
-            <div>관리비 12만원</div>
+            <div>관리비 {{ cardData.maintenanceFee }} 만원</div>
             <hr class="mt-3 mb-3" style="height:2px; border-color:#0C0C0C;">
-            <div class="fs-6" style="color:black;">{{ cardData.location }}</div>
-            <div class="fs-6 mb-3" style="color:black;">{{ cardData.type }}</div>
+             <div class="fs-6" style="color:black;">{{ cardData.location }}</div>
+            <!--<div class="fs-6 mb-3" style="color:black;">{{ cardData.type }}</div> -->
             <div class="mb-3">
                 <img :src="subway_3" width="25" height="25" />
                 <span class="main1" style="margin-left:7px; font-weight:bolder; color:#7747B5;">
@@ -23,20 +23,20 @@
         </div>
         <div class="market-price d-flex flex-column align-items-center">
             <h6 class="main1 mt-3" style="margin-left: 7px; font-weight: bolder; color: #D85F5F;">
-                {{ cardData.roomAddr }}
+                서울시 {{ districtName }}
             </h6>
             <div class="row" style="width: 25rem;">
                 <div class="col text-center" style="border-right: solid 3px #D2D2D2">
-                    <div style="font-weight: bold; color:black;">평균</div>
-                    <div><span style="font-weight: bolder; color: #D85F5F; font-size: 1.3rem; margin-right: 0.2rem;">97</span>만원</div>
+                    <div style="font-weight: bold; color:black;">최대</div>
+                    <div><span style="font-weight: bolder; color: #D85F5F; font-size: 1.3rem; margin-right: 0.2rem;">{{nameStatus.maxPrice}}</span>만원</div>
                 </div>
                 <div class="col text-center" style="border-right: solid 3px #D2D2D2">
                     <div style="font-weight: bold; color:black;">평균</div>
-                    <div><span style="font-weight: bolder; color: #D85F5F; font-size: 1.3rem; margin-right: 0.2rem;">97</span>만원</div>
+                    <div><span style="font-weight: bolder; color: #D85F5F; font-size: 1.3rem; margin-right: 0.2rem;">{{nameStatus.avgPrice}}</span>만원</div>
                 </div>
                 <div class="col text-center">
-                    <div style="font-weight: bold; color:black;">평균</div>
-                    <div><span style="font-weight: bolder; color: #D85F5F; font-size: 1.3rem; margin-right: 0.2rem;">97</span>만원</div>
+                    <div style="font-weight: bold; color:black;">최소</div>
+                    <div><span style="font-weight: bolder; color: #D85F5F; font-size: 1.3rem; margin-right: 0.2rem;">{{nameStatus.minPrice}}</span>만원</div>
                 </div>
             </div>
         </div>
@@ -44,7 +44,7 @@
 </template>
 
 <script setup>
-import { defineProps, ref, onMounted } from 'vue';
+import { defineProps, computed } from 'vue';
 import subway_3 from '@/assets/img/subway_3.png';
 
 // Props
@@ -60,8 +60,20 @@ const props = defineProps({
     walkTime: {
         type: Number,
         required: true
-    }
+    },
+    nameStatus: {
+        type: Object,
+        required: true
+    },
 });
+
+// Computed property to extract '구' name from the address
+const districtName = computed(() => {
+    const addressParts = props.cardData.address.split(' ');
+    const guIndex = addressParts.findIndex(part => part.includes('구'));
+    return guIndex !== -1 ? addressParts[guIndex] : '';
+});
+
 </script>
 
 <style scoped>
