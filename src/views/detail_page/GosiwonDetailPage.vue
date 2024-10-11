@@ -24,7 +24,7 @@
             <DetailMap :cardData="house" :nearestSubway="nearestSubway" :walkTime="walkTime" :nearestUniversity="nearestUniversity"/>
         </div>
     </div>
-    <ReviewTab :reviews="reviews" :userId="id" :cardData="house"/>
+    <ReviewTab :reviews="reviews" :summaryReviews="reviewSummary" :userId="id" :cardData="house"/>
 </template>
 
 <script setup>
@@ -215,7 +215,6 @@ let islogin = computed(() => auth.isLogin); // islogin 을 직접 바꿀 수는 
 console.log('islogin : ' + islogin.value);
 const id = computed(() => auth.id); // id 을 직접 바꿀 수는 없음. (computed 속성)  - 값을 바꾸려면 auth.id 값을 바꿔야 함.
 console.log('id : ' + id.value);
-
 </script>
 
 <style scoped>
