@@ -1,20 +1,19 @@
 <template>
-    <div class="container">
-        <br><br>
-        <h1>커뮤니티</h1>
-        <div class="dictionary-container">
-            <form class="form-group" style="width:100%; height: 75px; display:flex; flex-direction:row; justify-content:center;">
+    <div class="container mt-5">
+        <h3 class="mb-3" style="color:var(--grayTitle)">커뮤니티</h3>
+        <div class="dictionary-container card card-body border-0 shadow-sm p-5 mt-4 pt-5">
+            <form class="form-group">
                 <!-- 분류 Dropdown -->
-                <div class="dropdown w-sm-20 border-end-md" data-bs-toggle="select">
+                <div class="dropdown w-sm-25 border-end-md" data-bs-toggle="select">
                     <button class="btn btn-link" type="button" data-bs-toggle="dropdown">
-                        <i class="fas fa-sort-down me-2"></i>
+                        <i class="fas fa-sort-down me-2" />
                         <span class="dropdown-toggle-label">{{ getTagName(selectedOwner) }}</span>
                     </button>
                     <input type="hidden">
                     <ul class="dropdown-menu">
                         <li v-for="(key, idx) in Object.keys(tagMapping)" :key="idx">
-                            <a href="#" class="dropdown-item" @click="selectOwner(key)">
-                                <span class="dropdown-item-lab  el">{{ getTagName(key) }}</span>
+                            <a class="dropdown-item" @click="selectOwner(key)">
+                                <span class="dropdown-item-label">{{ getTagName(key) }}</span>
                             </a>
                         </li>
                     </ul>
@@ -27,16 +26,17 @@
                     </span>
                     <input type="text" class="form-control" placeholder="공고 제목을 입력하세요" v-model="searchTitle">
                 </div>
-                <hr class="d-sm-none my-2">
-        
-                <hr class="d-sm-none my-2">
-        
-                <button type="button" class="btn btn-translucent-primary ms-auto" style="width:200px" @click="filterList">검색</button>
+                <button type="button" class="btn btn-translucent-primary w-25" @click="filterList">검색</button>
             </form>
             
             <!-- 게시글 건수, 조회 방식 select-->
-            <div class="selector">
-                <div class="howcnt-postview">
+            <div class="selector d-flex w-100 justify-content-end gap-2 mt-3">
+                <!-- 게시글 수와 페이지 수 조회 -->
+                <div style="margin-right:auto; margin-top:auto">
+                    전체 <span class="text-primary fw-bolder">{{ filteredList.length }}</span> 건 <span class="text-primary fw-bolder">{{ currentPage }}</span>/ {{ totalPages }} 페이지
+                </div>
+
+                <div class="howcnt-postview rounded">
                     <!-- 한 번에 게시되는 게시글 Dropdown -->
                     <div class="dropdown w-sm-20 border-end-md" data-bs-toggle="select">
                         <button class="btn btn-link" type="button" data-bs-toggle="dropdown">
@@ -45,26 +45,16 @@
                         </button>
                         <input type="hidden">
                         <ul class="dropdown-menu">
-                            <li>
-                                <a href="#" class="dropdown-item" @click="selectArticleCnt('10')">
-                                    <span class="dropdown-item-lab  el">10건</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="dropdown-item" @click="selectArticleCnt('20')">
-                                    <span class="dropdown-item-label">20건</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="dropdown-item" @click="selectArticleCnt('30')">
-                                    <span class="dropdown-item-label">30건</span>
+                            <li  v-for="(num, idx) in [10, 20, 30]" :key="idx">
+                                <a class="dropdown-item" @click="selectArticleCnt(num)">
+                                    <span class="dropdown-item-label">{{ num }}건</span>
                                 </a>
                             </li>
                         </ul>
                     </div>
                 </div>
 
-                <div class="howto-postview">
+                <div class="howto-postview rounded">
                     <!-- 게시글 조회 방식 Dropdown -->
                     <div class="dropdown w-sm-20 border-end-md" data-bs-toggle="select">
                         <button class="btn btn-link" type="button" data-bs-toggle="dropdown">
@@ -74,12 +64,12 @@
                         <input type="hidden">
                         <ul class="dropdown-menu">
                             <li>
-                                <a href="#" class="dropdown-item" @click="selectArticleView('latest')">
+                                <a class="dropdown-item" @click="selectArticleView('latest')">
                                     <span class="dropdown-item-label">최신순</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="#" class="dropdown-item" @click="selectArticleView('views')">
+                                <a class="dropdown-item" @click="selectArticleView('views')">
                                     <span class="dropdown-item-label">조회순</span>
                                 </a>
                             </li>
@@ -87,46 +77,38 @@
                     </div>
                 </div>
             </div>
-
-            <!-- 게시글 수와 페이지 수 조회 -->
-            <br>
-            전체 <span style="color:#9D7AC3; font-weight: bold;">{{ filteredList.length }}</span> 건 <span style="color:#9D7AC3; font-weight: bold;">{{ currentPage }}</span>/ {{ totalPages }} 페이지
             
             <!-- 게시판 -->
-            <br><br><br>
-            <div class="table-responsive">
-            <table class="table table-hover">
-                <thead>
-                <tr>
-                    <th style="text-align:center;">번호</th>
-                    <th style="text-align:center;">태그</th>
-                    <th style="text-align:center;">제목</th>
-                    <th style="text-align:center;">작성자</th>
-                    <th style="text-align:center;">작성일</th>
-                    <th style="text-align:center;">조회수</th>
-                </tr>
-                </thead>
-                <tbody>
-                    <h1 v-if="paginatedList.length === 0" class="h3">데이터가 없습니다.</h1>
-                    <ArticleEach v-for="(item, idx) in paginatedList" :key="idx" :item="item" />
-                </tbody>
-            </table>
+            <div class="table-responsive mt-3">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th style="text-align:center; min-width:50px">번호</th>
+                            <th style="text-align:center;">태그</th>
+                            <th style="text-align:center;">제목</th>
+                            <th style="text-align:center;">작성자</th>
+                            <th style="text-align:center;">작성일</th>
+                            <th style="text-align:center;">조회수</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <p v-if="paginatedList.length === 0" class="fs-lg mt-3">데이터가 없습니다...😵‍💫</p>
+                        <ArticleEach v-for="(item, idx) in paginatedList" :key="idx" :item="item" />
+                    </tbody>
+                </table>
             </div>
             
-            <!-- 검색 버튼 -->
-            <div class="d-flex">
-                <button type="button" class="btn btn-translucent-primary ms-auto" style="width:120px; margin-right: 70px;" @click="goToWritePage">글쓰기</button>
+            <!-- 글쓰기 버튼 -->
+            <div class="w-100 d-flex">
+                <button type="button" class="btn btn-outline-primary ms-auto" style="width:120px" @click="goToWritePage">글쓰기</button>
             </div>
             
             <!-- 페이지네이션 -->
-            <div class="con-paging">
+            <div class="con-paging mt-5">
                 <Pagination :currentPage="currentPage" :totalPages="totalPages" @update:page="handlePageChange" />
             </div>
-
-            <br>
         </div>
     </div>
-    <br><br><br><br><br>
 </template>
 
 <script setup>
@@ -236,32 +218,17 @@ function goToWritePage() {
 </script>
 
 <style scoped>
-.container {
-    background-color: #E6E6FA;
-}
 .dictionary-container {
     background-color: white;
-    border: 2px solid #969696; /* 테두리 두께 2px, 회색 */
-    border-radius: 10px; /* 모서리를 10px 둥글게 */
-    padding: 20px; /* 내부 여백 */
+    border: 1px solid #969696;
 }
-.selector {
-    display: grid; /* Grid 활성화 */
-    grid-template-columns: auto auto; /* 두 개의 열 생성 */
-    justify-content: end; /* 오른쪽 정렬 */
-}
-.howcnt-postview {
-    margin-right: 30px;
-    margin-top: 10px;
-    border: 2px solid #969696; /* 두께 2px, 실선, 회색 */
-    border-radius: 10px; /* 모서리 둥글게 */
-}
-.howto-postview {
-    border: 2px solid #969696; /* 두께 2px, 실선, 회색 */
-    border-radius: 10px; /* 모서리 둥글게 */
-    margin-top: 10px;
+.howcnt-postview, .howto-postview {
+    border: 1px solid #b4b4b48e;
 }
 .con-paging {
     width:100%; height:100px; display:flex; justify-content: center; align-items: end;
+}
+.dropdown-item {
+    cursor: pointer;
 }
 </style>

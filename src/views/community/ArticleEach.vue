@@ -4,7 +4,7 @@
         <td style="width:5%; text-align:center;" >{{ item.communityId }}</td>
         <td style="width:10%; text-align:center;" >{{ getTagName(item.tag) }}</td>
         <td style="width:50%; text-align:center;">
-            <router-link :to="{ path: `/community/${item.communityId}` }" style="text-decoration: none;">{{ item.title }}</router-link>
+            <router-link :to="{ path: `/community/${item.communityId}` }" style="text-decoration: none; color:var(--grayTitle)">{{ item.title }}</router-link>
         </td>
         <td class="truncate" style="text-align:center;">{{ item.nickname }}</td>
         <td style="width:10%; text-align:center;"> {{ new Date(item.createdAt).toISOString().slice(0, 10) }}</td>
