@@ -69,23 +69,18 @@
                     <div class="dropdown w-sm-20 border-end-md" data-bs-toggle="select">
                         <button class="btn btn-link" type="button" data-bs-toggle="dropdown">
                             <i class="fas fa-sort-down me-2"></i>
-                            <span class="dropdown-toggle-label">{{ viewArticleHowTo }}</span>
+                            <span class="dropdown-toggle-label">{{ viewArticleHowTo === 'latest' ? '최신순' : '조회순' }}</span>
                         </button>
                         <input type="hidden">
                         <ul class="dropdown-menu">
                             <li>
-                                <a href="#" class="dropdown-item" @click="selectArticleView('최신순')">
-                                    <span class="dropdown-item-lab  el">최신순</span>
+                                <a href="#" class="dropdown-item" @click="selectArticleView('latest')">
+                                    <span class="dropdown-item-label">최신순</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="#" class="dropdown-item" @click="selectArticleView('조회순')">
+                                <a href="#" class="dropdown-item" @click="selectArticleView('views')">
                                     <span class="dropdown-item-label">조회순</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="dropdown-item" @click="selectArticleView('제목순')">
-                                    <span class="dropdown-item-label">제목순</span>
                                 </a>
                             </li>
                         </ul>
@@ -147,7 +142,7 @@ const selectedOwner = ref('ALL');
 const searchTitle = ref(''); //검색어
 
 const viewArticleCnt = ref('10건');
-const viewArticleHowTo = ref('최신순');
+const viewArticleHowTo = ref('latest'); //정렬 기준
 
 // 선택된 값을 업데이트하는 메소드
 const selectOwner = (owner) => {
@@ -157,8 +152,11 @@ const selectOwner = (owner) => {
 const selectArticleCnt = (articleCnt) => {
     viewArticleCnt.value = articleCnt;
 };
+
+// 기준별 정렬
 const selectArticleView = (howToView) => {
     viewArticleHowTo.value = howToView;
+    sortList();
 };
 
 // 데이터 조회 & 바인딩
@@ -187,6 +185,12 @@ const searchList = () => {
     filteredList.value = list.value.filter(item => 
         item.title.toLowerCase().includes(searchTitle.value.toLowerCase()));
 };
+
+//데이터 정렬
+const sortList = () => {
+    if(viewArticleHowTo.value === 'latest') filteredList.value = filteredList.value.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); 
+    else filteredList.value = filteredList.value.sort((a, b) => b.views - a.views);
+}
 
 
 // 페이지네이션 정보
