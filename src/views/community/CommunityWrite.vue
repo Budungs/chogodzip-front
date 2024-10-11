@@ -92,12 +92,21 @@ const title = ref('');
 
 //데이터 전송 (작성 요청)
 const submitCommunity = async () => {
-  const data = {
-    title: title.value,
-    tag: selectedType.value,
-    content: window.$('#summernote').summernote('code'),
-    memberId: authStore.id,
-  }
+    const data = {
+      title: title.value,
+      tag: selectedType.value,
+      content: window.$('#summernote').summernote('code'),
+      memberId: authStore.id,
+    }
+
+    //유효성 검사
+    if(data.title.trim() === '') {
+      alert('제목을 입력해주세요.'); return;
+    } else if(data.tag.trim() === '') {
+      alert('태그를 선택해주세요.'); return;
+    } else if(!data.content || data.content.trim() === '<p><br></p>' || data.content.trim() === '') {
+      alert('내용을 입력해주세요.'); return;
+    }
 
   try {
     const res = await axios.post('/api/community', data);
