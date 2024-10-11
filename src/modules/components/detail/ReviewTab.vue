@@ -51,9 +51,9 @@
           <div class="tab-content pt-2">
             <div class="tab-pane fade show active" id="reviews-about-you" role="tabpanel">
               <div class="mb-3 position-relative pt-2 pb-2">
-                <input style="height: 100px; width: 100%;" class="form-control" id="input-normal" type="text">
+                <input style="height: 100px; width: 100%;"  v-model="reviewContent" class="form-control" id="input-normal" type="text">
                 <button class="pt-2 btn"
-                  style="background: #68C9CB; color:white; position: absolute; right: 10px; bottom: 15px; padding: 5px 10px; font-size: 0.9rem;"
+                  style="background: #68C9CB; color:white; position: absolute; right: 10px; bottom: 15px; padding: 5px 10px; font-size: 0.9rem;" @click="submitReview"
                   type="submit">작성</button>
               </div>
     
@@ -100,11 +100,51 @@
 import { ref, onMounted } from 'vue';
 // 부모 컴포넌트에서 reviews 데이터를 받아온다.
 const props = defineProps({
+  cardData: {
+        type: Object,
+        required: true
+  },
   reviews: {
     type: Array,
     default: () => []
+  },
+  userId: {
+    type : String,
+    required: false
   }
 });
+
+console.log('props id : ',props.userId);
+console.log('rooms idsss : ',props.cardData.room.roomId);
+
+const reviewContent = ref('');
+
+const submitReview = async () => {
+  if (!reviewContent.value.trim()) {
+    alert('댓글을 작성해주세요.');
+    return;
+  }
+
+  try {
+    const response = await api.submitReview({
+      roomId: props.cardData.room.roomId,
+      userId: props.userId,
+      reviewContent: reviewContent.value,
+    });
+    
+    if (response.status === 200) {
+    
+      reviewContent.value = ''; 
+      alert('댓글이 성공적으로 등록되었습니다.');
+    } else {
+      alert('댓글 등록에 실패했습니다.');
+    }
+  } catch (error) {
+    console.error('댓글 등록 오류:', error);
+    alert('댓글 등록 중 오류가 발생했습니다.');
+  }
+};
+
 
 const activeTab = ref('pros');
 
@@ -112,6 +152,8 @@ const formatDate = (timestamp) => {
   const date = new Date(timestamp);
   return date.toLocaleDateString();
 };
+
+
 </script>
 
 
