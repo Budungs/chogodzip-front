@@ -11,7 +11,7 @@
             <h4 class="h3 mb-n1">제목</h4>
             <!-- Addon on the left -->
             <div class="input-group" style="margin-top:10px;">
-              <input type="text" class="form-control" placeholder="제목을 입력하세요.">
+              <input type="text" class="form-control" placeholder="제목을 입력하세요." v-model="title">
             </div>
           </div>
             <!-- 주제선택 -->
@@ -27,8 +27,8 @@
           <div class="out-choose-info">
             <label for="info" class="choose-label">정보제공</label>
             <div class="in-choose-info">
-              <button :class="{ active: selectedType === '부동산 정책/투자' }" @click="selectType('부동산 정책/투자')">부동산 정책/투자</button>
-              <button class="policy-issue" :class="{ active: selectedType === '부동산 핫이슈' }" @click="selectType('부동산 핫이슈')">부동산 핫이슈</button>
+              <button :class="{ active: selectedType === 'REPI' }" @click="selectType('REPI')">부동산 정책/투자</button>
+              <button class="policy-issue" :class="{ active: selectedType === 'REHT' }" @click="selectType('REHT')">부동산 핫이슈</button>
             </div>
           </div>
 
@@ -36,9 +36,9 @@
           <div class="out-choose-info">
             <label for="info" class="choose-label">후기</label>
             <div class="in-choose-info">
-              <button class="review" :class="{ active: selectedType === '부동산 후기' }" @click="selectType('부동산 후기')">부동산 후기</button>
-              <button class="contract-review" :class="{ active: selectedType === '계약/입주 후기' }" @click="selectType('계약/입주 후기')">계약/입주 후기</button>
-              <button class="interior-review" :class="{ active: selectedType === '인테리어 후기' }" @click="selectType('인테리어 후기')">인테리어 후기</button>
+              <button class="review" :class="{ active: selectedType === 'RERV' }" @click="selectType('RERV')">부동산 후기</button>
+              <button class="contract-review" :class="{ active: selectedType === 'CTRV' }" @click="selectType('CTRV')">계약/입주 후기</button>
+              <button class="interior-review" :class="{ active: selectedType === 'ITRV' }" @click="selectType('ITRV')">인테리어 후기</button>
             </div>
           </div>
 
@@ -46,8 +46,8 @@
           <div class="out-choose-info">
             <label for="info" class="choose-label">질문</label>
               <div class="in-choose-info">
-                <button class="loan-question" :class="{ active: selectedType === '대출 질문' }" @click="selectType('대출 질문')">대출 질문</button>
-                <button :class="{ active: selectedType === '분양/청약 질문' }" @click="selectType('분양/청약 질문')">분양/청약 질문</button>
+                <button class="loan-question" :class="{ active: selectedType === 'LNQS' }" @click="selectType('LNQS')">대출 질문</button>
+                <button :class="{ active: selectedType === 'LTQS' }" @click="selectType('LTQS')">분양/청약 질문</button>
               </div>
           </div>
         </div>
@@ -55,7 +55,7 @@
   
         <!-- summernote -->
         <div class="summernote-container">
-          <div id="summernote"><p>오늘의 일기 : 헤더의 배경색이 갑자기 회색으로 바뀌었다. 무려 성인 남성 3명과 여성 1명이 붙어서 이 문제를 해결하려고 했다. 결국 해결이 되었다! 바로바로바로 #app 에 background-color을 white로 고치는 것이었다. 자살할 뻔 했다.</p></div>
+          <div id="summernote"></div>
         </div>
         
         <br><br><br>
@@ -63,7 +63,7 @@
           <!-- 취소 버튼 (왼쪽) -->
           <button type="button" class="btn btn-primary" style="background-color:#A9A9A9;" @click="goToCommunityMainPage">취소</button>
           <!-- 등록 버튼 (오른쪽) --> 
-          <button type="button" class="btn btn-primary" style="background-color:#a28cd1;" @click="goToCommunityMainPage">등록</button>
+          <button type="button" class="btn btn-primary" style="background-color:#a28cd1;" @click="submitCommunity">등록</button>
         </div>
   
         <br><br>
@@ -75,17 +75,40 @@
 </template>
   
 <script setup>
-import { ref } from 'vue';
-import { onMounted } from 'vue'; // summernote
+import { ref, onMounted } from 'vue';
+import { useAuthStore } from '@/stores/auth';
+
+const authStore = useAuthStore();
 
 // 선택된 매물 유형을 저장하는 변수
-const selectedType = ref('쉐어하우스');
-
+const selectedType = ref('');
 // 매물 유형을 선택하는 함수
 function selectType(type) {
   selectedType.value = type;
-  console.log("뭔가 클릭은 해서 바뀌었음");
-  console.log(selectedType.value);
+}
+
+//작성데이터
+const title = ref('');
+
+//데이터 전송 (작성 요청)
+const submitCommunity = async () => {
+  const data = {
+    title: title.value,
+    tag: selectedType.value,
+    content: window.$('#summernote').summernote('code'),
+    memberId: authStore.id,
+  }
+
+  try {
+    const res = await axios.post('/api/community', data);
+
+    if(res.status === 200) {
+      router.push(`/community/${res.data}`);
+    } 
+  } catch (err) {
+    console.error('>> 작성 실패 (T o T) 에러:', err.message);
+    alert('게시글 작성에 실패했습니다.');
+  }
 }
 
 // summernote
@@ -109,11 +132,13 @@ onMounted(() => {
 
 // 취소 버튼 클릭 시 게시판의 메인 페이지로 이동
 import { useRouter } from 'vue-router';
+import axios from 'axios';
 const router = useRouter();
 
 const goToCommunityMainPage = () => {
   router.push('/community');
 }
+
 </script>
   
 <style scoped>
