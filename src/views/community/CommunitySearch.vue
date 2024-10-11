@@ -8,23 +8,13 @@
                 <div class="dropdown w-sm-20 border-end-md" data-bs-toggle="select">
                     <button class="btn btn-link" type="button" data-bs-toggle="dropdown">
                         <i class="fas fa-sort-down me-2"></i>
-                        <span class="dropdown-toggle-label">{{ selectedOwner }}</span>
+                        <span class="dropdown-toggle-label">{{ getTagName(selectedOwner) }}</span>
                     </button>
                     <input type="hidden">
                     <ul class="dropdown-menu">
-                        <li>
-                            <a href="#" class="dropdown-item" @click="selectOwner('전체')">
-                                <span class="dropdown-item-lab  el">전체</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="dropdown-item" @click="selectOwner('공공')">
-                                <span class="dropdown-item-label">공공</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="dropdown-item" @click="selectOwner('민간')">
-                                <span class="dropdown-item-label">민간</span>
+                        <li v-for="(key, idx) in Object.keys(tagMapping)" :key="idx">
+                            <a href="#" class="dropdown-item" @click="selectOwner(key)">
+                                <span class="dropdown-item-lab  el">{{ getTagName(key) }}</span>
                             </a>
                         </li>
                     </ul>
@@ -35,7 +25,7 @@
                     <span class="input-group-text">
                         <i class="fas fa-search"></i>
                     </span>
-                    <input type="text" class="form-control" placeholder="공고 제목을 입력하세요">
+                    <input type="text" class="form-control" placeholder="공고 제목을 입력하세요" v-model="searchTitle">
                 </div>
                 <hr class="d-sm-none my-2">
         
@@ -146,20 +136,22 @@
 
 <script setup>
 import axios from 'axios';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, getTransitionRawChildren } from 'vue';
 import ArticleEach from './ArticleEach.vue';
 import Pagination from '@/common/components/Pagination.vue';
+import { getTagName, tagMapping } from '@/modules/components/community/tags.js';
+
 
 // 드롭다운에서 선택한 값을 저장하는 상태
-const selectedOwner = ref('분류');
+const selectedOwner = ref('ALL');
 const viewArticleCnt = ref('10건');
 const viewArticleHowTo = ref('최신순');
 
 // 선택된 값을 업데이트하는 메소드
 const selectOwner = (owner) => {
     selectedOwner.value = owner;
-    selectedCategory.value = '분류'; // 주관 변경 시 분류 초기화
 };
+const searchTitle = ref(''); //검색어
 
 const selectArticleCnt = (articleCnt) => {
     viewArticleCnt.value = articleCnt;
@@ -180,6 +172,11 @@ const fetchCommunity = async () => {
     }
 }
 onMounted(fetchCommunity);
+
+//데이터 필터링 & 검색
+const filterCommunity = async () => {
+    
+}
 
 // 페이지네이션 정보
 const currentPage = ref(1); // 현재 게시글 페이지

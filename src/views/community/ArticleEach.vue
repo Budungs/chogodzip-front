@@ -13,6 +13,7 @@
 
 <script setup>
 import { ref } from 'vue';
+import { getTagName } from '@/modules/components/community/tags.js';
 
 const iconClass = ref("far fa-heart");
 
@@ -22,22 +23,6 @@ const props = defineProps({
         requried: true,
     }
 })
-
-//태그
-const tagMapping = {
-    'REPI': '부동산 정책/투자',
-    'REHT': '부동산 핫이슈',
-    'RERV': '부동산 후기',
-    'CTRV': '계약/입주 후기',
-    'ITRV': '인테리어 후기',
-    'LNQS': '대출 질문',
-    'LTQS': '분양/청약 질문'
-};
-
-const getTagName = (tag) => {
-    return tagMapping[tag] || tag;
-};
-
 </script>
 
 <style scoped>
