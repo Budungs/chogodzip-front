@@ -31,7 +31,7 @@
         
                 <hr class="d-sm-none my-2">
         
-                <button type="button" class="btn btn-translucent-primary ms-auto" style="width:200px" @click="searchList">검색</button>
+                <button type="button" class="btn btn-translucent-primary ms-auto" style="width:200px" @click="filterList">검색</button>
             </form>
             
             <!-- 게시글 건수, 조회 방식 select-->
@@ -41,22 +41,22 @@
                     <div class="dropdown w-sm-20 border-end-md" data-bs-toggle="select">
                         <button class="btn btn-link" type="button" data-bs-toggle="dropdown">
                             <i class="fas fa-sort-down me-2"></i>
-                            <span class="dropdown-toggle-label">{{ viewArticleCnt }}</span>
+                            <span class="dropdown-toggle-label">{{ viewArticleCnt }}건</span>
                         </button>
                         <input type="hidden">
                         <ul class="dropdown-menu">
                             <li>
-                                <a href="#" class="dropdown-item" @click="selectArticleCnt('10건')">
+                                <a href="#" class="dropdown-item" @click="selectArticleCnt('10')">
                                     <span class="dropdown-item-lab  el">10건</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="#" class="dropdown-item" @click="selectArticleCnt('20건')">
+                                <a href="#" class="dropdown-item" @click="selectArticleCnt('20')">
                                     <span class="dropdown-item-label">20건</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="#" class="dropdown-item" @click="selectArticleCnt('30건')">
+                                <a href="#" class="dropdown-item" @click="selectArticleCnt('30')">
                                     <span class="dropdown-item-label">30건</span>
                                 </a>
                             </li>
@@ -90,7 +90,7 @@
 
             <!-- 게시글 수와 페이지 수 조회 -->
             <br>
-            전체 <span style="color:#9D7AC3; font-weight: bold;">1020</span> 건 <span style="color:#9D7AC3; font-weight: bold;">1</span>/N 페이지
+            전체 <span style="color:#9D7AC3; font-weight: bold;">{{ filteredList.length }}</span> 건 <span style="color:#9D7AC3; font-weight: bold;">{{ currentPage }}</span>/ {{ totalPages }} 페이지
             
             <!-- 게시판 -->
             <br><br><br>
@@ -108,7 +108,7 @@
                 </thead>
                 <tbody>
                     <h1 v-if="filteredList.length === 0" class="h3">데이터가 없습니다.</h1>
-                    <ArticleEach v-for="(item, idx) in filteredList" :key="idx" :item="item" :selectedTag="selectedOwner"/>
+                    <ArticleEach v-for="(item, idx) in filteredList" :key="idx" :item="item" />
                 </tbody>
             </table>
             </div>
@@ -137,20 +137,24 @@ import Pagination from '@/common/components/Pagination.vue';
 import { getTagName, tagMapping } from '@/modules/components/community/tags.js';
 
 
-// 드롭다운에서 선택한 값을 저장하는 상태
-const selectedOwner = ref('ALL');
+const selectedOwner = ref('ALL'); // 드롭다운에서 선택한 값을 저장하는 상태
 const searchTitle = ref(''); //검색어
-
-const viewArticleCnt = ref('10건');
+const viewArticleCnt = ref('10'); //1페이지 표시 개수
 const viewArticleHowTo = ref('latest'); //정렬 기준
 
-// 선택된 값을 업데이트하는 메소드
+const list = ref([]); //원본 데이터 리스트
+const filteredList = ref([]); //필터링 데이터 리스트
+
+// 선택된 태그로 업데이트하는 메소드
 const selectOwner = (owner) => {
     selectedOwner.value = owner;
+    filterList();
 };
 
+// 개수 변경에 따른 페이지 표시
 const selectArticleCnt = (articleCnt) => {
     viewArticleCnt.value = articleCnt;
+    countTotalPage();
 };
 
 // 기준별 정렬
@@ -160,14 +164,13 @@ const selectArticleView = (howToView) => {
 };
 
 // 데이터 조회 & 바인딩
-const list = ref([]); //원본 데이터 리스트
-const filteredList = ref([]); //필터링 데이터 리스트
 const fetchCommunity = async () => {
     try {
         const res = await axios.get('/api/community/list');
         if(res.status === 200) {
             list.value = res.data;
             filteredList.value = res.data;
+            countTotalPage(); //
         }
         
     } catch (err) {
@@ -176,26 +179,37 @@ const fetchCommunity = async () => {
 }
 onMounted(fetchCommunity);
 
-//데이터 검색
-const searchList = () => {
-    if(searchTitle.value.trim() === '' || searchTitle.value.trim().length < 2) {
+const filterList = () => {
+    if(searchTitle.value.trim().length == 1) {
         alert('검색어는 2글자 이상 입력해주세요.'); return;
     }
 
-    filteredList.value = list.value.filter(item => 
-        item.title.toLowerCase().includes(searchTitle.value.toLowerCase()));
-};
+    filteredList.value = list.value.filter(item => {
+        let isMatchedWithTag = selectedOwner.value === 'ALL' || selectedOwner.value === item.tag;
+        let isContainWord = searchTitle.value.trim() === '' || item.title.toLowerCase().includes(searchTitle.value.toLowerCase());
+        return isMatchedWithTag && isContainWord;
+    });
+
+    sortList();
+    countTotalPage();
+}
 
 //데이터 정렬
 const sortList = () => {
     if(viewArticleHowTo.value === 'latest') filteredList.value = filteredList.value.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); 
     else filteredList.value = filteredList.value.sort((a, b) => b.views - a.views);
+    countTotalPage();
 }
 
 
 // 페이지네이션 정보
 const currentPage = ref(1); // 현재 게시글 페이지
-const totalPages = 10; // 전체 게시글 페이지 수
+const totalPages = ref(1);// 전체 게시글 페이지 수
+
+//전체 페이지 계산
+const countTotalPage = () => {
+    totalPages.value = Math.ceil(filteredList.value.length / parseInt(viewArticleCnt.value));
+}
 
 // 페이지 변경 처리
 const handlePageChange = (page) => {

@@ -1,6 +1,6 @@
 <template>
     <!-- 글 태그 필터링 -->
-    <tr v-if="selectedTag === 'ALL' || selectedTag === item.tag"> 
+    <tr> 
         <td style="width:5%; text-align:center;" >{{ item.communityId }}</td>
         <td style="width:10%; text-align:center;" >{{ getTagName(item.tag) }}</td>
         <td style="width:50%; text-align:center;">
@@ -21,10 +21,6 @@ const iconClass = ref("far fa-heart");
 const props = defineProps({
     item: {
         type: Object,
-        requried: true,
-    },
-    selectedTag: {
-        type: String,
         requried: true,
     },
 })
