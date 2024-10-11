@@ -5,17 +5,17 @@
         <div class="mb-3">
             <img :src="subway_3" width="20" height="20" />
             <span style="margin-left:16px;">
-                홍제역
+                {{ nearestSubway.name }}, 도보{{ walkTime }}분
             </span>
         </div>
 
         <div class="mb-3">
             <i class="fas fa-school" />
-            <span style="margin-left:1rem;">숭실대학교</span>
+            <span style="margin-left:1rem;">{{ nearestUniversity.name }}</span>
         </div>
 
         <div class="position-relative mt-4">
-            <DetailMap class="rounded-3" :latitude="cardData.roomLat" :longitude="cardData.roomLong" />
+            <DetailMap class="rounded-3" :latitude="cardData.room.roomLat" :longitude="cardData.room.roomLong" />
         </div>
     </div>
 </template>
@@ -29,7 +29,19 @@ const props = defineProps({
     cardData: {
         type: Object,
         required: true
-    }
+    },
+    nearestSubway: {
+        type: Object,
+        required: true
+    },
+    walkTime: {
+        type: Number,
+        required: true
+    },
+    nearestUniversity: {
+        type: Object,
+        required: true
+    },
 });
 
 </script>

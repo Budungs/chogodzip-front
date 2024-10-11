@@ -2,23 +2,14 @@
   <div class="container">
     <hr />
     <div class="tab-navigation d-flex">
-      <a
-        class="tab-item"
-        :class="{ active: activeTab === 'gosiwon' }"
-        @click.prevent="setTab('gosiwon')"
-      >고시원</a>
+      <a class="tab-item" :class="{ active: activeTab === 'gosiwon' }" @click.prevent="setTab('gosiwon')">고시원</a>
       <div class="search-form">
         <form class="search-bar" @submit.prevent="handleSearch">
-          <input
-            type="text"
-            v-model="searchQuery"
-            name="query"
-            placeholder="궁금한 역명이나 대학교를 검색하세요"
-            @input="performSearch" 
-          />
+          <input type="text" v-model="searchQuery" name="query" placeholder="궁금한 역명이나 대학교를 검색하세요"
+            @input="performSearch" />
           <button type="submit">검색</button>
         </form>
-      
+
         <div class="search-results-dropdown" v-if="showDropdown && searchResults.length">
           <div class="dropdown-header">
             <button @click="closeDropdown" class="close-btn">닫기</button>
@@ -30,30 +21,32 @@
           </ul>
         </div>
       </div>
-      
+
     </div>
 
     <div class="accordion" id="exampleAccordion">
       <hr>
       <div class="accordion-item">
         <h2 class="accordion-header" id="headingFilter">
-          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="true" aria-controls="filterCollapse">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse"
+            aria-expanded="true" aria-controls="filterCollapse">
             필터링 옵션
           </button>
         </h2>
-        <div id="filterCollapse" class="accordion-collapse collapse show" aria-labelledby="headingFilter" data-bs-parent="#exampleAccordion">
+        <div id="filterCollapse" class="accordion-collapse collapse show" aria-labelledby="headingFilter"
+          data-bs-parent="#exampleAccordion">
           <div class="accordion-body">
             <div class="filter-section">
               <div class="row">
                 <div class="filter-box">
                   <h5>대출</h5>
                   <div class="checkbox-group vertical">
-                   
+
                     <label>
-                      <input type="checkbox" value="버팀목" v-model="filters.loan" />
-                      &nbsp 버팀목
+                      <input type="checkbox" value="loanPossible" v-model="filters.loan" />
+                      &nbsp 대출가능여부
                     </label>
-                    
+
                   </div>
                 </div>
 
@@ -68,7 +61,7 @@
                       <input type="checkbox" value="1floor" v-model="filters.floor" />
                       &nbsp 원룸텔
                     </label>
-                    
+
                   </div>
                 </div>
               </div>
@@ -95,7 +88,8 @@
                   <div class="price-slider-group">
                     <div class="price-slider">
                       <label for="depositRange">보증금(전세금)</label>
-                      <input type="range" id="depositRange" v-model="filters.deposit" min="0" max="10000000" step="1000000">
+                      <input type="range" id="depositRange" v-model="filters.deposit" min="0" max="10000000"
+                        step="1000000">
                       <span>{{ formattedDeposit }}</span>
                     </div>
                     <div class="price-slider">
@@ -123,10 +117,10 @@
 
     <div class="map-list-container">
       <div class="property-list">
-        
+
         <div class="list-header">
           <p>매물 목록</p>
-    
+
           <div class="sort-dropdown">
             <select v-model="selectedSort" @change="sortProperties">
               <option value="distance">거리순</option>
@@ -137,30 +131,29 @@
           </div>
         </div>
 
-        <div v-for="(property, index) in filteredProperties" :key="property.roomId" 
-            class="card"
-            @mouseover="logRoomId(property.roomId, index)">
+        <div v-for="(property, index) in filteredProperties" :key="property.roomId" class="card"
+          @mouseover="logRoomId(property.roomId, index)">
           <!-- 이미지와 판매완료 오버레이 -->
           <div class="image-container">
             <img :src="property.imgId || 'https://via.placeholder.com/150'" class="card-img-top" alt="Property Image">
-            
+
             <!-- 판매완료 오버레이 (판매 완료일 때 표시) -->
-            <div v-if="property.isSoldOut == 'T'" class="sold-overlay">
+            <div v-if="property.isSoldOut == '1'" class="sold-overlay">
               <i class="bi bi-check-circle"></i>
               <p>판매완료</p>
             </div>
-            
+
             <!-- 좋아요 개수와 하트 아이콘 (판매 완료가 아닐 때 표시) -->
-            <div v-if="property.isSoldOut == 'F'" class="like-overlay">
+            <div v-if="property.isSoldOut == '0'" class="like-overlay">
               <i class="bi bi-heart-fill"></i>
-              <p :style="{ color: 'white' }">{{ favoriteCnt[index] }}</p> 
+              <p :style="{ color: 'white' }">{{ favoriteCnt[index] }}</p>
             </div>
           </div>
-  
+
           <div class="card-body">
-            <h5 class="card-title">{{ property.roomName }}</h5>
+            <h5 class="card-title">{{ property.title }}</h5>
             <p class="card-text fs-sm">월세 {{ property.depositMax }} 만원 | 전세 {{ property.priceMax }} 만원</p>
-          
+
             <router-link :to="`/houses/gosiwons/${property.roomId}`" class="btn btn-sm btn-primary">상세보기</router-link>
 
             <!-- 관심매물 아이콘 -->
@@ -170,41 +163,36 @@
           </div>
         </div>
 
-        
-        
+
+
       </div>
 
       <div id="map" class="map">
         <div class="map-overlay">
           <!-- <div class="location-filters"> -->
-            <!-- 시/도 선택 -->
-            <div class="btn-group">
-              <button type="button" class="btn btn-filter">
-                {{ selectedCity }}
-              </button>
-            </div>
-
-            <!-- 구 선택 -->
-            <div class="btn-group">
-              <button type="button" class="btn btn-filter" @click="showDistrictSelect = !showDistrictSelect">
-                {{ selectedDistrict || '구' }}
-              </button>
-              <div v-if="showDistrictSelect" class="dropdown-menu">
-                <a 
-                  v-for="district in districts" 
-                  :key="district" 
-                  href="#" 
-                  class="dropdown-item" 
-                  @click.prevent="setDistrict(district)"
-                >
-                  {{ district }}
-                </a>
-              </div>
-            </div>
-
-            
+          <!-- 시/도 선택 -->
+          <div class="btn-group">
+            <button type="button" class="btn btn-filter">
+              {{ selectedCity }}
+            </button>
           </div>
-        
+
+          <!-- 구 선택 -->
+          <div class="btn-group">
+            <button type="button" class="btn btn-filter" @click="showDistrictSelect = !showDistrictSelect">
+              {{ selectedDistrict || '구' }}
+            </button>
+            <div v-if="showDistrictSelect" class="dropdown-menu">
+              <a v-for="district in districts" :key="district" href="#" class="dropdown-item"
+                @click.prevent="setDistrict(district)">
+                {{ district }}
+              </a>
+            </div>
+          </div>
+
+
+        </div>
+
       </div>
     </div>
   </div>
@@ -219,7 +207,7 @@ import searchApi from '@/api/searchApi';
 // Search query and results
 const searchQuery = ref('');
 const searchResults = ref([]);
-const showDropdown = ref(false); 
+const showDropdown = ref(false);
 
 // 백엔드에서 받은 대학 데이터를 저장할 상태
 const universityData = ref([]);
@@ -243,7 +231,7 @@ const performSearch = () => {
 const selectResult = (result) => {
   searchQuery.value = result.name;
   console.log(searchQuery.value);
- 
+
   showDropdown.value = false; // 드롭다운 닫기
   handleSearch();
 };
@@ -271,24 +259,24 @@ const logRoomId = async (roomId, index) => {
 };
 
 const handleSearch = async () => {
-    console.log('searchQuery.value:', searchQuery.value); // 검색어 출력
-    const data = await searchApi.getOneUniversity({name : searchQuery.value });
-    console.log('Fetched University Data:', data);
+  console.log('searchQuery.value:', searchQuery.value); // 검색어 출력
+  const data = await searchApi.getOneUniversity({ name: searchQuery.value });
+  console.log('Fetched University Data:', data);
 
-    if (data && data.lat && data.lng) {
-      const newCenter = new kakao.maps.LatLng(data.lat, data.lng);
-      console.log('New center:', newCenter); // 새로운 중심 좌표 출력
-      
-      if (map.value) {
-        map.value.setCenter(newCenter); // 지도 중심 이동
-        console.log('Map center moved to:', newCenter);
-        await fetchGosiwonData(newCenter.getLat(), newCenter.getLng());
-      } else {
-        console.error('Map is not initialized.');
-      }
+  if (data && data.lat && data.lng) {
+    const newCenter = new kakao.maps.LatLng(data.lat, data.lng);
+    console.log('New center:', newCenter); // 새로운 중심 좌표 출력
+
+    if (map.value) {
+      map.value.setCenter(newCenter); // 지도 중심 이동
+      console.log('Map center moved to:', newCenter);
+      await fetchGosiwonData(newCenter.getLat(), newCenter.getLng());
     } else {
-      console.error('해당 대학을 찾을 수 없습니다.');
+      console.error('Map is not initialized.');
     }
+  } else {
+    console.error('해당 대학을 찾을 수 없습니다.');
+  }
 };
 
 const closeDropdown = () => {
@@ -299,7 +287,7 @@ const closeDropdown = () => {
 const activeTab = ref('gosiwon');
 
 // 고시원 매물 데이터 설정
-const propertiesData = ref([]); // API로부터 데이터를 받을 상태
+const propertiesData = ref([]);
 
 // 하트 아이콘 상태 관리
 const heartIcons = ref([]);
@@ -338,52 +326,63 @@ const resetFilters = () => {
   tempFilters.rent = 5000000;
 };
 
-// 필터링된 매물을 computed로 정의
-const filteredProperties = computed(() => {
-  const filtered = propertiesData.value.filter((property) => {
-    // 방 종류 필터: 고시원(HOUTP00001) 또는 원룸텔(HOUTP00003)이 체크된 경우 해당하는 항목만 필터링
+const filteredProperties = ref([]); // 변경: computed에서 ref로 변경
+
+console.log(propertiesData.value);
+// 필터링 로직
+const applyFilters = () => {
+  filteredProperties.value = propertiesData.value.filter((property) => {
+    // 대출 필터 적용
+    const matchesLoan = filters.loan.length === 0 || property.canLoan;
+
+    // 방 종류 필터 적용
     const matchesFloor = filters.floor.length === 0 || (
-      filters.floor.includes('고시원') && property.houseTypeNms === '고시원'
-    ) || (
-      filters.floor.includes('원룸텔') && property.houseTypeNms === '원룸텔'
+      (filters.floor.includes('고시원') && property.type === '0') ||
+      (filters.floor.includes('원룸텔') && property.type === '1')
     );
 
-    // 보증금 필터: 매물의 보증금이 필터에서 설정한 값보다 작은지 확인
+    // 성별 필터 적용
+    const matchesGender = filters.gender.length === 0 || (
+      (filters.gender.includes('남성') && property.genderLimit === '0') ||
+      (filters.gender.includes('여성') && property.genderLimit === '1') ||
+      (filters.gender.includes('남녀공용') && property.genderLimit === '2')
+    );
+
+    // 보증금 필터 적용
     const matchesDeposit = property.depositMin <= filters.deposit;
 
-    // 월세 필터: 매물의 월세가 필터에서 설정한 값보다 작은지 확인
+    // 월세 필터 적용
     const matchesRent = property.priceMin <= filters.rent;
 
-    // 성별 필터: 선택된 성별에 맞는지 확인
-    const matchesGender = filters.gender.length === 0 || (
-      (filters.gender.includes('남성') && property.genderCd === 'GENDR00002') ||
-      (filters.gender.includes('여성') && property.genderCd === 'GENDR00003') ||
-      (filters.gender.includes('성별무관') && property.genderCd === 'GENDR00001')
-    );
-
-    return matchesFloor && matchesDeposit && matchesRent && matchesGender;
+    // 모든 필터 조건이 일치하는 매물만 반환
+    return matchesFloor && matchesGender && matchesDeposit && matchesRent && matchesLoan;
   });
+};
 
-  return sortProperties(filtered);  // 정렬 적용 후 반환
-});
+// 필터 적용 버튼 클릭 시 호출되는 함수
+const submitFilters = () => {
+  applyFilters(); // 필터 적용
+};
 
 
 // 정렬 로직
 const selectedSort = ref('distance');
-const sortProperties = (properties) => {
+// 정렬 로직을 따로 분리
+const sortedProperties = computed(() => {
+  const sorted = [...filteredProperties.value];
   switch (selectedSort.value) {
     case 'distance':
-      return properties.sort((a, b) => a.distance - b.distance);
+      return sorted.sort((a, b) => a.distance - b.distance);
     case 'highPrice':
-      return properties.sort((a, b) => b.priceMax - a.priceMax);
+      return sorted.sort((a, b) => b.priceMax - a.priceMax);
     case 'lowPrice':
-      return properties.sort((a, b) => a.priceMin - b.priceMin);
+      return sorted.sort((a, b) => a.priceMin - b.priceMin);
     case 'likes':
-      return properties.sort((a, b) => b.likes - a.likes);
+      return sorted.sort((a, b) => b.likes - a.likes);
     default:
-      return properties;
+      return sorted;
   }
-};
+});
 
 // Kakao 지도 설정 및 마커 데이터 관리
 const map = ref(null);
@@ -391,11 +390,14 @@ const markers = ref([]);
 
 const fetchGosiwonData = async (lat, lng) => {
   try {
-    const params = { lat, lng }; 
-    const data = await api.getGosiwonList({ params }); 
+    const params = { lat, lng };
+    const data = await api.getGosiwonList({ params });
 
     propertiesData.value = data; // 받아온 데이터를 상태에 저장
     heartIcons.value = Array(data.length).fill('far fa-heart'); // 하트 아이콘 초기화
+
+    // 필터 적용
+    applyFilters();
 
     // 기존 마커 초기화
     markers.value.forEach((marker) => marker.setMap(null));
@@ -409,7 +411,7 @@ const fetchGosiwonData = async (lat, lng) => {
         title: property.roomName,
         image: new kakao.maps.MarkerImage(markerImageSrc, new kakao.maps.Size(30, 35)),
       });
-      marker.setMap(map.value); 
+      marker.setMap(map.value);
       return marker;
     });
 
@@ -436,10 +438,10 @@ onMounted(async () => {
   kakao.maps.event.addListener(map.value, 'dragend', async () => {
     console.log('지도 드래그가 끝났습니다.');
     const center = map.value.getCenter();
-    await fetchGosiwonData(center.getLat(), center.getLng());
+    await fetchGosiwonData(center.getLat(), center.getLng()); // 데이터 가져오기
   });
 
-  await fetchUniversityData();  
+  await fetchUniversityData();
 });
 
 // 상태 관리

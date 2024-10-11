@@ -11,6 +11,7 @@ import helpRoutes from './help';
 import roomRoutes from './registRoom';
 import userRoutes from './user';
 import authRoutes from './auth';
+import Chat from '@/views/Chat.vue';
 import errorRoutes from './error';
 
 
@@ -21,14 +22,14 @@ const router = createRouter({
   routes: [
     // 1안 ) 하나씩 라우팅 경로를 지정
     { path: '/', name: 'home', component: Home }, // 처음 들어올 때는 Home을 띄운다.
-    
+    { path: '/chat', name: 'chat', component: Chat },
     // 2안 ) 여러개의 경로를 묶을 수도 있다.
     ...houseRoutes,
-    ...lottoRoutes, 
+    ...lottoRoutes,
     ...mypageRoutes,
-    ...communityRoutes, 
-    ...helpRoutes, 
-    ...roomRoutes, 
+    ...communityRoutes,
+    ...helpRoutes,
+    ...roomRoutes,
     ...userRoutes,
     ...authRoutes,
     ...errorRoutes,
