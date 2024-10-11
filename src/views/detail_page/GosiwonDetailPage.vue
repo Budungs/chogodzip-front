@@ -24,12 +24,16 @@
             <DetailMap :cardData="house" :nearestSubway="nearestSubway" :walkTime="walkTime" :nearestUniversity="nearestUniversity"/>
         </div>
     </div>
-    <ReviewTab :reviews="reviews" />
+    <ReviewTab :reviews="reviews" :summaryReviews="reviewSummary" :userId="id" :cardData="house"/>
 </template>
 
 <script setup>
 import { reactive, computed, onMounted, ref } from 'vue';
+import axios from 'axios'; // axios로 서버 API 호출
+import fetchReviews from '@/utils/review'; // fetchReviews 함수를 가져옵니다.
+import fetchSummaryReviews from '@/utils/review'; // review.js에서 요약 리뷰 함수 가져오기
 import { useRoute } from 'vue-router';
+import { useAuthStore } from '@/stores/auth';
 import DetailCard from '@/modules/components/detail/DetailCard.vue';
 import DetailInfo from "@/modules/components/detail/DetailInfo.vue";
 import DetailMap from "@/modules/components/detail/DetailMap.vue";
@@ -37,6 +41,7 @@ import ReviewTab from "@/modules/components/detail/ReviewTab.vue";
 import GosiwonTable from "@/modules/components/detail/table/GosiwonTable.vue";
 import api from '@/api/detailRoom';
 
+// 기존 reactive state 설정
 const route = useRoute();
 const nameStatus = reactive({
     maxPrice : '',
@@ -86,6 +91,10 @@ const house = reactive({
     hasElevator: '',
     isSoldOut: ''
 });
+
+//const reviews = ref([]);
+// 새로운 요약 리뷰 상태
+//const { reviewSummary, getGPTResponse } = fetchSummaryReviews();
 
 // Computed property for house type
 const houseTypeLabel = computed(() => {
@@ -174,6 +183,9 @@ onMounted(async () => {
         reviews.value = await api.getAllReview(roomIds);
         console.log('리뷰 데이터: ', reviews.value);
 
+        // GPT를 사용한 요약 리뷰 가져오기
+        // await getGPTResponse();
+
     } catch (error) {
         console.log('Gosiwon 데이터를 가져오는 데 실패했습니다:', error);
     }
@@ -196,6 +208,13 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 // 리뷰 데이터를 저장할 상태 변수
 const reviews = ref([]);
 
+//로그인 정보를 불러오는 중..
+const auth = useAuthStore();
+
+let islogin = computed(() => auth.isLogin); // islogin 을 직접 바꿀 수는 없음. (computed 속성) - 값을 바꾸려면 auth.isLogin 값을 바꿔야 함.
+console.log('islogin : ' + islogin.value);
+const id = computed(() => auth.id); // id 을 직접 바꿀 수는 없음. (computed 속성)  - 값을 바꾸려면 auth.id 값을 바꿔야 함.
+console.log('id : ' + id.value);
 </script>
 
 <style scoped>
