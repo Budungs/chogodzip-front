@@ -126,7 +126,7 @@ const props = defineProps({
     cardData: {
         type: Object,
         required: true
-    }
+    },
 });
 
 // Parse private facilities and services

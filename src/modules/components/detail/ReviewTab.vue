@@ -97,8 +97,8 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-
+import { ref, onMounted } from 'vue';
+// 부모 컴포넌트에서 reviews 데이터를 받아온다.
 const props = defineProps({
   reviews: {
     type: Array,
