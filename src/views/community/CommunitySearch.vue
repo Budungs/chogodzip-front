@@ -107,8 +107,8 @@
                 </tr>
                 </thead>
                 <tbody>
-                    <h1 v-if="filteredList.length === 0" class="h3">데이터가 없습니다.</h1>
-                    <ArticleEach v-for="(item, idx) in filteredList" :key="idx" :item="item" />
+                    <h1 v-if="paginatedList.length === 0" class="h3">데이터가 없습니다.</h1>
+                    <ArticleEach v-for="(item, idx) in paginatedList" :key="idx" :item="item" />
                 </tbody>
             </table>
             </div>
@@ -144,6 +144,7 @@ const viewArticleHowTo = ref('latest'); //정렬 기준
 
 const list = ref([]); //원본 데이터 리스트
 const filteredList = ref([]); //필터링 데이터 리스트
+const paginatedList = ref([]); //페이징 데이터 리스트: 현재 페이지
 
 // 선택된 태그로 업데이트하는 메소드
 const selectOwner = (owner) => {
@@ -154,7 +155,7 @@ const selectOwner = (owner) => {
 // 개수 변경에 따른 페이지 표시
 const selectArticleCnt = (articleCnt) => {
     viewArticleCnt.value = articleCnt;
-    countTotalPage();
+    filterList();
 };
 
 // 기준별 정렬
@@ -170,7 +171,7 @@ const fetchCommunity = async () => {
         if(res.status === 200) {
             list.value = res.data;
             filteredList.value = res.data;
-            countTotalPage(); //
+            paging();
         }
         
     } catch (err) {
@@ -179,6 +180,7 @@ const fetchCommunity = async () => {
 }
 onMounted(fetchCommunity);
 
+//태그 & 검색 필터링 + 정렬 + 페이징
 const filterList = () => {
     if(searchTitle.value.trim().length == 1) {
         alert('검색어는 2글자 이상 입력해주세요.'); return;
@@ -191,14 +193,14 @@ const filterList = () => {
     });
 
     sortList();
-    countTotalPage();
+    paging();
 }
 
 //데이터 정렬
 const sortList = () => {
     if(viewArticleHowTo.value === 'latest') filteredList.value = filteredList.value.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); 
     else filteredList.value = filteredList.value.sort((a, b) => b.views - a.views);
-    countTotalPage();
+    paging();
 }
 
 
@@ -211,9 +213,18 @@ const countTotalPage = () => {
     totalPages.value = Math.ceil(filteredList.value.length / parseInt(viewArticleCnt.value));
 }
 
+//페이징
+const paging = () => {
+    const start = (currentPage.value - 1) * parseInt(viewArticleCnt.value); //시작 인덱스 계산 0/10/20
+    const end = start + parseInt(viewArticleCnt.value); //끝 인덱스 계산 10/20/30
+    paginatedList.value = filteredList.value.slice(start, end); //0~9까지/10~19까지/11~19까지
+    countTotalPage(); //전체 페이지 수 동기화
+};
+
 // 페이지 변경 처리
 const handlePageChange = (page) => {
     currentPage.value = page;
+    paging();
 };
 
 // 글쓰기 페이지로 이동
