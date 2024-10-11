@@ -71,16 +71,20 @@
                   <h5>성별</h5>
                   <div class="checkbox-group vertical">
                     <label>
-                      <input type="checkbox" value="남성" v-model="filters.gender" />
-                      &nbsp 남성 전용
+                      <input type="checkbox" value="구분없음" v-model="filters.gender" />
+                      &nbsp 구분없음
                     </label>
                     <label>
-                      <input type="checkbox" value="여성" v-model="filters.gender" />
-                      &nbsp 여성 전용
+                      <input type="checkbox" value="남녀분리" v-model="filters.gender" />
+                      &nbsp 남녀분리
                     </label>
                     <label>
-                      <input type="checkbox" value="남녀공용" v-model="filters.gender" />
-                      &nbsp 남녀 공용
+                      <input type="checkbox" value="여성전용" v-model="filters.gender" />
+                      &nbsp 여성전용
+                    </label>
+                    <label>
+                      <input type="checkbox" value="남성전용" v-model="filters.gender" />
+                      &nbsp 남성전용
                     </label>
                   </div>
                 </div>
@@ -88,13 +92,12 @@
                   <div class="price-slider-group">
                     <div class="price-slider">
                       <label for="depositRange">보증금(전세금)</label>
-                      <input type="range" id="depositRange" v-model="filters.deposit" min="0" max="10000000"
-                        step="1000000">
+                       <input type="range" id="depositRange" v-model="filters.deposit" min="0" max="10000000" step="1000000">
                       <span>{{ formattedDeposit }}</span>
                     </div>
                     <div class="price-slider">
                       <label for="rentRange">월세</label>
-                      <input type="range" id="rentRange" v-model="filters.rent" min="0" max="5000000" step="50000">
+                      <input type="range" id="rentRange" v-model="filters.rent" min="0" max="2000000" step="50000">
                       <span>{{ formattedRent }}</span>
                     </div>
                   </div>
@@ -203,11 +206,22 @@ import { ref, reactive, computed, onMounted } from 'vue';
 import api from '@/api/mapApi'; // 고시원 데이터를 가져올 api 파일
 import markerImageSrc from '@/assets/img/room/house1.png'; // 마커 이미지
 import searchApi from '@/api/searchApi';
+import interestApi from '@/api/interestApi';
+import { useAuthStore } from '@/stores/auth';
+
+
+const auth = useAuthStore();
+
+let islogin = computed(() => auth.isLogin); // islogin 을 직접 바꿀 수는 없음. (computed 속성) - 값을 바꾸려면 auth.isLogin 값을 바꿔야 함.
+console.log('islogin : ' + islogin.value);
+const id = computed(() => auth.id); // id 을 직접 바꿀 수는 없음. (computed 속성)  - 값을 바꾸려면 auth.id 값을 바꿔야 함.
+console.log('id : ' + id.value);
 
 // Search query and results
 const searchQuery = ref('');
 const searchResults = ref([]);
 const showDropdown = ref(false);
+
 
 // 백엔드에서 받은 대학 데이터를 저장할 상태
 const universityData = ref([]);
@@ -246,6 +260,21 @@ const fetchUniversityData = async () => {
   }
 };
 
+const interestData = ref([]);
+const fetchInterestData = async(id) => {
+  console.log('Fetching interest data for id:', id); 
+  try {
+    
+    const data = await interestApi.getInterestList(id);
+    interestData.value = data;
+    console.log('interest dataaa : ', interestData.value);
+    updateHeartIcons();
+
+  }catch(error) {
+    console.error('관심매물 못 불러옴',error);
+  }
+}
+
 const favoriteCnt = ref([]);
 const logRoomId = async (roomId, index) => {
   try {
@@ -282,6 +311,13 @@ const handleSearch = async () => {
 const closeDropdown = () => {
   showDropdown.value = false;
 };
+const formattedDeposit = computed(() => {
+  return new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(filters.deposit);
+});
+const formattedRent = computed(() => {
+  return new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(filters.rent);
+});
+
 
 // 탭 상태 관리
 const activeTab = ref('gosiwon');
@@ -291,12 +327,42 @@ const propertiesData = ref([]);
 
 // 하트 아이콘 상태 관리
 const heartIcons = ref([]);
-
-// 하트 아이콘 토글 함수
-const toggleHeartIcon = (index) => {
-  heartIcons.value[index] =
-    heartIcons.value[index] === 'far fa-heart' ? 'fas fa-heart' : 'far fa-heart';
+// 관심 매물 데이터를 바탕으로 하트 아이콘 초기화
+const updateHeartIcons = () => {
+  heartIcons.value = propertiesData.value.map(property => {
+    const isFavorite = interestData.value.some(interest => interest.roomId === property.roomId);
+    return isFavorite ? 'fas fa-heart' : 'far fa-heart'; // 색칠된 아이콘과 흰색 아이콘
+  });
 };
+// 하트 아이콘 토글 함수
+const toggleHeartIcon = async (index) => {
+  console.log('hartdfadf : ',propertiesData.value[index].roomId);
+  try {
+    // 현재 상태가 'far fa-heart'이면 관심 매물 추가
+    if (heartIcons.value[index] === 'far fa-heart') {
+      // 관심 매물 추가 API 호출
+      const roomId = propertiesData.value[index].roomId;
+      const userId = id.value; // 로그인한 사용자의 ID
+      
+      if (islogin.value && userId) {
+        const params = { userId: userId, roomId: roomId };
+        const response = await interestApi.addInterest(params);  // API 호출
+        console.log('Interest added:', response);
+        
+        // 하트 아이콘 색칠된 상태로 변경
+        heartIcons.value[index] = 'fas fa-heart';
+      } else {
+        console.error('로그인이 필요합니다.');
+      }
+    } else {
+      // 현재 상태가 'fas fa-heart'이면 관심 매물 해제 (추가적으로 해제 API가 필요하다면 구현)
+      heartIcons.value[index] = 'far fa-heart';
+    }
+  } catch (error) {
+    console.error('관심 매물 추가 실패:', error);
+  }
+};
+
 
 // 필터링 전 임시로 선택된 필터 값
 const tempFilters = reactive({
@@ -313,7 +379,7 @@ const filters = reactive({
   loan: [],
   floor: [],
   deposit: 5000000,
-  rent: 5000000,
+  rent: 1000000,
 });
 
 
@@ -323,7 +389,7 @@ const resetFilters = () => {
   tempFilters.loan = [];
   tempFilters.floor = [];
   tempFilters.deposit = 5000000;
-  tempFilters.rent = 5000000;
+  tempFilters.rent = 1000000;
 };
 
 const filteredProperties = ref([]); // 변경: computed에서 ref로 변경
@@ -332,27 +398,29 @@ console.log(propertiesData.value);
 // 필터링 로직
 const applyFilters = () => {
   filteredProperties.value = propertiesData.value.filter((property) => {
+
     // 대출 필터 적용
     const matchesLoan = filters.loan.length === 0 || property.canLoan;
 
-    // 방 종류 필터 적용
     const matchesFloor = filters.floor.length === 0 || (
-      (filters.floor.includes('고시원') && property.type === '0') ||
-      (filters.floor.includes('원룸텔') && property.type === '1')
+      (filters.floor.includes('under') && property.type === 0) ||
+      (filters.floor.includes('1floor') && property.type === 1)
     );
+
 
     // 성별 필터 적용
     const matchesGender = filters.gender.length === 0 || (
-      (filters.gender.includes('남성') && property.genderLimit === '0') ||
-      (filters.gender.includes('여성') && property.genderLimit === '1') ||
-      (filters.gender.includes('남녀공용') && property.genderLimit === '2')
+      (filters.gender.includes('구분없음') && property.genderLimit === "0") ||
+      (filters.gender.includes('남녀분리') && property.genderLimit === "1") ||
+      (filters.gender.includes('여성전용') && property.genderLimit === "2") ||
+      (filters.gender.includes('남성전용') && property.genderLimit === "3") 
     );
 
     // 보증금 필터 적용
-    const matchesDeposit = property.depositMin <= filters.deposit;
+    const matchesDeposit = property.depositMin <= (filters.deposit / 10000);
 
-    // 월세 필터 적용
-    const matchesRent = property.priceMin <= filters.rent;
+    // 월세 필터 적용 (원 -> 만원 단위로 변환해서 비교)
+    const matchesRent = property.priceMin <= (filters.rent / 10000);
 
     // 모든 필터 조건이 일치하는 매물만 반환
     return matchesFloor && matchesGender && matchesDeposit && matchesRent && matchesLoan;
@@ -414,7 +482,7 @@ const fetchGosiwonData = async (lat, lng) => {
       marker.setMap(map.value);
       return marker;
     });
-
+    updateHeartIcons();
     console.log('Fetched Gosiwon Data:', propertiesData.value);
 
   } catch (error) {
@@ -441,7 +509,9 @@ onMounted(async () => {
     await fetchGosiwonData(center.getLat(), center.getLng()); // 데이터 가져오기
   });
 
+  console.log('ididdid',id.value);
   await fetchUniversityData();
+  await fetchInterestData(id.value);
 });
 
 // 상태 관리
