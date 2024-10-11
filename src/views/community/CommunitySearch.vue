@@ -31,7 +31,7 @@
         
                 <hr class="d-sm-none my-2">
         
-                <button type="button" class="btn btn-translucent-primary ms-auto" style="width:200px">검색</button>
+                <button type="button" class="btn btn-translucent-primary ms-auto" style="width:200px" @click="searchList">검색</button>
             </form>
             
             <!-- 게시글 건수, 조회 방식 select-->
@@ -112,8 +112,8 @@
                 </tr>
                 </thead>
                 <tbody>
-                    <h1 v-if="list.length === 0" class="h3">데이터가 없습니다.</h1>
-                    <ArticleEach v-else v-for="(item, idx) in list" :key="idx" :item="item" />
+                    <h1 v-if="filteredList.length === 0" class="h3">데이터가 없습니다.</h1>
+                    <ArticleEach v-for="(item, idx) in filteredList" :key="idx" :item="item" :selectedTag="selectedOwner"/>
                 </tbody>
             </table>
             </div>
@@ -144,6 +144,8 @@ import { getTagName, tagMapping } from '@/modules/components/community/tags.js';
 
 // 드롭다운에서 선택한 값을 저장하는 상태
 const selectedOwner = ref('ALL');
+const searchTitle = ref(''); //검색어
+
 const viewArticleCnt = ref('10건');
 const viewArticleHowTo = ref('최신순');
 
@@ -151,7 +153,6 @@ const viewArticleHowTo = ref('최신순');
 const selectOwner = (owner) => {
     selectedOwner.value = owner;
 };
-const searchTitle = ref(''); //검색어
 
 const selectArticleCnt = (articleCnt) => {
     viewArticleCnt.value = articleCnt;
@@ -160,12 +161,16 @@ const selectArticleView = (howToView) => {
     viewArticleHowTo.value = howToView;
 };
 
-// 데이터 조회
-const list = ref([]);
+// 데이터 조회 & 바인딩
+const list = ref([]); //원본 데이터 리스트
+const filteredList = ref([]); //필터링 데이터 리스트
 const fetchCommunity = async () => {
     try {
         const res = await axios.get('/api/community/list');
-        if(res.status === 200) list.value = res.data;
+        if(res.status === 200) {
+            list.value = res.data;
+            filteredList.value = res.data;
+        }
         
     } catch (err) {
         console.error('>> 데이터 조회 실패 (ToT) error:',err.message);
@@ -173,10 +178,16 @@ const fetchCommunity = async () => {
 }
 onMounted(fetchCommunity);
 
-//데이터 필터링 & 검색
-const filterCommunity = async () => {
-    
-}
+//데이터 검색
+const searchList = () => {
+    if(searchTitle.value.trim() === '' || searchTitle.value.trim().length < 2) {
+        alert('검색어는 2글자 이상 입력해주세요.'); return;
+    }
+
+    filteredList.value = list.value.filter(item => 
+        item.title.toLowerCase().includes(searchTitle.value.toLowerCase()));
+};
+
 
 // 페이지네이션 정보
 const currentPage = ref(1); // 현재 게시글 페이지

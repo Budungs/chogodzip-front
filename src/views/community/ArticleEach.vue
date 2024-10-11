@@ -1,7 +1,8 @@
 <template>
-    <tr>
+    <!-- 글 태그 필터링 -->
+    <tr v-if="selectedTag === 'ALL' || selectedTag === item.tag"> 
         <td style="width:5%; text-align:center;" >{{ item.communityId }}</td>
-        <td style="width:10%; text-align:center;">{{ getTagName(item.tag) }}</td>
+        <td style="width:10%; text-align:center;" >{{ getTagName(item.tag) }}</td>
         <td style="width:50%; text-align:center;">
             <router-link :to="{ path: `/community/${item.communityId}` }" style="text-decoration: none;">{{ item.title }}</router-link>
         </td>
@@ -21,7 +22,11 @@ const props = defineProps({
     item: {
         type: Object,
         requried: true,
-    }
+    },
+    selectedTag: {
+        type: String,
+        requried: true,
+    },
 })
 </script>
 
