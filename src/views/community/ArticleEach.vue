@@ -1,13 +1,13 @@
 <template>
     <tr>
-        <td style="width:5%; text-align:center;" >1</td>
-        <td style="width:10%; text-align:center;">부동산</td>
+        <td style="width:5%; text-align:center;" >{{ item.communityId }}</td>
+        <td style="width:10%; text-align:center;">{{ item.tag === 'RE' ? '부동산' : item.tag }}</td>
         <td style="width:50%; text-align:center;">
-            <router-link :to="'/community/${id}'">세대수 적은 아파트는 왜 사면 안될까요?</router-link>
+            <router-link :to="{ path: `/community/${item.communityId}` }" style="text-decoration: none;">{{ item.title }}</router-link>
         </td>
-        <td class="truncate" style="text-align:center;">깨비글스</td>
-        <td style="width:10%; text-align:center;">2024-09-26</td>
-        <td style="width:15%; text-align:center;">71</td>
+        <td class="truncate" style="text-align:center;">{{ item.nickname }}</td>
+        <td style="width:10%; text-align:center;"> {{ new Date(item.createdAt).toISOString().slice(0, 10) }}</td>
+        <td style="width:15%; text-align:center;">{{ item.views }}</td>
     </tr>                                                                                                                                                                                   
 </template>
 
@@ -16,6 +16,12 @@ import { ref } from 'vue';
 
 const iconClass = ref("far fa-heart");
 
+const props = defineProps({
+    item: {
+        type: Object,
+        requried: true,
+    }
+})
 </script>
 
 <style scoped>

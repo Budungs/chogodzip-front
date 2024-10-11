@@ -122,16 +122,8 @@
                 </tr>
                 </thead>
                 <tbody>
-                    <ArticleEach />
-                    <ArticleEach />
-                    <ArticleEach />
-                    <ArticleEach />
-                    <ArticleEach />
-                    <ArticleEach />
-                    <ArticleEach />
-                    <ArticleEach />
-                    <ArticleEach />
-                    <ArticleEach />
+                    <h1 v-if="list.length === 0" class="h3">데이터가 없습니다.</h1>
+                    <ArticleEach v-else v-for="(item, idx) in list" :key="idx" :item="item" />
                 </tbody>
             </table>
             </div>
@@ -153,7 +145,8 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import axios from 'axios';
+import { ref, onMounted } from 'vue';
 import ArticleEach from './ArticleEach.vue';
 import Pagination from '@/common/components/Pagination.vue';
 
@@ -175,45 +168,18 @@ const selectArticleView = (howToView) => {
     viewArticleHowTo.value = howToView;
 };
 
-// 게시글 더미 데이터
-const articles = ref([
-    {
-        bno: 1,
-        type: '부동산',
-        title: '세대수 적은 아파트는 왜 사면 안될까요?',
-        memberName: '깨비글스',
-        memberId: 'kbg123',
-        regDate: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000), // 2달 전
-        readCount: 71
-    },
-    {
-        bno: 2,
-        type: '부동산',
-        title: '아파트 구매 시 고려해야 할 사항',
-        memberName: '부동산왕',
-        memberId: 'bd123',
-        regDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // 1달 전
-        readCount: 45
-    },
-    {
-        bno: 3,
-        type: '부동산',
-        title: '부동산 시장의 현재 상황',
-        memberName: '투자자',
-        memberId: 'investor1',
-        regDate: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000), // 15일 전
-        readCount: 29
-    },
-    {
-        bno: 4,
-        type: '부동산',
-        title: '2024년 부동산 전망',
-        memberName: '전문가',
-        memberId: 'expert1',
-        regDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), // 5일 전
-        readCount: 112
+// 데이터 조회
+const list = ref([]);
+const fetchCommunity = async () => {
+    try {
+        const res = await axios.get('/api/community/list');
+        if(res.status === 200) list.value = res.data;
+        
+    } catch (err) {
+        console.error('>> 데이터 조회 실패 (ToT) error:',err.message);
     }
-]);
+}
+onMounted(fetchCommunity);
 
 // 페이지네이션 정보
 const currentPage = ref(1); // 현재 게시글 페이지
