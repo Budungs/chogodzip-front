@@ -24,11 +24,14 @@
             <DetailMap :cardData="house" :nearestSubway="nearestSubway" :walkTime="walkTime" :nearestUniversity="nearestUniversity"/>
         </div>
     </div>
-    <ReviewTab :reviews="reviews" :userId="id" :cardData="house"/>
+    <ReviewTab :reviews="reviews" :summaryReviews="reviewSummary" :userId="id" :cardData="house"/>
 </template>
 
 <script setup>
 import { reactive, computed, onMounted, ref } from 'vue';
+import axios from 'axios'; // axios로 서버 API 호출
+// import fetchReviews from '@/utils/review'; // fetchReviews 함수를 가져옵니다.
+// import fetchSummaryReviews from '@/utils/review'; // review.js에서 요약 리뷰 함수 가져오기
 import { useRoute } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import DetailCard from '@/modules/components/detail/DetailCard.vue';
@@ -38,6 +41,7 @@ import ReviewTab from "@/modules/components/detail/ReviewTab.vue";
 import GosiwonTable from "@/modules/components/detail/table/GosiwonTable.vue";
 import api from '@/api/detailRoom';
 
+// 기존 reactive state 설정
 const route = useRoute();
 const nameStatus = reactive({
     maxPrice : '',
@@ -52,6 +56,7 @@ const house = reactive({
         roomLat: '',
         roomLong: '',
         thumbnail: '',
+        address:'',
         canLoan: '',
         createdAt: '',
         updatedAt: ''
@@ -60,7 +65,6 @@ const house = reactive({
     gswId: '',
     title: '',
     postcode: '',
-    address: '',
     detailAddress: '',
     priceMin: '',
     priceMax: '',
@@ -87,6 +91,10 @@ const house = reactive({
     hasElevator: '',
     isSoldOut: ''
 });
+
+//const reviews = ref([]);
+// 새로운 요약 리뷰 상태
+//const { reviewSummary, getGPTResponse } = fetchSummaryReviews();
 
 // Computed property for house type
 const houseTypeLabel = computed(() => {
@@ -149,10 +157,11 @@ onMounted(async () => {
         // 첫 번째 API 호출
         const data = await api.getOneGosiwon(roomIds); 
         Object.assign(house, data); 
-        console.log('room loca : ', data.address);
+        console.log('room loca : ', data.room.address);
+        
         
         // 구 이름 추출
-        const addressParts = data.address.split(' ');
+        const addressParts = data.room.address.split(' ');
         const guIndex = addressParts.findIndex(part => part.includes('구'));
         const districtName = guIndex !== -1 ? addressParts[guIndex] : '';
         
@@ -174,6 +183,9 @@ onMounted(async () => {
         // 리뷰 데이터 가져오기
         reviews.value = await api.getAllReview(roomIds);
         console.log('리뷰 데이터: ', reviews.value);
+
+        // GPT를 사용한 요약 리뷰 가져오기
+        // await getGPTResponse();
 
     } catch (error) {
         console.log('Gosiwon 데이터를 가져오는 데 실패했습니다:', error);
@@ -204,7 +216,6 @@ let islogin = computed(() => auth.isLogin); // islogin 을 직접 바꿀 수는 
 console.log('islogin : ' + islogin.value);
 const id = computed(() => auth.id); // id 을 직접 바꿀 수는 없음. (computed 속성)  - 값을 바꾸려면 auth.id 값을 바꿔야 함.
 console.log('id : ' + id.value);
-
 </script>
 
 <style scoped>

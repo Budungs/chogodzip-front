@@ -3,17 +3,17 @@
         <br><br><br>
         <div class="container">
         <!-- 게시글 제목 -->
-        <h1 style="margin-top:30px;">게시글 제목</h1>
+        <h1 style="margin-top:30px;">{{ post.title }}</h1>
     
         <!-- 게시글 작성자 및 작성 시간 -->
         <div class="my-3 d-flex justify-content-between">
             <div>
                 <i class="fa-solid fa-user" style="margin-top:30px;"></i>
-                작성자 이름 (작성자 ID)
+                {{ post.nickname }}
             </div>
             <div>
                 <i class="fa-regular fa-clock"></i>
-                2024-09-27 15:30
+                {{ formatDate(post.createdAt) }}
             </div>
         </div>
     
@@ -30,9 +30,7 @@
         </div>
     
         <!-- 게시글 내용 -->
-        <div class="content">
-            게시글 내용이 여기에 들어갑니다.
-        </div>
+        <div class="content" v-html="post.content"></div>
     
         <!-- 목록 및 수정, 삭제 버튼 -->
         <div class="my-5">
@@ -99,11 +97,33 @@
 </style>
 
 <script setup>
-import { useRouter } from 'vue-router'; // Vue Router를 불러옵니다.
+import { useRouter, useRoute } from 'vue-router'; // Vue Router를 불러옵니다.
 import Comment from '@/views/community/Comment.vue';
 import Pagination from '@/common/components/Pagination.vue'; // Pagination 컴포넌트 경로 수정 필요
 
-import { ref } from 'vue'; // ref를 vue에서 임포트합니다.
+import { onMounted, ref } from 'vue'; // ref를 vue에서 임포트합니다.
+import axios from 'axios';
+import { formatDate } from '@/utils/timestamp.js';
+
+
+//상세글 데이터 조회
+const route = useRoute();
+
+const post = ref({});
+const fetchDetail = async () => {
+    try {
+        const res = await axios.get(`/api/community/${route.params.id}`, post);
+
+        if(res.status === 200) {
+            post.value = res.data;
+        }   
+    } catch (err) {
+        console.error('>> 상세글 조회 실패 (T>T) ', err.message);
+    }
+}
+
+onMounted(fetchDetail);
+
 
 const router = useRouter(); // router 인스턴스를 가져옵니다.
 

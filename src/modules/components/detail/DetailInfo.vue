@@ -1,7 +1,7 @@
 <template>
     <div class="white-box p-5 mb-4">
         <div class="d-flex justify-content-center h4">
-            <span>{{ cardData.address }} {{ cardData.detailAddress }}</span>
+            <span>{{ cardData.room.address }} {{ cardData.detailAddress }}</span>
         </div>
 
         <!-- Conditionally render features based on parsed facilities and services -->
