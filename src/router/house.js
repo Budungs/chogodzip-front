@@ -1,7 +1,7 @@
 export default [
   {
     path: "/houses/maps/gosiwons",
-    name: "houses/maps/gosiwons",
+    name: "Gosiwon",
     component: () => import("../views/mapPage/gosiwon.vue"),
   },
   {

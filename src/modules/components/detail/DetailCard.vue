@@ -36,7 +36,7 @@
                 </div>
                 <div class="col text-center" style="border-right: solid 3px #D2D2D2">
                     <div style="font-weight: bold; color:black;">평균</div>
-                    <div><span style="font-weight: bolder; color: #D85F5F; font-size: 1.3rem; margin-right: 0.2rem;">{{nameStatus.avgPrice}}</span>만원</div>
+                    <div><span style="font-weight: bolder; color: #D85F5F; font-size: 1.3rem; margin-right: 0.2rem;">{{ nameStatus.avgPrice ? nameStatus.avgPrice.toFixed(1) : '0.0' }}</span>만원</div>
                 </div>
                 <div class="col text-center">
                     <div style="font-weight: bold; color:black;">최소</div>
@@ -48,7 +48,7 @@
 </template>
 
 <script setup>
-import { ref, defineProps, computed } from 'vue';
+import { defineProps, computed } from 'vue';
 import subway_3 from '@/assets/img/subway_3.png';
 
 // Props
@@ -69,17 +69,16 @@ const props = defineProps({
         type: Object,
         required: true
     },
+    favoriteCount: Number,
+    isFavorited: Boolean
 });
 
-// 좋아요 토글 상태 관리
-const isFavorited = ref(false); // 기본 값은 false로 설정
-const favoriteCount = ref(116); // 초기 좋아요 수
+const emit = defineEmits(['toggleFavorite']); // 이벤트 정의
 
-// 좋아요 토글 함수
 const toggleFavorite = () => {
-    isFavorited.value = !isFavorited.value;
-    favoriteCount.value += isFavorited.value ? 1 : -1;
+    emit('toggleFavorite'); // 부모 컴포넌트로 이벤트 전달
 };
+
 
 // Computed property to extract '구' name from the address
 const districtName = computed(() => {

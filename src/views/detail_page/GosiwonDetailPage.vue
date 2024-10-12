@@ -13,7 +13,7 @@
                             style="height: 30rem; object-fit: cover;">
                     </a>
                 </div>
-                <DetailCard :cardData="house" :nearestSubway="nearestSubway" :walkTime="walkTime" :nameStatus="nameStatus"/>
+                <DetailCard :cardData="house" :nearestSubway="nearestSubway" :walkTime="walkTime" :nameStatus="nameStatus"  :favoriteCount="favoriteCount" :isFavorited="isFavorited" @toggleFavorite="handleToggleFavorite"/>
             </div>
         </section>
     </div>
@@ -40,6 +40,32 @@ import DetailMap from "@/modules/components/detail/DetailMap.vue";
 import ReviewTab from "@/modules/components/detail/ReviewTab.vue";
 import GosiwonTable from "@/modules/components/detail/table/GosiwonTable.vue";
 import api from '@/api/detailRoom';
+import mpApi from '@/api/mapApi';
+import interApi from '@/api/interestApi';
+
+// 좋아요 토글 핸들러
+const handleToggleFavorite = async () => {
+    const params = {
+        userId: id.value,
+        roomId: route.params.id
+    };
+
+    try {
+        if (isFavorited.value) {
+            // 좋아요 상태가 true일 때, 삭제 API 호출
+            await interApi.deleteInterest(params);
+            isFavorited.value = false;
+            favoriteCount.value -= 1;
+        } else {
+            // 좋아요 상태가 false일 때, 추가 API 호출
+            await interApi.addInterest(params);
+            isFavorited.value = true;
+            favoriteCount.value += 1;
+        }
+    } catch (error) {
+        console.error('좋아요 처리 중 오류 발생:', error);
+    }
+};
 
 // 기존 reactive state 설정
 const route = useRoute();
@@ -48,6 +74,8 @@ const nameStatus = reactive({
     avgPrice : '',
     minPrice : ''
 });
+const favoriteCount = ref(0);  // 좋아요 개수
+const isFavorited = ref(false); // 좋아요 상태
 
 const house = reactive({
     room: {
@@ -56,41 +84,41 @@ const house = reactive({
         roomLat: '',
         roomLong: '',
         thumbnail: '',
-        address:'',
-        canLoan: '',
+        address: '',
+        canLoan: '',  // boolean 값으로 설정
         createdAt: '',
         updatedAt: ''
     },
-    category: null,
-    gswId: '',
-    title: '',
-    postcode: '',
-    detailAddress: '',
-    priceMin: '',
-    priceMax: '',
-    depositMin: '',
-    depositMax: '',
-    maintenanceFee: '',
-    privateFacilities: '',
-    services: '',
-    languages: '',
-    etc: '',
-    desc: '',
-    pics: '',
-    genderLimit: '',
-    type: '',
-    contractMin: '',
-    ageMax: '',
-    ageMin: '',
-    facilityHeating: '',
-    facilityCooling: '',
-    facilityLife: '',
-    facilitySecurity: '',
-    buildingType: '',
-    canParking: '',
-    hasElevator: '',
-    isSoldOut: ''
+    gswId: '', // 고시원 ID
+    title: '', // 고시원 제목
+    postcode: '', // 우편번호
+    detailAddress: '', // 상세 주소
+    priceMin: '', // 최소 가격
+    priceMax: '', // 최대 가격
+    depositMin: '', // 최소 보증금
+    depositMax: '', // 최대 보증금
+    maintenanceFee: '', // 관리비
+    privateFacilities: '', // 개인 시설
+    services: '', // 제공 서비스
+    languages: '', // 지원 언어
+    etc: '', // 기타 사항
+    desc: '', // 설명
+    pics: '', // 이미지
+    genderLimit: '', // 성별 제한
+    type: '', // 고시원 유형
+    contractMin: null, // 최소 계약 기간
+    ageMax: null, // 최대 나이
+    ageMin: null, // 최소 나이
+    facilityHeating: '', // 난방 시설
+    facilityCooling: '', // 냉방 시설
+    facilityLife: '', // 생활 시설
+    facilitySecurity: '', // 보안 시설
+    buildingType: null, // 건물 유형
+    canParking: false, // 주차 가능 여부
+    hasElevator: false, // 엘리베이터 여부
+    isSoldOut: false // 매물 판매 완료 여부
 });
+
 
 //const reviews = ref([]);
 // 새로운 요약 리뷰 상태
@@ -148,7 +176,35 @@ function findNearbyUniversity(latitude, longitude) {
         }
     }, { location: new kakao.maps.LatLng(latitude, longitude), radius: 2000 });
 }
+// 좋아요 개수 및 상태 가져오기
+async function getFavoriteCnt(roomId) {
+    console.log('idiakdfn',roomId);
+    try {
+        const data = await mpApi.getFavoriteCnt(roomId);
+        favoriteCount.value = data;
+        console.log('favorite cntttt : ',favoriteCount.value);
+      
+    } catch (error) {
+        console.error('좋아요 데이터 가져오기 실패:', error);
+    }
+}
 
+
+
+// 좋아요 토글 기능
+// async function toggleFavorite() {
+//     try {
+//         isFavorited.value = !isFavorited.value;
+//         favoriteCount.value += isFavorited.value ? 1 : -1; // 상태에 따라 좋아요 개수 업데이트
+
+//         const params = {userId : userId, roomId: roomId};
+//         await interApi.addInterest(params);
+//     } catch (error) {
+//         console.error('좋아요 토글 실패:', error);
+//     }
+// }
+
+const isOwner = ref(false); // 방의 소유자인지 여부
 // Fetch data and calculate subway info on mount
 onMounted(async () => {
     try {
@@ -166,6 +222,15 @@ onMounted(async () => {
         const districtName = guIndex !== -1 ? addressParts[guIndex] : '';
         
         console.log('구 이름: ', districtName);
+
+        await getFavoriteCnt(roomIds);
+
+        const favoriteStatus = await interApi.isInterest(id.value, roomIds);
+        isFavorited.value = favoriteStatus === 1; 
+
+        // const isOwnerStatus = await interApi.isOwn(id.value);
+        // isOwner.value = isOwnerStatus === 1;  
+
         
         // 두 번째 API 호출 (GosiwonStatus)
         if (districtName) {
