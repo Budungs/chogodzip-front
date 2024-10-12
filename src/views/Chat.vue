@@ -7,16 +7,12 @@
           <input type="text" placeholder="Search" />
           <i class="fa fa-search" aria-hidden="true"></i>
         </div>
-        <div
-          v-for="(user, index) in users"
-          :key="index"
-          class="user"
-          style="margin-bottom: 1.5rem"
-          @click="selectUser(user)"
-        >
+        <div v-for="(user, index) in users" :key="index" class="user" style="margin-bottom: 1.5rem"
+          @click="selectUser(user)">
           <img :src="user.image" alt="" class="icon-user" />
           <div class="user-status" style="">
             <div class="name">{{ user.name }}</div>
+            <div v-if="user.unreadCount > 0" class="unread-badge">{{ user.unreadCount }}</div>
           </div>
           <hr />
         </div>
@@ -25,49 +21,34 @@
       <!-- 오른쪽 채팅 화면 -->
       <div class="chat-right">
         <div class="chating">
-          <img
-            :src="
-              selectedUserImage ||
-              'https://img.freepik.com/free-photo/white-wall-background-with-scratches_1154-667.jpg?size=626&ext=jpg&ga=GA1.1.1395991368.1728518400&semt=ais_hybrid'
-            "
-            alt="Selected User Image"
-          />
+          <img :src="selectedUserImage ||
+            'https://img.freepik.com/free-photo/white-wall-background-with-scratches_1154-667.jpg?size=626&ext=jpg&ga=GA1.1.1395991368.1728518400&semt=ais_hybrid'
+            " alt="Selected User Image" />
           <div class="chating-with">
             <div class="name-chat">
               <b>{{ selectedUserName || "" }}</b>
             </div>
           </div>
-          <div
-            class="delete-chat"
-            @click="deleteChatRoom"
-            style="color: #d85f5f"
-          >
+          <div class="delete-chat" @click="deleteChatRoom" style="color: #d85f5f">
             채팅방 삭제하기
           </div>
         </div>
 
         <!-- 메시지 표시 영역 -->
         <div class="message" ref="messageContainer">
-          <div
-            v-for="(message, index) in messages"
-            :key="index"
-            class="solo-message"
-          >
+          <div v-for="(message, index) in messages" :key="index" class="solo-message">
             <div :class="['message-text', message.isUser ? 'right' : 'left']">
               {{ message.text }}
+              <div class="timestamp">{{ message.timestamp }}</div>
             </div>
+
           </div>
         </div>
 
         <!-- 메시지 입력 및 추가 버튼 -->
         <div class="line-input">
           <div class="input">
-            <input
-              type="text"
-              v-model="userMessage"
-              @keypress.enter="sendMessage"
-              placeholder="Type a message..."
-            />
+            <input type="text" v-model="userMessage" @keypress.enter="sendMessage" placeholder="Type a message..." />
           </div>
           <button class="add btn btn-outline-secondary" @click="sendMessage">
             Send
@@ -79,45 +60,57 @@
 </template>
 
 <script>
+import { ref, onMounted, computed, reactive } from 'vue';
+import { useAuthStore } from '@/stores/auth';
 import axios from "axios";
+
 
 export default {
   data() {
     return {
-      roomId: 1, // 테스트할 매물 ID
-      senderId: 1, // 로그인한 사용자 ID
+      roomId: 1,
+      senderId: null,
       receiverId: 2,
       userMessage: "",
       selectedUserName: "",
       selectedUserImage: "",
       messages: [],
-      users: [
+      users: reactive([
         {
           name: "하츄핑",
           userId: 2,
-          image:
-            "https://i.namu.wiki/i/U6e2CQUpk8s-HxMQNWJPF_vfzlqLAsuRCeI68CHOk8GvuagcVU0TjhuZ7o0WwpQEG7hk6Ck207c1EpIgb3E3qA.webp",
+          image: "https://i.namu.wiki/i/U6e2CQUpk8s-HxMQNWJPF_vfzlqLAsuRCeI68CHOk8GvuagcVU0TjhuZ7o0WwpQEG7hk6Ck207c1EpIgb3E3qA.webp",
+          unreadCount: 0,
         },
-        {
-          name: "티니핑",
-          userId: 3,
-          image:
-            "https://i.namu.wiki/i/g_KWbWLZvwPIarNr2apToYiutsBO8ousgVj3h-McRHmNr-A-6WNS-HDYkZLt6-dEut9KKiJeZSPyUM57FlmLsg.webp",
-        },
-        {
-          name: "해핑",
-          userId: 4,
-          image:
-            "https://i.namu.wiki/i/Wz_QYItt6IMcprBwNF9UARK9cN4tnEx3yJKxHlRruY77FnfUpul6NncqkY9fmQFBYaRBaoKs0zA2NOGdP035lQ.webp",
-        },
-      ],
+      ]),
     };
   },
-
+  computed: {
+    islogin() {
+      const auth = useAuthStore();
+      return auth.isLogin;
+    },
+    loggedInUserId() {
+      const auth = useAuthStore();
+      return auth.id;
+    }
+  },
   methods: {
+    async fetchLoggedInUser() {
+      try {
+        const response = await axios.get(`http://localhost:8080/api/member/${this.loggedInUserId}`);
+        console.log("Response data:", response.data); // 응답 데이터 확인
+
+        this.senderId = response.data.mno; // 사용자 ID 설정
+        this.selectedUserName = response.data.name;
+        this.selectedUserImage = response.data.avatar || 'default-avatar-url';
+      } catch (error) {
+        console.error("Failed to fetch logged-in user:", error);
+      }
+    },
+
     async sendMessage() {
       if (!this.userMessage.trim()) return; // 빈 메시지 방지
-      console.log(this.chatRoomId, this.senderId, this.userMessage);
       if (!this.chatRoomId) {
         console.error(
           "chatRoomId가 설정되지 않았습니다. 메시지를 전송할 수 없습니다."
@@ -143,6 +136,31 @@ export default {
 
       this.scrollToBottom();
     },
+    async fetchUnreadCounts(chatRoomId = this.roomId) {
+      try {
+        for (let i = 0; i < this.users.length; i++) {
+          const response = await axios.get(
+            "http://localhost:8080/api/chat/messages/unread-count",
+            {
+              params: {
+                chatroomId: chatRoomId,
+                senderId: this.senderId,
+                receiverId: this.users[i].userId
+              }
+            }
+          );
+          console.log("Chatroom ID:", chatRoomId);
+          console.log("Sender ID:", this.senderId);
+          console.log("Receiver ID:", this.users[i].userId);
+          const unreadCount = response.data;
+          console.log(`User ${this.users[i].userId} unread count: ${unreadCount}`);
+          this.users[i].unreadCount = unreadCount;
+        }
+      } catch (error) {
+        console.error("Failed to fetch unread message counts:", error);
+      }
+    },
+
     async fetchMessages() {
       if (!this.chatRoomId) return;
 
@@ -152,6 +170,7 @@ export default {
           "http://localhost:8080/api/chat/messages",
           {
             params: { chatRoomId: this.chatRoomId },
+
           }
         );
 
@@ -159,13 +178,29 @@ export default {
         this.messages = response.data.map((message) => ({
           text: message.content,
           isUser: message.senderId === this.senderId, // 발신자인지 확인
+          timestamp: new Date(message.sendTime).toLocaleString(),
         }));
+        this.markMessagesAsRead();
       } catch (error) {
         console.error("Failed to fetch messages:", error);
       }
       this.$nextTick(() => {
         this.scrollToBottom();
       });
+    },
+    async markMessagesAsRead() {
+      if (!this.chatRoomId || !this.senderId) return;
+
+      try {
+        // 읽음 상태 업데이트 API 호출
+        await axios.post("http://localhost:8080/api/chat/messages/mark-read", null, {
+          params: { chatRoomId: this.chatRoomId, senderId: this.senderId }
+        });
+        console.log("Messages marked as read.");
+
+      } catch (error) {
+        console.error("Failed to mark messages as read:", error);
+      }
     },
     async deleteChatRoom() {
       try {
@@ -179,6 +214,8 @@ export default {
       }
     },
     async selectUser(user) {
+      await this.fetchLoggedInUser();
+
       this.receiverId = user.userId;
       this.selectedUserName = user.name;
       this.selectedUserImage = user.image;
@@ -188,7 +225,7 @@ export default {
           "http://localhost:8080/api/chat/room",
           {
             params: {
-              roomId: this.roomId, // 해당 매물 ID (필요에 따라 변수 설정)
+              roomId: this.roomId, // 해당 매물 ID 
               senderId: this.senderId,
               receiverId: user.userId, // 상대방 사용자 ID
             },
@@ -197,7 +234,15 @@ export default {
 
         this.chatRoomId = response.data.chatroomId;
         console.log("채팅방 ID:", response.data.chatroomId);
-        this.fetchMessages(); // 메시지 불러오기
+        console.log(this.chatRoomId, this.senderId, this.receiverId);
+
+
+        if (this.chatRoomId) {
+          await this.fetchMessages();
+          await this.fetchUnreadCounts(this.chatRoomId);
+        } else {
+          console.error("채팅방 ID가 설정되지 않았습니다.");
+        }
       } catch (error) {
         console.error("Failed to fetch or create chat room:", error);
       }
@@ -208,13 +253,15 @@ export default {
       messageContainer.scrollTop = messageContainer.scrollHeight;
     },
   },
-  mounted() {
-    this.fetchMessages().then(() => {
+  async mounted() {
+    await this.fetchLoggedInUser();
+    await this.fetchMessages().then(() => {
       this.$nextTick(() => {
         this.scrollToBottom();
       });
     });
-  },
+    this.fetchUnreadCounts(this.roomId);
+  }
 };
 </script>
 
@@ -423,5 +470,30 @@ img {
   padding: 9px 15px;
   width: 15%;
   margin-left: 1px;
+}
+
+.unread-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: white;
+  color: red;
+  border: 1px solid red;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.timestamp {
+  font-size: 10px;
+  color: gray;
+  text-align: right;
+  display: block;
+  margin-top: 5px;
 }
 </style>
