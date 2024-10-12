@@ -35,6 +35,21 @@ export default {
 
         console.log('delete dataa : ',data);
         return data;
+    },
+    async isInterest(userId, roomId) {
+        const {data} = await api.get(`${BASE_URL}/isFavorite`,{ params :{
+            userName : userId,
+            roomId : roomId
+        }});
+        console.log('IS FAVORITE : ',data);
+        return data;
+    },
+    async isOwn(userId){
+        const {data} = await api.get(`${BASE_URL}/isOwn`,{params : {
+            userName : userId
+        }});
+        console('mnonnonon : ',data);
+        return data;
     }
 
 }
