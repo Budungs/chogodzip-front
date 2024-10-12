@@ -17,17 +17,7 @@
             </div>
         </div>
     
-        <hr />
-    
-        <!-- 첨부파일 -->
-        <div class="text-end">
-            <div class="attach">
-                <span>
-                    <i class="fa-solid fa-paperclip"></i>
-                    파일명.pdf
-                </span>
-            </div>
-        </div>
+        <hr />  
     
         <!-- 게시글 내용 -->
         <div class="content" v-html="post.content"></div>

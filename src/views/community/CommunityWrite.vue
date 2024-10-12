@@ -68,6 +68,7 @@
 </template>
   
 <script setup>
+import axios from 'axios';
 import { ref, onMounted } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 
@@ -82,6 +83,7 @@ function selectType(type) {
 
 //작성데이터
 const title = ref('');
+const pics = ref('');
 
 //데이터 전송 (작성 요청)
 const submitCommunity = async () => {
@@ -89,6 +91,7 @@ const submitCommunity = async () => {
       title: title.value,
       tag: selectedType.value,
       content: window.$('#summernote').summernote('code'),
+      pics: pics.value.replace(/\|$/, ''),
       memberId: authStore.id,
     }
 
@@ -113,6 +116,31 @@ const submitCommunity = async () => {
   }
 }
 
+//이미지 업로드 메서드
+const fileUploader = async (file, el) => {
+  let formData = new FormData();
+  formData.append('file', file);
+
+  try {
+    const res = await axios.post('/api/file', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+
+    if(res.status === 200) {
+      const imgUrl = `${import.meta.env.VITE_FILE_URL}${res.data}`;
+      pics.value += `${res.data}|`;
+
+      $(el).summernote('insertImage', imgUrl, function($image) {
+        $image.css('width', "100%");
+      });
+    }
+  } catch (err) {
+    console.error('>> 이미지 업로드 실패 T.T) :', err.message);
+  }
+};
+
 // summernote
 onMounted(() => {
   $('#summernote').summernote({
@@ -134,12 +162,20 @@ onMounted(() => {
     ],
 
     fontSizes: ['8','9','10','11','12','14','16','18','20','22','24','28','30','36','50','72','96'],
+
+    //이미지 처리
+		callbacks : {                                                    
+			onImageUpload : function(files, editor, welEditable) {   
+				for (var i = 0; i < files.length; i++) {
+					fileUploader(files[i], this);
+				}
+			}
+    }
   })
 })
 
 // 취소 버튼 클릭 시 게시판의 메인 페이지로 이동
 import { useRouter } from 'vue-router';
-import axios from 'axios';
 const router = useRouter();
 
 const goToCommunityMainPage = () => {
