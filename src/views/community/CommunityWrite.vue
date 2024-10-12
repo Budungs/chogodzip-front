@@ -10,18 +10,16 @@
             <!-- 제목 -->
             <h4 class="h3 mb-n1">제목</h4>
             <!-- Addon on the left -->
-            <div class="input-group" style="margin-top:10px;">
-              <input type="text" class="form-control" placeholder="제목을 입력하세요." v-model="title">
+            <div class="input-group mt-3">
+              <input type="text" class="form-control" placeholder="제목을 입력해주세요." v-model="title">
             </div>
           </div>
             <!-- 주제선택 -->
-          <div class="select-subject">
-            <br>
-            <h4 class="h3 mb-n1">주제선택</h4>
-            <div class="form-text" style="margin-top:15px;">관심있는 주제의 게시글을 모아보세요.</div>
+          <div class="select-subject mt-4 mb-3">
+            <div class="mt-4"><span class="h4 pe-2">주제선택</span> <span class="form-text">관심있는 주제의 게시글을 모아보세요.</span></div>
           </div>
         </form>
-        <br>
+
         <!-- 정보제공/후기 -->
         <div class="subject-choose-container">
           <div class="out-choose-info">
@@ -51,26 +49,21 @@
               </div>
           </div>
         </div>
-        <br><br>
   
         <!-- summernote -->
         <div class="summernote-container">
           <div id="summernote"></div>
         </div>
         
-        <br><br><br>
-        <div class="bottom-button-container">
+        <div class="bottom-button-container mt-4">
           <!-- 취소 버튼 (왼쪽) -->
           <button type="button" class="btn btn-primary" style="background-color:#A9A9A9;" @click="goToCommunityMainPage">취소</button>
           <!-- 등록 버튼 (오른쪽) --> 
           <button type="button" class="btn btn-primary" style="background-color:#a28cd1;" @click="submitCommunity">등록</button>
         </div>
-  
-        <br><br>
         
       </div>
     </div>
-    <br><br><br>
   </div>
 </template>
   
@@ -123,21 +116,26 @@ const submitCommunity = async () => {
 // summernote
 onMounted(() => {
   $('#summernote').summernote({
-    placeholder: 'Hello stand alone ui',
+    placeholder: '본문 내용을 입력해주세요.',
     tabsize: 2,
     height: 500,
     width:1150,
+    lang: 'ko-KR',
+    
     toolbar: [
       ['style', ['style']],
       ['font', ['bold', 'underline', 'clear']],
+      ['fontsize', ['fontsize']],
       ['color', ['color']],
       ['para', ['ul', 'ol', 'paragraph']],
       ['table', ['table']],
-      ['insert', ['link', 'picture', 'video']],
-      ['view', ['fullscreen', 'codeview', 'help']]
-    ]
-  });
-});
+      ['insert', ['link', 'picture']],
+      ['height', ['height']],
+    ],
+
+    fontSizes: ['8','9','10','11','12','14','16','18','20','22','24','28','30','36','50','72','96'],
+  })
+})
 
 // 취소 버튼 클릭 시 게시판의 메인 페이지로 이동
 import { useRouter } from 'vue-router';
@@ -155,7 +153,6 @@ const goToCommunityMainPage = () => {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  gap: 10px;
 }
 
 button { /* 일반적인 버튼 */
@@ -205,7 +202,7 @@ button + button {
 }
 
 .choose-label {
-  font-size: 1.3rem; /* <h4>보다 작고, 일반 텍스트보다 큰 크기 */
+  font-size: 1.225rem;
   font-weight: bold;
 }
 
