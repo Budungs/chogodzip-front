@@ -15,8 +15,12 @@
                 <span v-if="walkTime" style="margin-left:1rem;">도보 {{ walkTime }}분 </span>
             </div>
             <div class="d-flex justify-content-end">
-                <button class="s-btn"><i class="s-icon far fa-heart" style="margin-right:0.5rem;" /><span>116</span></button>
-                <button class="s-btn"><i class="s-icon fas fa-map-marker-alt" /></button>
+                <!-- 좋아요 버튼 -->
+                <button class="s-btn" @click="toggleFavorite">
+                    <i :class="['s-icon', isFavorited ? 'fas fa-heart' : 'far fa-heart']" style="margin-right:0.5rem;" />
+                    <span>{{ favoriteCount }}</span>
+                </button>
+                <!-- 다른 버튼들 -->
                 <button class="s-btn"><i class="s-icon far fa-comments" /></button>
                 <button class="s-btn"><i class="s-icon far fa-edit" /></button>
             </div>
@@ -44,7 +48,7 @@
 </template>
 
 <script setup>
-import { defineProps, computed } from 'vue';
+import { ref, defineProps, computed } from 'vue';
 import subway_3 from '@/assets/img/subway_3.png';
 
 // Props
@@ -67,13 +71,22 @@ const props = defineProps({
     },
 });
 
+// 좋아요 토글 상태 관리
+const isFavorited = ref(false); // 기본 값은 false로 설정
+const favoriteCount = ref(116); // 초기 좋아요 수
+
+// 좋아요 토글 함수
+const toggleFavorite = () => {
+    isFavorited.value = !isFavorited.value;
+    favoriteCount.value += isFavorited.value ? 1 : -1;
+};
+
 // Computed property to extract '구' name from the address
 const districtName = computed(() => {
-    const addressParts = props.cardData.address.split(' ');
+    const addressParts = props.cardData.room.address.split(' ');
     const guIndex = addressParts.findIndex(part => part.includes('구'));
     return guIndex !== -1 ? addressParts[guIndex] : '';
 });
-
 </script>
 
 <style scoped>
