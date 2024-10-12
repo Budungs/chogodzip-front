@@ -10,7 +10,7 @@
     }"
   
     :modules="modules"
-    class="mySwiper"
+    class="mySwiper mt-3"
   >
     <swiper-slide>
       <div class="card"> <!-- 이미지 크기가 달라도 동일한 크기로 보이기 위해 부트스트랩의 card 사용 -->
