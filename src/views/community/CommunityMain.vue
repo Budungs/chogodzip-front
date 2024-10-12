@@ -1,8 +1,6 @@
 <template>
-    <div class="in-background">
-        <br><br>
+    <div class="in-background pt-2 pb-5">
         <Swiper></Swiper>
-        <br><br>
         <CommunitySearch></CommunitySearch>
     </div>
 </template>
@@ -14,7 +12,6 @@ import CommunitySearch from '@/views/community/CommunitySearch.vue';
 </script>
 
 <style scoped>
-
 .in-background {
     background-color: #E6E6FA;
 }
