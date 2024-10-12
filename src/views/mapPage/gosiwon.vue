@@ -134,11 +134,11 @@
           </div>
         </div>
 
-        <div v-for="(property, index) in filteredProperties" :key="property.roomId" class="card"
+        <div v-for="(property, index) in sortedProperties" :key="property.roomId" class="card"
           @mouseover="logRoomId(property.roomId, index)">
           <!-- 이미지와 판매완료 오버레이 -->
           <div class="image-container">
-            <img :src="property.imgId || 'https://via.placeholder.com/150'" class="card-img-top" alt="Property Image">
+            <img :src="property.thumbnail || 'https://via.placeholder.com/150'" class="card-img-top" alt="Property Image">
 
             <!-- 판매완료 오버레이 (판매 완료일 때 표시) -->
             <div v-if="property.isSoldOut == '1'" class="sold-overlay">
@@ -334,32 +334,36 @@ const updateHeartIcons = () => {
     return isFavorite ? 'fas fa-heart' : 'far fa-heart'; // 색칠된 아이콘과 흰색 아이콘
   });
 };
-// 하트 아이콘 토글 함수
 const toggleHeartIcon = async (index) => {
-  console.log('hartdfadf : ',propertiesData.value[index].roomId);
+  console.log('Selected Room ID: ', propertiesData.value[index].roomId);
   try {
-    // 현재 상태가 'far fa-heart'이면 관심 매물 추가
-    if (heartIcons.value[index] === 'far fa-heart') {
-      // 관심 매물 추가 API 호출
-      const roomId = propertiesData.value[index].roomId;
-      const userId = id.value; // 로그인한 사용자의 ID
-      
-      if (islogin.value && userId) {
-        const params = { userId: userId, roomId: roomId };
+    const roomId = propertiesData.value[index].roomId;
+    const userId = id.value; // 로그인한 사용자의 ID
+    
+    if (islogin.value && userId) {
+      const params = { userId: userId, roomId: roomId };
+      console.log('Current heart icon class:', heartIcons.value[index]);
+
+      if (heartIcons.value[index] === 'far fa-heart') {
+        // 관심 매물 추가
         const response = await interestApi.addInterest(params);  // API 호출
         console.log('Interest added:', response);
         
-        // 하트 아이콘 색칠된 상태로 변경
+        // 하트 아이콘을 색칠된 상태로 변경
         heartIcons.value[index] = 'fas fa-heart';
-      } else {
-        console.error('로그인이 필요합니다.');
+      } else if(heartIcons.value[index] === 'fas fa-heart') {
+        // 관심 매물 삭제
+        const response = await interestApi.deleteInterest(params);  // 관심 매물 삭제 API 호출
+        console.log('Interest deleted:', response);
+        
+        // 하트 아이콘을 비어있는 상태로 변경
+        heartIcons.value[index] = 'far fa-heart';
       }
     } else {
-      // 현재 상태가 'fas fa-heart'이면 관심 매물 해제 (추가적으로 해제 API가 필요하다면 구현)
-      heartIcons.value[index] = 'far fa-heart';
+      console.error('로그인이 필요합니다.');
     }
   } catch (error) {
-    console.error('관심 매물 추가 실패:', error);
+    console.error('관심 매물 처리 중 오류 발생:', error);
   }
 };
 
@@ -480,6 +484,22 @@ const fetchGosiwonData = async (lat, lng) => {
         image: new kakao.maps.MarkerImage(markerImageSrc, new kakao.maps.Size(30, 35)),
       });
       marker.setMap(map.value);
+
+      const infoWindow = new kakao.maps.InfoWindow({
+        content: `<div style="padding:5px;font-size:12px;">${property.title}<br/>월세: ${property.priceMax} 만원</div>`,
+      });
+
+      // 마커 클릭 이벤트 - 상태를 내부에서 관리
+      let isInfoWindowVisible = false;
+      kakao.maps.event.addListener(marker, 'click', () => {
+        if (isInfoWindowVisible) {
+          infoWindow.close(); // 정보창 닫기
+        } else {
+          infoWindow.open(map.value, marker); // 정보창 열기
+        }
+        // 상태를 반대로 변경
+        isInfoWindowVisible = !isInfoWindowVisible;
+      });
       return marker;
     });
     updateHeartIcons();

@@ -27,15 +27,15 @@ export default {
         return data;
     },
     async deleteInterest(params) {
-        const {data} = await api.delete(`${BASE_URL}/delete`, {
+        console.log('dfadfadfa : ',params);
+        const {data} = await api.delete(`${BASE_URL}/delete`, {data:{
             userName: params.userId,
-            roomId: params.roomId
-        });
+            roomId : params.roomId
+        }});
+
         console.log('delete dataa : ',data);
         return data;
     }
-    
-    
 
 }
 

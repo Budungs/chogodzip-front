@@ -30,8 +30,8 @@
 <script setup>
 import { reactive, computed, onMounted, ref } from 'vue';
 import axios from 'axios'; // axios로 서버 API 호출
-import fetchReviews from '@/utils/review'; // fetchReviews 함수를 가져옵니다.
-import fetchSummaryReviews from '@/utils/review'; // review.js에서 요약 리뷰 함수 가져오기
+// import fetchReviews from '@/utils/review'; // fetchReviews 함수를 가져옵니다.
+// import fetchSummaryReviews from '@/utils/review'; // review.js에서 요약 리뷰 함수 가져오기
 import { useRoute } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import DetailCard from '@/modules/components/detail/DetailCard.vue';
@@ -56,6 +56,7 @@ const house = reactive({
         roomLat: '',
         roomLong: '',
         thumbnail: '',
+        address:'',
         canLoan: '',
         createdAt: '',
         updatedAt: ''
@@ -64,7 +65,6 @@ const house = reactive({
     gswId: '',
     title: '',
     postcode: '',
-    address: '',
     detailAddress: '',
     priceMin: '',
     priceMax: '',
@@ -157,10 +157,11 @@ onMounted(async () => {
         // 첫 번째 API 호출
         const data = await api.getOneGosiwon(roomIds); 
         Object.assign(house, data); 
-        console.log('room loca : ', data.address);
+        console.log('room loca : ', data.room.address);
+        
         
         // 구 이름 추출
-        const addressParts = data.address.split(' ');
+        const addressParts = data.room.address.split(' ');
         const guIndex = addressParts.findIndex(part => part.includes('구'));
         const districtName = guIndex !== -1 ? addressParts[guIndex] : '';
         
