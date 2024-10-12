@@ -28,6 +28,15 @@ export default {
         });
         console.log('status : ', data);
         return data;
+    },
+    async registReply(params){
+        const {data} = await api.post(`${BASE_URL}/regist`, {
+            userName : params.userId,
+            roomId : params.roomId,
+            reply : params.reply
+        }, { headers });
+        console.log('reply eotrmf : ',data);
+        return data;
     }
     
 
