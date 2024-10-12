@@ -48,10 +48,10 @@ const handleSearch = async () => {
   const data = await searchApi.getOneUniversity({ name: searchQuery.value });
   console.log('Fetched University Data:', data);
 
-  if (data && data.universityLat && data.universityLong) {
+  if (data && data.lat && data.lng) {
     // 라우팅하여 고시원 지도 페이지로 이동
     router.push({ 
-      name: 'GosiwonMap', // 등록된 경로 이름
+      name: 'Gosiwon', // 등록된 경로 이름
       query: { lat: data.universityLat, lng: data.universityLong }
     });
   } else {

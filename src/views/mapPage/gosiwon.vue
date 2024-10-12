@@ -407,8 +407,8 @@ const applyFilters = () => {
     const matchesLoan = filters.loan.length === 0 || property.canLoan;
 
     const matchesFloor = filters.floor.length === 0 || (
-      (filters.floor.includes('under') && property.type === 0) ||
-      (filters.floor.includes('1floor') && property.type === 1)
+      (filters.floor.includes('under') && property.type === "0") ||
+      (filters.floor.includes('1floor') && property.type === "1")
     );
 
 
