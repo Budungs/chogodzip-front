@@ -118,6 +118,11 @@ const submitCommunity = async () => {
 
 //이미지 업로드 메서드
 const fileUploader = async (file, el) => {
+  const limitsize = 1024 ** 2 * 5;
+  if(file.size > limitsize) {
+    alert('이미지 파일의 용량은 5MB를 초과할 수 없습니다.'); return;
+  }
+  
   let formData = new FormData();
   formData.append('file', file);
 
