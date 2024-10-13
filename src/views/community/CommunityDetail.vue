@@ -31,7 +31,7 @@
             <button v-if="id !== null && id === post.memberId" class="btn btn-primary me-2">
                 <i class="fa-regular fa-pen-to-square"></i> 수정
             </button>
-            <button v-if="id !== null && id === post.memberId" class="btn btn-danger">
+            <button v-if="id !== null && id === post.memberId" class="btn btn-danger" @click="deleteCommunity">
                 <i class="fa-solid fa-trash-can"></i> 삭제
             </button>
         </div>
@@ -115,10 +115,20 @@ const fetchDetail = async () => {
 }
 onMounted(fetchDetail);
 
+const deleteCommunity = async () => {
+    try {
+        const res = await axios.delete(`/api/community/${route.params.id}`);
+        if(res.status === 200) goToMainPage();
+
+    } catch (err) {
+        console.error('>> 커뮤니티 삭제 실패 (T>T) ', err.message);
+    }
+}
+
 
 const router = useRouter(); // router 인스턴스를 가져옵니다.
 const goToMainPage = () => {
-  router.push('/communitymain'); // /communitymain 경로로 이동합니다.
+  router.push('/community'); // /communitymain 경로로 이동합니다.
 };
 
 // 페이지네이션 정보
