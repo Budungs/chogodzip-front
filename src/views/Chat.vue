@@ -49,51 +49,50 @@
     </div>
 </template>
 
-<script>
-export default {
-    data() {
-        return {
-            userMessage: '',
-            messages: [],
-            users: [
-                { name: '하츄핑', image: 'https://i.namu.wiki/i/U6e2CQUpk8s-HxMQNWJPF_vfzlqLAsuRCeI68CHOk8GvuagcVU0TjhuZ7o0WwpQEG7hk6Ck207c1EpIgb3E3qA.webp' },
-                { name: '티니핑', image: 'https://i.namu.wiki/i/g_KWbWLZvwPIarNr2apToYiutsBO8ousgVj3h-McRHmNr-A-6WNS-HDYkZLt6-dEut9KKiJeZSPyUM57FlmLsg.webp' },
-                { name: '해핑', image: 'https://i.namu.wiki/i/Wz_QYItt6IMcprBwNF9UARK9cN4tnEx3yJKxHlRruY77FnfUpul6NncqkY9fmQFBYaRBaoKs0zA2NOGdP035lQ.webp' },
-                { name: '나나핑', image: 'https://blog.kakaocdn.net/dn/d8A1qW/btsI5b5zFOZ/YIDWrWo9m7dX7osJEkfRJk/img.png' },
-            ],
-            botResponses: [
-                '채팅 테스트 중입니다 ...',
-                '채팅 테스트 중입니다 ...',
-                '채팅 테스트 중입니다 ...',
-                '채팅 테스트 중입니다 ...'
-            ],
-            botIndex: 0
-        };
-    },
-    methods: {
-        addMessage() {
-            if (this.userMessage.trim() === '') return;
+<script setup>
+import { ref } from 'vue';
 
-            this.messages.push({ text: this.userMessage, isUser: true });
-            this.userMessage = '';
+const userMessage = ref('');
+const messages = ref([]);
+const botIndex = ref(0);
+const users = ref([
+  { name: '하츄핑', image: 'https://i.namu.wiki/i/U6e2CQUpk8s-HxMQNWJPF_vfzlqLAsuRCeI68CHOk8GvuagcVU0TjhuZ7o0WwpQEG7hk6Ck207c1EpIgb3E3qA.webp' },
+  { name: '티니핑', image: 'https://i.namu.wiki/i/g_KWbWLZvwPIarNr2apToYiutsBO8ousgVj3h-McRHmNr-A-6WNS-HDYkZLt6-dEut9KKiJeZSPyUM57FlmLsg.webp' },
+  { name: '해핑', image: 'https://i.namu.wiki/i/Wz_QYItt6IMcprBwNF9UARK9cN4tnEx3yJKxHlRruY77FnfUpul6NncqkY9fmQFBYaRBaoKs0zA2NOGdP035lQ.webp' },
+  { name: '나나핑', image: 'https://blog.kakaocdn.net/dn/d8A1qW/btsI5b5zFOZ/YIDWrWo9m7dX7osJEkfRJk/img.png' }
+]);
 
-            this.addBotMessage();
-        },
-        addBotMessage() {
-            setTimeout(() => {
-                if (this.botIndex >= this.botResponses.length) this.botIndex = 0;
+const botResponses = ref([
+  '채팅 테스트 중입니다 ...',
+  '채팅 테스트 중입니다 ...',
+  '채팅 테스트 중입니다 ...',
+  '채팅 테스트 중입니다 ...'
+]);
 
-                this.messages.push({ text: this.botResponses[this.botIndex], isUser: false });
-                this.botIndex++;
-                this.scrollToBottom();
-            }, 1000);
-        },
-        scrollToBottom() {
-            const messageContainer = this.$refs.messageContainer;
-            messageContainer.scrollTop = messageContainer.scrollHeight;
-        }
-    }
+const addMessage = () => {
+  if (userMessage.value.trim() === '') return;
+
+  messages.value.push({ text: userMessage.value, isUser: true });
+  userMessage.value = '';
+
+  addBotMessage();
 };
+
+const addBotMessage = () => {
+  setTimeout(() => {
+    if (botIndex.value >= botResponses.value.length) botIndex.value = 0;
+
+    messages.value.push({ text: botResponses.value[botIndex.value], isUser: false });
+    botIndex.value++;
+    scrollToBottom();
+  }, 1000);
+};
+
+const scrollToBottom = () => {
+  const messageContainer = document.querySelector('.message');
+  messageContainer.scrollTop = messageContainer.scrollHeight;
+};
+
 </script>
 
 <style scoped>
