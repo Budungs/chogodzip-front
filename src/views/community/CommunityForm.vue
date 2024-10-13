@@ -1,10 +1,8 @@
 <template> 
   <div class="outer-background">
-    <div class="container">
-      <br><br>
-      <div class="write-form">
-        <h2>게시글 작성</h2>
-        <br><br>
+    <div class="container pt-5 pb-5">
+      <div class="write-form pt-5 px-5 pb-5 rounded">
+        <h2 class="mb-5">{{ isModifying ? '게시글 수정' : '게시글 작성' }}</h2>
         <form>
           <div class="mb-3">
             <!-- 제목 -->
@@ -21,10 +19,10 @@
         </form>
 
         <!-- 정보제공/후기 -->
-        <div class="subject-choose-container">
+        <div class="w-100 d-flex gap-5">
           <div class="out-choose-info">
             <label for="info" class="choose-label">정보제공</label>
-            <div class="in-choose-info">
+            <div class="in-choose-info gap-3">
               <button :class="{ active: selectedType === 'REPI' }" @click="selectType('REPI')">부동산 정책/투자</button>
               <button class="policy-issue" :class="{ active: selectedType === 'REHT' }" @click="selectType('REHT')">부동산 핫이슈</button>
             </div>
@@ -33,7 +31,7 @@
           <!-- 후기 -->
           <div class="out-choose-info">
             <label for="info" class="choose-label">후기</label>
-            <div class="in-choose-info">
+            <div class="in-choose-info gap-3" >
               <button class="review" :class="{ active: selectedType === 'RERV' }" @click="selectType('RERV')">부동산 후기</button>
               <button class="contract-review" :class="{ active: selectedType === 'CTRV' }" @click="selectType('CTRV')">계약/입주 후기</button>
               <button class="interior-review" :class="{ active: selectedType === 'ITRV' }" @click="selectType('ITRV')">인테리어 후기</button>
@@ -43,7 +41,7 @@
           <!-- 질문 -->
           <div class="out-choose-info">
             <label for="info" class="choose-label">질문</label>
-              <div class="in-choose-info">
+              <div class="in-choose-info gap-3">
                 <button class="loan-question" :class="{ active: selectedType === 'LNQS' }" @click="selectType('LNQS')">대출 질문</button>
                 <button :class="{ active: selectedType === 'LTQS' }" @click="selectType('LTQS')">분양/청약 질문</button>
               </div>
@@ -51,13 +49,13 @@
         </div>
   
         <!-- summernote -->
-        <div class="summernote-container">
+        <div class="summernote-container mt-4">
           <div id="summernote"></div>
         </div>
         
-        <div class="bottom-button-container mt-4">
+        <div class="bottom-button-container mt-4 gap-3">
           <!-- 취소 버튼 (왼쪽) -->
-          <button type="button" class="btn btn-primary" style="background-color:#A9A9A9;" @click="goToCommunityMainPage">취소</button>
+          <button type="button" class="btn btn-primary" style="background-color:#A9A9A9;" @click="goBack">취소</button>
           <!-- 등록 버튼 (오른쪽) --> 
           <button type="button" class="btn btn-primary" style="background-color:#a28cd1;" @click="submitCommunity">등록</button>
         </div>
@@ -70,9 +68,15 @@
 <script setup>
 import axios from 'axios';
 import { ref, onMounted } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 
+const route = useRoute();
+const router = useRouter();
 const authStore = useAuthStore();
+
+//작성폼 or 수정폼 분류
+const isModifying = ref(false);
 
 // 선택된 매물 유형을 저장하는 변수
 const selectedType = ref('');
@@ -87,6 +91,9 @@ const pics = ref('');
 
 //데이터 전송 (작성 요청)
 const submitCommunity = async () => {
+    //한번 더 확인
+    if(!confirm('작성하신 내용을 등록하시겠습니까? 등록 후에도 수정이 가능합니다.')) return;
+
     const data = {
       title: title.value,
       tag: selectedType.value,
@@ -105,10 +112,17 @@ const submitCommunity = async () => {
     }
 
   try {
-    const res = await axios.post('/api/community', data);
+    let res = null;
+    
+    //수정과 작성 api 요청 분리
+    if(route.path.includes('modify')) {
+      res = await axios.patch(`/api/community/${route.params.id}`, data);
+    } else res = await axios.post('/api/community', data);
 
+    //성공 후 상세 페이지로 이동
     if(res.status === 200) {
       router.push(`/community/${res.data}`);
+      removeBindingContents(); //성공 후 바인딩된 데이터 제거
     } 
   } catch (err) {
     console.error('>> 작성 실패 (T o T) 에러:', err.message);
@@ -152,7 +166,7 @@ onMounted(() => {
     placeholder: '본문 내용을 입력해주세요.',
     tabsize: 2,
     height: 500,
-    width:1150,
+    width: '100%',
     lang: 'ko-KR',
     
     toolbar: [
@@ -176,15 +190,28 @@ onMounted(() => {
 				}
 			}
     }
-  })
-})
+  });
 
-// 취소 버튼 클릭 시 게시판의 메인 페이지로 이동
-import { useRouter } from 'vue-router';
-const router = useRouter();
+  isModifying.value = route.path.includes('modify'); //수정상태인지 확인
+  if(isModifying.value) bindOriginalContents(); //수정상태일 경우 스토리지에서 데이터 가져와 바인딩
+});
 
-const goToCommunityMainPage = () => {
-  router.push('/community');
+const bindOriginalContents = () => {
+  title.value = localStorage.getItem('title');
+  selectedType.value = localStorage.getItem('tag');
+  pics.value = localStorage.getItem('pics');
+  $('#summernote').summernote('code', localStorage.getItem('content'));
+}
+
+const removeBindingContents = () => {
+  localStorage.removeItem('title');
+  localStorage.removeItem('tag');
+  localStorage.removeItem('pics');
+  localStorage.removeItem('content');
+}
+
+const goBack = () => {
+  if(confirm('작성 중인 내용이 사라질 수 있습니다. 정말로 이전 페이지로 이동하시겠습니까?')) router.back();
 }
 
 </script>
@@ -205,30 +232,8 @@ button { /* 일반적인 버튼 */
   transition: background-color 0.3s;
 }
 
-/* 각 버튼 사이 간격 조정 */
-.policy-issue {
-  margin-left: 15px; /* 부동산 정책/투자와 부동산 핫이슈 사이 15px */
-}
-
-.contract-review {
-  margin-left: 15px; /* 부동산 후기와 계약/입주 후기 사이 15px */
-}
-
-.interior-review {
-  margin-left: 15px; /* 계약/입주 후기와 인테리어 후기 사이 15px */
-}
-
-/* 기본 마진 설정 */
-button + button {
-  margin-left: 15px;
-}
-
-.out-choose-info {
-  margin-left : 35px;
-}
 .in-choose-info {
   display:flex;
-  margin-top: 8px;
 }
 
 .out-choose-info button:hover,
@@ -246,41 +251,26 @@ button + button {
   font-size: 1.225rem;
   font-weight: bold;
 }
-
 .outer-background {
   background-color: #E6E6FA; /* 보라색 */
-  padding: 20px; /* 여백 추가 */
 }
 /* write-form은 흰색 배경으로 설정 */
 .write-form {
   background-color: white; /* 흰색 배경 */
-  padding: 20px; /* 내부 여백 */
-  border-radius: 8px; /* 모서리를 둥글게 */
 }
 /* summernote - 자동으로 display:flex 적용 */
 .summernote-container {
   display: flex;
   justify-content: center;  /* 가로 가운데 정렬 */
-  margin-top:50px; 
-  margin-left:35px;
-}
-.write-form {
-  padding:50px;
-}
-/* 제목 */
-.mb-3 {
-  margin-left: 35px;
 }
 /* 주제 선택 */
 .select-subject {
   display:flex;
   flex-direction:column; /* 정렬 방식이 세로 */
-  margin-left: 35px;
 }
 /* 취소 + 선택 버튼 */
 .bottom-button-container {
   display:flex;
   justify-content: flex-end;
-  margin-right:15px;
 }
 </style>
