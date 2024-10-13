@@ -2,7 +2,7 @@
   <div class="outer-background">
     <div class="container pt-5 pb-5">
       <div class="write-form pt-5 px-5 pb-5 rounded">
-        <h2 class="mb-5">게시글 작성</h2>
+        <h2 class="mb-5">{{ isModifying ? '게시글 수정' : '게시글 작성' }}</h2>
         <form>
           <div class="mb-3">
             <!-- 제목 -->
@@ -55,7 +55,7 @@
         
         <div class="bottom-button-container mt-4 gap-3">
           <!-- 취소 버튼 (왼쪽) -->
-          <button type="button" class="btn btn-primary" style="background-color:#A9A9A9;" @click="goToCommunityMainPage">취소</button>
+          <button type="button" class="btn btn-primary" style="background-color:#A9A9A9;" @click="goBack">취소</button>
           <!-- 등록 버튼 (오른쪽) --> 
           <button type="button" class="btn btn-primary" style="background-color:#a28cd1;" @click="submitCommunity">등록</button>
         </div>
@@ -68,9 +68,15 @@
 <script setup>
 import axios from 'axios';
 import { ref, onMounted } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 
+const route = useRoute();
+const router = useRouter();
 const authStore = useAuthStore();
+
+//작성폼 or 수정폼 분류
+const isModifying = ref(false);
 
 // 선택된 매물 유형을 저장하는 변수
 const selectedType = ref('');
@@ -85,6 +91,9 @@ const pics = ref('');
 
 //데이터 전송 (작성 요청)
 const submitCommunity = async () => {
+    //한번 더 확인
+    if(!confirm('작성하신 내용을 등록하시겠습니까? 등록 후에도 수정이 가능합니다.')) return;
+
     const data = {
       title: title.value,
       tag: selectedType.value,
@@ -103,8 +112,14 @@ const submitCommunity = async () => {
     }
 
   try {
-    const res = await axios.post('/api/community', data);
+    let res = null;
+    
+    //수정과 작성 api 요청 분리
+    if(route.path.includes('modify')) {
+      res = await axios.patch(`/api/community/${route.params.id}`, data);
+    } else res = await axios.post('/api/community', data);
 
+    //성공 후 상세 페이지로 이동
     if(res.status === 200) {
       router.push(`/community/${res.data}`);
     } 
@@ -174,15 +189,21 @@ onMounted(() => {
 				}
 			}
     }
-  })
-})
+  });
 
-// 취소 버튼 클릭 시 게시판의 메인 페이지로 이동
-import { useRouter } from 'vue-router';
-const router = useRouter();
+  isModifying.value = route.path.includes('modify'); //수정상태인지 확인
+  if(isModifying.value) bindOriginalContents(); //수정상태일 경우 스토리지에서 데이터 가져와 바인딩
+});
 
-const goToCommunityMainPage = () => {
-  router.push('/community');
+const bindOriginalContents = () => {
+  title.value = localStorage.getItem('title');
+  selectedType.value = localStorage.getItem('tag');
+  pics.value = localStorage.getItem('pics');
+  $('#summernote').summernote('code', localStorage.getItem('content'));
+}
+
+const goBack = () => {
+  if(confirm('작성 중인 내용이 사라질 수 있습니다. 정말로 이전 페이지로 이동하시겠습니까?')) router.back();
 }
 
 </script>

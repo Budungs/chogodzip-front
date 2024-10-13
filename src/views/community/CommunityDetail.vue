@@ -28,7 +28,7 @@
                 <i class="fa-solid fa-list"></i> 목록
             </button>
             <!-- 수정, 삭제 버튼 -->
-            <button v-if="id !== null && id === post.memberId" class="btn btn-primary me-2">
+            <button v-if="id !== null && id === post.memberId" class="btn btn-primary me-2" @click="goToModifyPage">
                 <i class="fa-regular fa-pen-to-square"></i> 수정
             </button>
             <button v-if="id !== null && id === post.memberId" class="btn btn-danger" @click="deleteCommunity">
@@ -130,6 +130,14 @@ const router = useRouter(); // router 인스턴스를 가져옵니다.
 const goToMainPage = () => {
   router.push('/community'); // /communitymain 경로로 이동합니다.
 };
+const goToModifyPage = () => {
+    localStorage.setItem('title', post.value.title);
+    localStorage.setItem('content', post.value.content);
+    localStorage.setItem('tag', post.value.tag);
+    localStorage.setItem('pics', post.value.pics);
+    
+    router.push(`/community/${route.params.id}/modify`);
+}
 
 // 페이지네이션 정보
 const currentPage = ref(1); // 현재 게시글 페이지
