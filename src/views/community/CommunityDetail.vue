@@ -4,7 +4,7 @@
             <!-- 게시글 제목 -->
              <div class="w-100 mb-5">
                 <span class="mb-3" :class="matchTagStyle(post.tag)" style="padding:1% 1.5%; font-size: 1rem">{{ getTagName(post.tag) }}</span> 
-                <h1 class="h2" style="color: var(--grayTitle)">{{ post.title }}</h1>
+                <h1 class="h2" style="color: #333d4b">{{ post.title }}</h1>
              </div>
         
             <!-- 게시글 작성자 및 작성 시간 -->
@@ -39,15 +39,12 @@
             </div>
     
             <!-- 댓글 입력 -->
-            <div class="d-flex w-100 mt-2 justify-content-between">
-                <div style="width:84%">
-                    <label class="form-label">댓글</label>
+            <div class="d-flex w-100 my-4 justify-content-between">
+                <div style="width:85%">
+                    <label class="fs-lg mb-3 mx-1">댓글</label>
                     <input type="text" class="form-control" placeholder="내용을 입력하세요." v-model="cmtContent">
                 </div>
-                <div style="width:15%">
-                    <label class="form-label">&nbsp;</label>
-                    <button class="form-control btn btn-primary" @click="postComment(post.communityId)">작성</button>
-                </div>
+                <button class="btn btn-translucent-accent h-100" style="width:14%; margin-top:auto" @click="postComment(post.communityId)">작성</button>
             </div>
         
             <!-- 댓글 목록 -->
@@ -68,7 +65,7 @@
     white-space: pre-line;
 }
 .outer-container {
-    background-color:#F2ECF9;
+    background-color:#faf9fb;
 }
 .container {
     background-color:white;
