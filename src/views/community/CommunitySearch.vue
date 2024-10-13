@@ -2,7 +2,7 @@
     <div class="container mt-5">
         <h3 class="mb-3" style="color:var(--grayTitle)">커뮤니티</h3>
         <div class="dictionary-container card card-body border-0 shadow-sm p-5 mt-4 pt-5">
-            <form class="form-group">
+            <form class="form-group"  @submit.prevent="filterList">
                 <!-- 분류 Dropdown -->
                 <div class="dropdown w-sm-25 border-end-md" data-bs-toggle="select">
                     <button class="btn btn-link" type="button" data-bs-toggle="dropdown">
@@ -24,7 +24,8 @@
                     <span class="input-group-text">
                         <i class="fas fa-search"></i>
                     </span>
-                    <input type="text" class="form-control" placeholder="공고 제목을 입력하세요" v-model="searchTitle">
+                    <input type="text" class="form-control" placeholder="공고 제목을 입력하세요" v-model="searchTitle"
+                    @keyup.enter="filterList">
                 </div>
                 <button type="button" class="btn btn-translucent-primary w-25" @click="filterList">검색</button>
             </form>
