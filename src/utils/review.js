@@ -13,7 +13,7 @@ const fetchSummaryReviews = () => {
 
       // 이미 리뷰가 존재하면 중지
       if (storedReviews) {
-        reviewSummary.value = JSON.parse(storedReviews);
+        reviewSummary.value = storedReviews;
         console.log("기존 리뷰 데이터가 존재합니다.", reviewSummary.value);
         return;
       } 
@@ -50,11 +50,11 @@ const fetchSummaryReviews = () => {
           });
 
           // GPT의 응답을 저장
-          reviewSummary.value = JSON.parse(response.choices[0].message.content);
-          sessionStorage.setItem('reviewSummary', JSON.stringify(reviewSummary.value)); //세션에 리뷰 저장
+          reviewSummary.value = response.choices[0].message.content;
+          sessionStorage.setItem('reviewSummary', reviewSummary.value); //세션에 리뷰 저장
 
         } catch (error) {
-          console.log('chatGPT: 🚨 에러가 발생했습니다.', error.message);
+          console.log('chatGPT: 🚨 에러가 발생했습니다.', error);
         }
     }
     return { reviewSummary, getGPTResponse };

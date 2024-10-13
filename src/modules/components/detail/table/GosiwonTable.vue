@@ -16,7 +16,7 @@
                             </tr>
                             <tr>
                                 <th>관리비</th>
-                                <td>{{ cardData.maintenanceFee ? cardData.maintenanceFee : '없음' }} 만원</td>
+                                <td>{{ cardData.maintenanceFee ? cardData.maintenanceFee+' 만원' : '없음' }} </td>
                             </tr>
                             <tr>
                                 <th>이용기간<br />(계약기간)</th>
@@ -64,15 +64,18 @@
                         <tbody>
                             <tr>
                                 <th>난방시설</th>
-                                <td>{{ cardData.facilityHeating ? cardData.facilityHeating : '난방시설 없음' }}</td>
+                                <td>{{ cardData.facilityHeating ? cardData.facilityHeating : '난방시설 없음' }}
+                                </td>
                             </tr>
                             <tr>
                                 <th>세탁시설</th>
-                                <td>{{ cardData.facilityLife.includes('세탁기') ? '세탁기, 건조기' : '세탁시설 없음' }}</td>
+                                <td>{{ cardData.facilityLife && cardData.facilityLife.includes('세탁기') ? '세탁기, 건조기' : '세탁시설 없음' }}
+                                </td>
                             </tr>
                             <tr>
                                 <th>주방시설</th>
-                                <td>{{ cardData.facilityLife.includes('전자레인지') ? '전자레인지, 전기밥솥' : '주방시설 없음' }}</td>
+                                <td>{{ cardData.facilityLife && cardData.facilityLife.includes('전자레인지') ? '전자레인지, 전기밥솥' : '주방시설 없음' }}
+                                </td>
                             </tr>
                             <tr>
                                 <th>생활시설</th>
@@ -84,11 +87,12 @@
                             </tr>
                             <tr>
                                 <th>별도 전용공간</th>
-                                <td>{{ cardData.facilityLife.includes('전용공간') ? '제공' : '없음' }}</td>
+                                <td>{{ cardData.facilityLife && cardData.facilityLife.includes('전용공간') ? '제공' : '없음' }}</td>
                             </tr>
                             <tr>
                                 <th>제공비품</th>
                                 <td>{{ cardData.facilityLife ? '제공' : '없음' }}</td>
+
                             </tr>
                         </tbody>
                     </table>
@@ -128,23 +132,24 @@ const props = defineProps({
         required: true
     },
 });
-
+console.log('adfadsf',props.cardData.priceMax);
 // Parse private facilities and services
 const parsedPrivateFacilities = computed(() => {
-    return props.cardData.privateFacilities ? props.cardData.privateFacilities.split('|') : [];
+    return props.cardData.privateFacilities && props.cardData.privateFacilities !== 'null' ? props.cardData.privateFacilities.split('|') : [];
 });
 
 const parsedServices = computed(() => {
-    return props.cardData.services ? props.cardData.services.split('|') : [];
+    return props.cardData.services && props.cardData.services !== 'null' ? props.cardData.services.split('|') : [];
 });
 
 const formattedLifeFacilities = computed(() => {
-    return props.cardData.facilityLife ? props.cardData.facilityLife.split('|').join(', ') : '없음';
+    return props.cardData.facilityLife && props.cardData.facilityLife !== 'null' ? props.cardData.facilityLife.split('|').join(', ') : '없음';
 });
 
 const formattedSecurityFacilities = computed(() => {
-    return props.cardData.facilitySecurity ? props.cardData.facilitySecurity.split('|').join(', ') : '없음';
+    return props.cardData.facilitySecurity && props.cardData.facilitySecurity !== 'null' ? props.cardData.facilitySecurity.split('|').join(', ') : '없음';
 });
+
 
 // Determine gender type based on genderLimit
 const genderType = computed(() => {

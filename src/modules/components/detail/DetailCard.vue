@@ -15,8 +15,12 @@
                 <span v-if="walkTime" style="margin-left:1rem;">도보 {{ walkTime }}분 </span>
             </div>
             <div class="d-flex justify-content-end">
-                <button class="s-btn"><i class="s-icon far fa-heart" style="margin-right:0.5rem;" /><span>116</span></button>
-                <button class="s-btn"><i class="s-icon fas fa-map-marker-alt" /></button>
+                <!-- 좋아요 버튼 -->
+                <button class="s-btn" @click="toggleFavorite">
+                    <i :class="['s-icon', isFavorited ? 'fas fa-heart' : 'far fa-heart']" style="margin-right:0.5rem;" />
+                    <span>{{ favoriteCount }}</span>
+                </button>
+                <!-- 다른 버튼들 -->
                 <button class="s-btn"><i class="s-icon far fa-comments" /></button>
                 <button class="s-btn"><i class="s-icon far fa-edit" /></button>
             </div>
@@ -32,7 +36,7 @@
                 </div>
                 <div class="col text-center" style="border-right: solid 3px #D2D2D2">
                     <div style="font-weight: bold; color:black;">평균</div>
-                    <div><span style="font-weight: bolder; color: #D85F5F; font-size: 1.3rem; margin-right: 0.2rem;">{{nameStatus.avgPrice}}</span>만원</div>
+                    <div><span style="font-weight: bolder; color: #D85F5F; font-size: 1.3rem; margin-right: 0.2rem;">{{ nameStatus.avgPrice ? nameStatus.avgPrice.toFixed(1) : '0.0' }}</span>만원</div>
                 </div>
                 <div class="col text-center">
                     <div style="font-weight: bold; color:black;">최소</div>
@@ -65,15 +69,23 @@ const props = defineProps({
         type: Object,
         required: true
     },
+    favoriteCount: Number,
+    isFavorited: Boolean
 });
+
+const emit = defineEmits(['toggleFavorite']); // 이벤트 정의
+
+const toggleFavorite = () => {
+    emit('toggleFavorite'); // 부모 컴포넌트로 이벤트 전달
+};
+
 
 // Computed property to extract '구' name from the address
 const districtName = computed(() => {
-    const addressParts = props.cardData.address.split(' ');
+    const addressParts = props.cardData.room.address.split(' ');
     const guIndex = addressParts.findIndex(part => part.includes('구'));
     return guIndex !== -1 ? addressParts[guIndex] : '';
 });
-
 </script>
 
 <style scoped>

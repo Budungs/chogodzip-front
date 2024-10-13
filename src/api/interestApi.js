@@ -27,15 +27,30 @@ export default {
         return data;
     },
     async deleteInterest(params) {
-        const {data} = await api.delete(`${BASE_URL}/delete`, {
+        console.log('dfadfadfa : ',params);
+        const {data} = await api.delete(`${BASE_URL}/delete`, {data:{
             userName: params.userId,
-            roomId: params.roomId
-        });
+            roomId : params.roomId
+        }});
+
         console.log('delete dataa : ',data);
         return data;
+    },
+    async isInterest(userId, roomId) {
+        const {data} = await api.get(`${BASE_URL}/isFavorite`,{ params :{
+            userName : userId,
+            roomId : roomId
+        }});
+        console.log('IS FAVORITE : ',data);
+        return data;
+    },
+    async isOwn(userId){
+        const {data} = await api.get(`${BASE_URL}/isOwn`,{params : {
+            userName : userId
+        }});
+        console('mnonnonon : ',data);
+        return data;
     }
-    
-    
 
 }
 

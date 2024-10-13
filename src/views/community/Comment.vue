@@ -12,16 +12,38 @@
               alt="Comment author"
             />
             <div class="ps-3">
-              <h6 class="mb-0">우산을 쓴 커비</h6>
-              <span class="fs-sm text-muted">2024-09-27</span>
+              <h6 class="mb-0"> {{ cmt.memberName }}</h6>
+              <span class="fs-sm text-muted"> {{ formatDate(cmt.createdAt) }}</span>
+            </div>
+
+          </div>
+
+          <!-- 댓글 수정 영역 -->
+          <div v-if="isEditing">
+            <input
+              type="text"
+              v-model="editedContent"
+              class="form-control mb-2"
+            />
+            <div class="d-flex justify-content-end gap-2">
+              <button type="button" class="btn btn-outline-secondary" @click="cancelEdit">취소</button>
+              <button type="button" class="btn btn-outline-success" @click="updateComment">등록</button>
             </div>
           </div>
-          <p class="pb-2 mb-0 command-text-container">
-            안녕하세요. 댓글입니다요~
-            <button type="button" class="btn btn-outline-danger btn-icon delete-btn-continer" @click="deleteComment" style="justify-content: center;">
-              <i class="fa fa-trash"></i>
-            </button>
-          </p>
+
+          <div v-else>
+            <p> {{ cmt.content }} </p>
+            <div 
+              v-if="isLogin && cmt.memberId === id"
+              class="w-100 d-flex justify-content-end gap-2" >
+              <button class="btn btn-secondary btn-icon" @click="editComment()">
+                <i class="fa-regular fa-pen-to-square"></i>
+              </button>
+              <button class="btn btn-outline-danger btn-icon" @click="deleteComment(cmt.cmtId)" style="justify-content: center;">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </div>
+          </div>
 
         </div>
       </div>
@@ -29,10 +51,66 @@
   </template>
   
   <script setup>
-  import { onMounted } from 'vue';
+  import { ref, onMounted } from 'vue';
+  import { useRoute } from 'vue-router';
+  import { formatDate } from '@/utils/timestamp.js';
+  import { useAuthStore } from '@/stores/auth';
+  import axios from 'axios';
+
+  const route = useRoute();
+  const { isLogin, id } = useAuthStore();
+  const emit = defineEmits(['deleteComment', 'updateComment']);
+
+
+  const isEditing = ref(false);  // 댓글 수정 상태
+  const editedContent = ref(null);  // 수정된 댓글 내용
+
+  const cancelEdit = () => {
+    isEditing.value = false;
+    editedContent.value = null;  // 수정 취소 시 초기화
+  };
+
+  const editComment = () => {
+    isEditing.value = true;
+    editedContent.value = props.cmt.content;  // 기존 댓글 내용으로 초기화
+  };
+
+  //댓글 수정
+  const updateComment = async () => {
+    if (!editedContent.value) return alert('댓글을 입력하세요.');
+
+    const updatedComment = {
+      cmtId: props.cmt.cmtId,
+      content: editedContent.value
+    };
+
+    try {
+      const res = await axios.patch(`/api/community/${route.params.id}/comments`, updatedComment);
+      if (res.status === 200) {
+        emit('updateComment', res.data);
+        cancelEdit();
+      }
+    } catch (err) {
+      console.error('>> 댓글 수정 실패 (T>T)', err.message);
+    }
+  };
   
-  const deleteComment = () => {
-    console.log('Comment deleted');
+  //댓글 삭제
+  const deleteComment = async (cmtId) => {
+    if(!confirm('댓글을 삭제하시겠습니까?')) return;
+
+    try {
+      const res = await axios.delete(`/api/community/${route.params.id}/comments`, {
+        params: { cmtId: cmtId }
+      });
+
+      if(res.status === 200) {
+        emit('deleteComment', cmtId);
+      }
+      
+    } catch (err) {
+      alert('댓글 삭제에 실패했습니다 😵‍💫');
+    }
   };
   
   onMounted(() => {
@@ -44,6 +122,13 @@
       }, 1500);
     }
   });
+
+  const props = defineProps({
+    cmt: {
+      type: Object,
+      required: true,
+    },
+  })
   </script>
   
   <style scoped>
@@ -98,5 +183,4 @@
     justify-content: space-between;
     align-items: center;
   }
-
   </style>
