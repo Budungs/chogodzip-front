@@ -1,6 +1,10 @@
 <template>
-    <div class="in-background pt-2 pb-5">
-        <Swiper></Swiper>
+    <div class="pt-2 pb-5">
+        <div class="container pt-3 d-flex flex-column align-items-center">
+            <h3 class="pt-5 display-6" style="color:#333d4b">커뮤니티</h3>
+            <h3 class="pt-2 pb-3 h3" style="color:rgb(107, 118, 132)">세상 돌아가는 소식부터 내게 꼭 필요한 금융 정보까지 커뮤니티에서 만나보세요</h3>
+        </div>
+        <Swiper class="pt-3"></Swiper>
         <CommunitySearch></CommunitySearch>
     </div>
 </template>
@@ -10,13 +14,3 @@
 import Swiper from '@/views/community/Swiper.vue';
 import CommunitySearch from '@/views/community/CommunitySearch.vue';
 </script>
-
-<style scoped>
-.in-background {
-    background-color: #E6E6FA;
-}
-
-.con-paging {
-    width:100%; height:100px; display:flex; justify-content: center; align-items: end;
-}
-</style> 
