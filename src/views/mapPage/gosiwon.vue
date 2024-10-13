@@ -127,9 +127,10 @@
           <div class="sort-dropdown">
             <select v-model="selectedSort" @change="sortProperties">
               <option value="distance">거리순</option>
-              <option value="highPrice">높은가격순</option>
-              <option value="lowPrice">낮은가격순</option>
-              <option value="likes">좋아요순</option>
+              <option value="highPrice">높은월세</option>
+              <option value="lowPrice">낮은월세</option>
+              <option value="highDeposit">높은보증금</option>
+              <option value="lowDeposit">낮은보증금</option>
             </select>
           </div>
         </div>
@@ -155,7 +156,7 @@
 
           <div class="card-body">
             <h5 class="card-title">{{ property.title }}</h5>
-            <p class="card-text fs-sm">월세 {{ property.depositMax }} 만원 | 전세 {{ property.priceMax }} 만원</p>
+            <p class="card-text fs-sm">보증금 {{ property.depositMax }} 만원 | 월세 {{ property.priceMax }} 만원</p>
 
             <router-link :to="`/houses/gosiwons/${property.roomId}`" class="btn btn-sm btn-primary">상세보기</router-link>
 
@@ -429,6 +430,44 @@ const applyFilters = () => {
     // 모든 필터 조건이 일치하는 매물만 반환
     return matchesFloor && matchesGender && matchesDeposit && matchesRent && matchesLoan;
   });
+  updateMarkers(filteredProperties.value);
+};
+
+const updateMarkers = (filteredData) => {
+  // 기존 마커 모두 초기화
+  markers.value.forEach((marker) => marker.setMap(null));
+  markers.value = [];
+
+  // 필터링된 매물에 해당하는 마커 생성
+  filteredData.forEach((property) => {
+    const markerPosition = new kakao.maps.LatLng(property.roomLat, property.roomLong);
+    const marker = new kakao.maps.Marker({
+      position: markerPosition,
+      title: property.roomName,
+      image: new kakao.maps.MarkerImage(markerImageSrc, new kakao.maps.Size(30, 35)),
+    });
+
+    // 마커 지도에 추가
+    marker.setMap(map.value);
+    
+    // 마커 정보창
+    const infoWindow = new kakao.maps.InfoWindow({
+      content: `<div style="padding:5px;font-size:12px;">${property.address}<br/>월세: ${property.priceMax} 만원</div>`,
+    });
+
+    // 마커 클릭 이벤트 - 정보창 토글
+    let isInfoWindowVisible = false;
+    kakao.maps.event.addListener(marker, 'click', () => {
+      if (isInfoWindowVisible) {
+        infoWindow.close();
+      } else {
+        infoWindow.open(map.value, marker);
+      }
+      isInfoWindowVisible = !isInfoWindowVisible;
+    });
+
+    markers.value.push(marker);
+  });
 };
 
 // 필터 적용 버튼 클릭 시 호출되는 함수
@@ -449,8 +488,11 @@ const sortedProperties = computed(() => {
       return sorted.sort((a, b) => b.priceMax - a.priceMax);
     case 'lowPrice':
       return sorted.sort((a, b) => a.priceMin - b.priceMin);
-    case 'likes':
-      return sorted.sort((a, b) => b.likes - a.likes);
+    case 'highDeposit':
+      return sorted.sort((a, b) => b.depositMax - a.depositMax);
+    case 'lowDeposit':
+      return sorted.sort((a, b) => a.depositMin - b.depositMin);
+    
     default:
       return sorted;
   }
