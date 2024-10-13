@@ -26,6 +26,16 @@ export default {
             console.error('API 요청 중 오류 발생:', error);
             throw error;  // 오류를 다시 던져서 상위 로직에서 처리할 수 있도록 함
         }
+    },
+    async getJachiList(params){
+        const {data} = await api.get(`${BASE_URL}/jachi`, params);
+        console.log('JACHI GET LIST: ',data);
+        return data;
+    },
+    async getShareHouseList(params){
+        const {data} = await api.get(`${BASE_URL}/sharehouse`, params);
+        console.log(`SHAREHOUSE GET LIST : `,data);
+        return data;
     }
     
 
