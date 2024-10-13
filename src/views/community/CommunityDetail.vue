@@ -17,17 +17,7 @@
             </div>
         </div>
     
-        <hr />
-    
-        <!-- 첨부파일 -->
-        <div class="text-end">
-            <div class="attach">
-                <span>
-                    <i class="fa-solid fa-paperclip"></i>
-                    파일명.pdf
-                </span>
-            </div>
-        </div>
+        <hr />  
     
         <!-- 게시글 내용 -->
         <div class="content" v-html="post.content"></div>
@@ -38,10 +28,10 @@
                 <i class="fa-solid fa-list"></i> 목록
             </button>
             <!-- 수정, 삭제 버튼 -->
-            <button class="btn btn-primary me-2">
+            <button v-if="id !== null && id === post.memberId" class="btn btn-primary me-2">
                 <i class="fa-regular fa-pen-to-square"></i> 수정
             </button>
-            <button class="btn btn-danger">
+            <button v-if="id !== null && id === post.memberId" class="btn btn-danger" @click="deleteCommunity">
                 <i class="fa-solid fa-trash-can"></i> 삭제
             </button>
         </div>
@@ -101,10 +91,12 @@ import { useRouter, useRoute } from 'vue-router'; // Vue Router를 불러옵니�
 import Comment from '@/views/community/Comment.vue';
 import Pagination from '@/common/components/Pagination.vue'; // Pagination 컴포넌트 경로 수정 필요
 
-import { onMounted, ref } from 'vue'; // ref를 vue에서 임포트합니다.
 import axios from 'axios';
+import { onMounted, ref } from 'vue'; // ref를 vue에서 임포트합니다.
 import { formatDate } from '@/utils/timestamp.js';
 
+import { useAuthStore } from '@/stores/auth';
+const { id } = useAuthStore(); //현재 로그인한 아이디
 
 //상세글 데이터 조회
 const route = useRoute();
@@ -121,14 +113,22 @@ const fetchDetail = async () => {
         console.error('>> 상세글 조회 실패 (T>T) ', err.message);
     }
 }
-
 onMounted(fetchDetail);
+
+const deleteCommunity = async () => {
+    try {
+        const res = await axios.delete(`/api/community/${route.params.id}`);
+        if(res.status === 200) goToMainPage();
+
+    } catch (err) {
+        console.error('>> 커뮤니티 삭제 실패 (T>T) ', err.message);
+    }
+}
 
 
 const router = useRouter(); // router 인스턴스를 가져옵니다.
-
 const goToMainPage = () => {
-  router.push('/communitymain'); // /communitymain 경로로 이동합니다.
+  router.push('/community'); // /communitymain 경로로 이동합니다.
 };
 
 // 페이지네이션 정보
