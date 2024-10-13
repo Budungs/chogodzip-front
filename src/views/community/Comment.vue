@@ -15,13 +15,18 @@
               <h6 class="mb-0"> {{ cmt.memberName }}</h6>
               <span class="fs-sm text-muted"> {{ formatDate(cmt.createdAt) }}</span>
             </div>
+
           </div>
-          <p class="pb-2 mb-0 command-text-container">
-            {{ cmt.content }}
-            <button type="button" class="btn btn-outline-danger btn-icon delete-btn-continer" @click="deleteComment(cmt.cmtId)" style="justify-content: center;">
-              <i class="fa fa-trash"></i>
+
+          <p> {{ cmt.content }} </p>
+          <div class="w-100 d-flex justify-content-end gap-2" >
+            <button class="btn btn-secondary btn-icon">
+              <i class="fa-regular fa-pen-to-square"></i>
             </button>
-          </p>
+            <button class="btn btn-outline-danger btn-icon" @click="deleteComment(cmt.cmtId)" style="justify-content: center;">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
 
         </div>
       </div>
@@ -124,5 +129,4 @@
     justify-content: space-between;
     align-items: center;
   }
-
   </style>

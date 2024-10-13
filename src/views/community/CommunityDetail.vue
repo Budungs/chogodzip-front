@@ -14,7 +14,7 @@
                     {{ post.nickname }}
                 </p>
                 <div class="w-25 d-flex justify-content-end gap-3">
-                    <p style="color:var(--gray1)">조회수: {{ post.views }}</p>
+                    <p style="color:var(--gray1)"><i class="far fa-eye"/> <span style="font-weight:bold">{{ post.views }}</span></p>
                     <p style="color:var(--gray1)">{{ formatDate(post.createdAt) }}</p>
                 </div>
             </div>
@@ -39,12 +39,12 @@
             </div>
     
             <!-- 댓글 입력 -->
-            <div class="row mt-2">
-                <div class="col-11">
+            <div class="d-flex w-100 mt-2 justify-content-between">
+                <div style="width:84%">
                     <label class="form-label">댓글</label>
                     <input type="text" class="form-control" placeholder="내용을 입력하세요." v-model="cmtContent">
                 </div>
-                <div class="col-1">
+                <div style="width:15%">
                     <label class="form-label">&nbsp;</label>
                     <button class="form-control btn btn-primary" @click="postComment(post.communityId)">작성</button>
                 </div>
@@ -79,7 +79,6 @@
 <script setup>
 import { useRouter, useRoute } from 'vue-router'; // Vue Router를 불러옵니다.
 import Comment from '@/views/community/Comment.vue';
-import Pagination from '@/common/components/Pagination.vue'; // Pagination 컴포넌트 경로 수정 필요
 
 import axios from 'axios';
 import { onMounted, ref } from 'vue'; // ref를 vue에서 임포트합니다.
