@@ -51,15 +51,7 @@
             </div>
         
             <!-- 댓글 목록 -->
-            <Comment></Comment>
-            <Comment></Comment>
-            <Comment></Comment>
-            <Comment></Comment>
-            
-            <!-- 페이지네이션 -->
-            <div class="con-paging">
-                <Pagination :currentPage="currentPage" :totalPages="totalPages" @update:page="handlePageChange" />
-            </div>
+            <Comment v-for="cmt in post.comments" :key="cmt.cmtId" :cmt="cmt" @deleteComment="handleDeleteComment"/>
 
         </div>
     </div>
@@ -124,6 +116,10 @@ const deleteCommunity = async () => {
     }
 }
 
+// 댓글 삭제 시 호출
+const handleDeleteComment = (cmtId) => {
+  post.value.comments = post.value.comments.filter(cmt => cmt.cmtId !== cmtId);
+};
 
 const router = useRouter(); // router 인스턴스를 가져옵니다.
 const goToMainPage = () => {

@@ -12,13 +12,13 @@
               alt="Comment author"
             />
             <div class="ps-3">
-              <h6 class="mb-0">우산을 쓴 커비</h6>
-              <span class="fs-sm text-muted">2024-09-27</span>
+              <h6 class="mb-0"> {{ cmt.memberName }}</h6>
+              <span class="fs-sm text-muted"> {{ formatDate(cmt.createdAt) }}</span>
             </div>
           </div>
           <p class="pb-2 mb-0 command-text-container">
-            안녕하세요. 댓글입니다요~
-            <button type="button" class="btn btn-outline-danger btn-icon delete-btn-continer" @click="deleteComment" style="justify-content: center;">
+            {{ cmt.content }}
+            <button type="button" class="btn btn-outline-danger btn-icon delete-btn-continer" @click="deleteComment(cmt.cmtId)" style="justify-content: center;">
               <i class="fa fa-trash"></i>
             </button>
           </p>
@@ -30,9 +30,28 @@
   
   <script setup>
   import { onMounted } from 'vue';
+  import { useRoute } from 'vue-router';
+  import { formatDate } from '@/utils/timestamp.js';
+  import axios from 'axios';
+
+  const route = useRoute();
+  const emit = defineEmits(['deleteComment']);
   
-  const deleteComment = () => {
-    console.log('Comment deleted');
+  const deleteComment = async (cmtId) => {
+    if(!confirm('댓글을 삭제하시겠습니까?')) return;
+
+    try {
+      const res = await axios.delete(`/api/community/${route.params.id}/comments`, {
+        params: { cmtId: cmtId }
+      });
+
+      if(res.status === 200) {
+        emit('deleteComment', cmtId);
+      }
+      
+    } catch (err) {
+      alert('댓글 삭제에 실패했습니다 😵‍💫');
+    }
   };
   
   onMounted(() => {
@@ -44,6 +63,13 @@
       }, 1500);
     }
   });
+
+  const props = defineProps({
+    cmt: {
+      type: Object,
+      required: true,
+    },
+  })
   </script>
   
   <style scoped>
