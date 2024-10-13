@@ -1,13 +1,12 @@
 <template>
-    <div class="outer-container py-5">
-        <div class="container py-5 px-5 rounded box-shadow">
+    <div class="outer-container mt-5 py-5">
+        <div class="container mt-3 py-5 px-5 rounded justify-content-center w-50" >
             <!-- 게시글 제목 -->
-             <div class="w-100 mb-5">
-                <h1 class="h2" style="color: var(--grayTitle)">{{ post.title }}</h1>
+             <div class="w-100 mt-2 mb-5 text-center" style="height:25vh;">
+                <h1 class="h1" style="color: var(--grayTitle)">{{ post.title }}</h1>
+                <p class="fs-lg pt-5" style="color: #6b7684">{{ formatDateNoHour(post.createdAt) }}</p>
              </div>
         
-            <hr>
-
             <!-- 게시글 내용 -->
             <div class="content my-5 fs-lg" v-html="post.content"></div>
         </div>
@@ -22,12 +21,9 @@
 .content {
     white-space: pre-line;
 }
-.outer-container {
-    background-color:#F2ECF9;
-}
 .container {
     background-color:white;
-}
+} 
 .con-paging {
     width:100%; height:100px; display:flex; justify-content: center; align-items: end;
 }
@@ -35,6 +31,7 @@
 
 <script setup>
 import { useRouter, useRoute } from 'vue-router'; // Vue Router를 불러옵니다.
+import { formatDateNoHour } from '@/utils/timestamp.js';
 
 import axios from 'axios';
 import { onMounted, ref } from 'vue'; // ref를 vue에서 임포트합니다.

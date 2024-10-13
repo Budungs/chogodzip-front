@@ -15,4 +15,19 @@ const formatDate = (timestamp) => {
     }).replace(',', '');
 };
 
-export { formatDate };
+const formatDateNoHour = (timestamp) => {
+    const date = new Date(timestamp);
+
+    // 한국 시간 (KST)로 변환
+    const offset = 9 * 60;
+    const localDate = new Date(date.getTime() + offset * 60 * 1000);
+
+    return localDate.toLocaleDateString('ko-KR', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+    }).replace(',', '');
+};
+
+
+export { formatDate, formatDateNoHour };
