@@ -32,7 +32,7 @@
             <!-- 게시글 건수, 조회 방식 select-->
             <div class="selector d-flex w-100 justify-content-end gap-2 mt-3">
                 <!-- 게시글 수와 페이지 수 조회 -->
-                <div style="margin-right:auto; margin-top:auto">
+                <div style="margin-right:auto; margin-top:auto; min-width:100px">
                     전체 <span class="text-primary fw-bolder">{{ filteredList.length }}</span> 건 <span class="text-primary fw-bolder">{{ currentPage }}</span>/ {{ totalPages }} 페이지
                 </div>
 
