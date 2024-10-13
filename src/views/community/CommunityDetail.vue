@@ -9,11 +9,14 @@
         
             <!-- 게시글 작성자 및 작성 시간 -->
             <div class="d-flex justify-content-between gap-5">
-                <p style="color:var(--gray1)">
+                <p style="color:var(--gray1)" class="w-25">
                     <i class="fa-solid fa-user me-2"></i>
                     {{ post.nickname }}
                 </p>
-                <p style="color:var(--gray1)">{{ formatDate(post.createdAt) }}</p>
+                <div class="w-25 d-flex justify-content-end gap-3">
+                    <p style="color:var(--gray1)">조회수: {{ post.views }}</p>
+                    <p style="color:var(--gray1)">{{ formatDate(post.createdAt) }}</p>
+                </div>
             </div>
         
             <hr>
