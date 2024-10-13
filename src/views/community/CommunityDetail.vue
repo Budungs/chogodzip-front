@@ -126,6 +126,10 @@ const postComment = async (communityId) => {
       alert('댓글을 작성하려면 로그인해주세요.'); return;
     }
 
+    if(cmtContent.value === null || cmtContent.value.trim() === '') {
+        alert('댓글 내용을 입력해주세요.'); return;
+    }
+
     const comment = {
         communityId: communityId,
         memberId: id,
