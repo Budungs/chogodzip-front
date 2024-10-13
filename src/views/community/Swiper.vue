@@ -17,7 +17,7 @@
         <div class="card position-relative">
           <img :src="item.thumbnail" class="card" style="width:95vw; height:30vh;"><span class="img-gradient-overlay rounded"></span>
           <div class="rounded overlay-text position-absolute top-0 start-0 end-0 bottom-0 d-flex justify-content-start align-items-end text-white">
-            <h5 class="text-center h4 w-100" style="color:white; z-index:200;  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ item.title }}</h5>
+            <h5 class="text-center h4 w-100 px-4" style="color:white; z-index:200;  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ item.title }}</h5>
           </div>
         </div>
       </router-link>
