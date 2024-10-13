@@ -2,7 +2,7 @@
     <div class="container mt-5">
         <h3 class="mb-3" style="color:var(--grayTitle)">커뮤니티</h3>
         <div class="dictionary-container card card-body border-0 shadow-sm p-5 mt-4 pt-5">
-            <form class="form-group">
+            <form class="form-group"  @submit.prevent="filterList">
                 <!-- 분류 Dropdown -->
                 <div class="dropdown w-sm-25 border-end-md" data-bs-toggle="select">
                     <button class="btn btn-link" type="button" data-bs-toggle="dropdown">
@@ -24,7 +24,8 @@
                     <span class="input-group-text">
                         <i class="fas fa-search"></i>
                     </span>
-                    <input type="text" class="form-control" placeholder="공고 제목을 입력하세요" v-model="searchTitle">
+                    <input type="text" class="form-control" placeholder="공고 제목을 입력하세요" v-model="searchTitle"
+                    @keyup.enter="filterList">
                 </div>
                 <button type="button" class="btn btn-translucent-primary w-25" @click="filterList">검색</button>
             </form>
@@ -32,7 +33,7 @@
             <!-- 게시글 건수, 조회 방식 select-->
             <div class="selector d-flex w-100 justify-content-end gap-2 mt-3">
                 <!-- 게시글 수와 페이지 수 조회 -->
-                <div style="margin-right:auto; margin-top:auto">
+                <div style="margin-right:auto; margin-top:auto; min-width:100px">
                     전체 <span class="text-primary fw-bolder">{{ filteredList.length }}</span> 건 <span class="text-primary fw-bolder">{{ currentPage }}</span>/ {{ totalPages }} 페이지
                 </div>
 
@@ -98,8 +99,8 @@
                 </table>
             </div>
             
-            <!-- 글쓰기 버튼 -->
-            <div class="w-100 d-flex">
+            <!-- 글쓰기 버튼: 로그인했을 경우에만 노출 -->
+            <div v-if="authStore.isLogin" class="w-100 d-flex">
                 <button type="button" class="btn btn-outline-primary ms-auto" style="width:120px" @click="goToWritePage">글쓰기</button>
             </div>
             
@@ -116,8 +117,10 @@ import axios from 'axios';
 import { ref, onMounted, getTransitionRawChildren } from 'vue';
 import ArticleEach from './ArticleEach.vue';
 import Pagination from '@/common/components/Pagination.vue';
+import { useAuthStore } from '@/stores/auth';
 import { getTagName, tagMapping } from '@/modules/components/community/tags.js';
 
+const authStore = useAuthStore();
 
 const selectedOwner = ref('ALL'); // 드롭다운에서 선택한 값을 저장하는 상태
 const searchTitle = ref(''); //검색어
