@@ -42,11 +42,11 @@
             <div class="row mt-2">
                 <div class="col-11">
                     <label class="form-label">댓글</label>
-                    <input type="text" class="form-control" placeholder="내용을 입력하세요.">
+                    <input type="text" class="form-control" placeholder="내용을 입력하세요." v-model="cmtContent">
                 </div>
                 <div class="col-1">
                     <label class="form-label">&nbsp;</label>
-                    <button class="form-control btn btn-primary">작성</button>
+                    <button class="form-control btn btn-primary" @click="postComment(post.communityId)">작성</button>
                 </div>
             </div>
         
@@ -103,6 +103,8 @@ const fetchDetail = async () => {
     } catch (err) {
         console.error('>> 상세글 조회 실패 (T>T) ', err.message);
     }
+
+    console.log('Logged-in user ID:', id);
 }
 onMounted(fetchDetail);
 
@@ -113,6 +115,27 @@ const deleteCommunity = async () => {
 
     } catch (err) {
         console.error('>> 커뮤니티 삭제 실패 (T>T) ', err.message);
+    }
+}
+
+//댓글 작성
+const cmtContent = ref(null);
+const postComment = async (communityId) => {
+    const comment = {
+        communityId: communityId,
+        memberId: id,
+        content: cmtContent.value,
+    }
+
+    try {
+        const res = await axios.post(`/api/community/${route.params.id}/comments`, comment);
+
+        if(res.status === 200) {
+            post.value.comments.push(res.data);
+            cmtContent.value = null; //댓글 작성 후 입력창 초기화
+        }
+    } catch (err) {
+        console.error('>> 댓글 작성 실패 (T>T) ', err.message);
     }
 }
 
