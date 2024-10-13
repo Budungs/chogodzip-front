@@ -60,51 +60,209 @@
 </template>
 
 <script>
+import { ref, onMounted, computed, reactive } from 'vue';
+import { useAuthStore } from '@/stores/auth';
+import axios from "axios";
+
+
 export default {
-    data() {
-        return {
-            userMessage: '',
-            messages: [],
-            users: [
-                { name: '하츄핑', image: 'https://i.namu.wiki/i/U6e2CQUpk8s-HxMQNWJPF_vfzlqLAsuRCeI68CHOk8GvuagcVU0TjhuZ7o0WwpQEG7hk6Ck207c1EpIgb3E3qA.webp' },
-                { name: '티니핑', image: 'https://i.namu.wiki/i/g_KWbWLZvwPIarNr2apToYiutsBO8ousgVj3h-McRHmNr-A-6WNS-HDYkZLt6-dEut9KKiJeZSPyUM57FlmLsg.webp' },
-                { name: '해핑', image: 'https://i.namu.wiki/i/Wz_QYItt6IMcprBwNF9UARK9cN4tnEx3yJKxHlRruY77FnfUpul6NncqkY9fmQFBYaRBaoKs0zA2NOGdP035lQ.webp' },
-                { name: '나나핑', image: 'https://blog.kakaocdn.net/dn/d8A1qW/btsI5b5zFOZ/YIDWrWo9m7dX7osJEkfRJk/img.png' },
-            ],
-            botResponses: [
-                '채팅 테스트 중입니다 ...',
-                '채팅 테스트 중입니다 ...',
-                '채팅 테스트 중입니다 ...',
-                '채팅 테스트 중입니다 ...'
-            ],
-            botIndex: 0
-        };
+  data() {
+    return {
+      roomId: 1,
+      senderId: null,
+      receiverId: 2,
+      userMessage: "",
+      selectedUserName: "",
+      selectedUserImage: "",
+      messages: [],
+      users: reactive([
+        {
+          name: "하츄핑",
+          userId: 2,
+          image: "https://i.namu.wiki/i/U6e2CQUpk8s-HxMQNWJPF_vfzlqLAsuRCeI68CHOk8GvuagcVU0TjhuZ7o0WwpQEG7hk6Ck207c1EpIgb3E3qA.webp",
+          unreadCount: 0,
+        },
+      ]),
+    };
+  },
+  computed: {
+    islogin() {
+      const auth = useAuthStore();
+      return auth.isLogin;
     },
-    methods: {
-        addMessage() {
-            if (this.userMessage.trim() === '') return;
-
-            this.messages.push({ text: this.userMessage, isUser: true });
-            this.userMessage = '';
-
-            this.addBotMessage();
-        },
-        addBotMessage() {
-            setTimeout(() => {
-                if (this.botIndex >= this.botResponses.length) this.botIndex = 0;
-
-                this.messages.push({ text: this.botResponses[this.botIndex], isUser: false });
-                this.botIndex++;
-                this.scrollToBottom();
-            }, 1000);
-        },
-        scrollToBottom() {
-            const messageContainer = this.$refs.messageContainer;
-            messageContainer.scrollTop = messageContainer.scrollHeight;
-        }
+    loggedInUserId() {
+      const auth = useAuthStore();
+      return auth.id;
     }
-};
+  },
+  methods: {
+    async fetchLoggedInUser() {
+      try {
+        const response = await axios.get(`http://localhost:8080/api/member/${this.loggedInUserId}`);
+        console.log("Response data:", response.data); // 응답 데이터 확인
 
+        this.senderId = response.data.mno; // 사용자 ID 설정
+        this.selectedUserName = response.data.name;
+        this.selectedUserImage = response.data.avatar || 'default-avatar-url';
+      } catch (error) {
+        console.error("Failed to fetch logged-in user:", error);
+      }
+    },
+
+    async sendMessage() {
+      if (!this.userMessage.trim()) return; // 빈 메시지 방지
+      if (!this.chatRoomId) {
+        console.error(
+          "chatRoomId가 설정되지 않았습니다. 메시지를 전송할 수 없습니다."
+        );
+        return;
+      }
+      // 메시지 추가
+      this.messages.push({ text: this.userMessage, isUser: true });
+
+      try {
+        // 메시지 전송 API 호출
+        await axios.post("http://localhost:8080/api/chat/message", {
+          chatroomId: this.chatRoomId,
+          senderId: this.senderId,
+          content: this.userMessage,
+        });
+
+        this.userMessage = ""; // 입력 필드 초기화
+        this.fetchMessages(); // 메시지 목록 갱신
+      } catch (error) {
+        console.error("Failed to send message:", error);
+      }
+
+      this.scrollToBottom();
+    },
+    async fetchUnreadCounts(chatRoomId = this.roomId) {
+      try {
+        for (let i = 0; i < this.users.length; i++) {
+          const response = await axios.get(
+            "http://localhost:8080/api/chat/messages/unread-count",
+            {
+              params: {
+                chatroomId: chatRoomId,
+                senderId: this.senderId,
+                receiverId: this.users[i].userId
+              }
+            }
+          );
+          console.log("Chatroom ID:", chatRoomId);
+          console.log("Sender ID:", this.senderId);
+          console.log("Receiver ID:", this.users[i].userId);
+          const unreadCount = response.data;
+          console.log(`User ${this.users[i].userId} unread count: ${unreadCount}`);
+          this.users[i].unreadCount = unreadCount;
+        }
+      } catch (error) {
+        console.error("Failed to fetch unread message counts:", error);
+      }
+    },
+
+    async fetchMessages() {
+      if (!this.chatRoomId) return;
+
+      try {
+        // 메시지 조회 API 호출
+        const response = await axios.get(
+          "http://localhost:8080/api/chat/messages",
+          {
+            params: { chatRoomId: this.chatRoomId },
+
+          }
+        );
+
+        // 메시지 목록 갱신
+        this.messages = response.data.map((message) => ({
+          text: message.content,
+          isUser: message.senderId === this.senderId, // 발신자인지 확인
+          timestamp: new Date(message.sendTime).toLocaleString(),
+        }));
+        this.markMessagesAsRead();
+      } catch (error) {
+        console.error("Failed to fetch messages:", error);
+      }
+      this.$nextTick(() => {
+        this.scrollToBottom();
+      });
+    },
+    async markMessagesAsRead() {
+      if (!this.chatRoomId || !this.senderId) return;
+
+      try {
+        // 읽음 상태 업데이트 API 호출
+        await axios.post("http://localhost:8080/api/chat/messages/mark-read", null, {
+          params: { chatRoomId: this.chatRoomId, senderId: this.senderId }
+        });
+        console.log("Messages marked as read.");
+
+      } catch (error) {
+        console.error("Failed to mark messages as read:", error);
+      }
+    },
+    async deleteChatRoom() {
+      try {
+        await axios.delete(
+          `http://localhost:8080/api/chat/room/${this.chatRoomId}`
+        );
+        this.messages = []; // 삭제 후 메시지 목록 초기화
+        alert("채팅방이 삭제되었습니다.");
+      } catch (error) {
+        console.error("Failed to delete chat room:", error);
+      }
+    },
+    async selectUser(user) {
+      await this.fetchLoggedInUser();
+
+      this.receiverId = user.userId;
+      this.selectedUserName = user.name;
+      this.selectedUserImage = user.image;
+      try {
+        // 채팅방 ID를 확인하고 없는 경우 생성 요청을 보냅니다.
+        const response = await axios.get(
+          "http://localhost:8080/api/chat/room",
+          {
+            params: {
+              roomId: this.roomId, // 해당 매물 ID 
+              senderId: this.senderId,
+              receiverId: user.userId, // 상대방 사용자 ID
+            },
+          }
+        );
+
+        this.chatRoomId = response.data.chatroomId;
+        console.log("채팅방 ID:", response.data.chatroomId);
+        console.log(this.chatRoomId, this.senderId, this.receiverId);
+
+
+        if (this.chatRoomId) {
+          await this.fetchMessages();
+          await this.fetchUnreadCounts(this.chatRoomId);
+        } else {
+          console.error("채팅방 ID가 설정되지 않았습니다.");
+        }
+      } catch (error) {
+        console.error("Failed to fetch or create chat room:", error);
+      }
+      this.scrollToBottom();
+    },
+    scrollToBottom() {
+      const messageContainer = this.$refs.messageContainer;
+      messageContainer.scrollTop = messageContainer.scrollHeight;
+    },
+  },
+  async mounted() {
+    await this.fetchLoggedInUser();
+    await this.fetchMessages().then(() => {
+      this.$nextTick(() => {
+        this.scrollToBottom();
+      });
+    });
+    this.fetchUnreadCounts(this.roomId);
+  }
+};
 </script>
 
 <style scoped>
