@@ -51,7 +51,9 @@
             </div>
         
             <!-- 댓글 목록 -->
-            <Comment v-for="cmt in post.comments" :key="cmt.cmtId" :cmt="cmt" @deleteComment="handleDeleteComment"/>
+            <Comment v-for="cmt in post.comments" :key="cmt.cmtId" :cmt="cmt" 
+                @deleteComment="handleDeleteComment"
+                @updateComment="handleUpdateComment" />
 
         </div>
     </div>
@@ -146,6 +148,14 @@ const postComment = async (communityId) => {
 // 댓글 삭제 시 호출
 const handleDeleteComment = (cmtId) => {
   post.value.comments = post.value.comments.filter(cmt => cmt.cmtId !== cmtId);
+};
+
+// 댓글 수정 시 호출
+const handleUpdateComment = (updatedComment) => {
+  const index = post.value.comments.findIndex(cmt => cmt.cmtId === updatedComment.cmtId);
+  if (index !== -1) {
+    post.value.comments[index] = updatedComment;  // 수정된 댓글로 교체
+  }
 };
 
 const router = useRouter(); // router 인스턴스를 가져옵니다.
