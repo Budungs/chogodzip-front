@@ -19,7 +19,9 @@
           </div>
 
           <p> {{ cmt.content }} </p>
-          <div class="w-100 d-flex justify-content-end gap-2" >
+          <div 
+            v-if="isLogin && cmt.memberId === id"
+            class="w-100 d-flex justify-content-end gap-2" >
             <button class="btn btn-secondary btn-icon">
               <i class="fa-regular fa-pen-to-square"></i>
             </button>
@@ -37,9 +39,11 @@
   import { onMounted } from 'vue';
   import { useRoute } from 'vue-router';
   import { formatDate } from '@/utils/timestamp.js';
+  import { useAuthStore } from '@/stores/auth';
   import axios from 'axios';
 
   const route = useRoute();
+  const { isLogin, id } = useAuthStore();
   const emit = defineEmits(['deleteComment']);
   
   const deleteComment = async (cmtId) => {

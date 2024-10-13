@@ -86,7 +86,7 @@ import { formatDate } from '@/utils/timestamp.js';
 import { getTagName, matchTagStyle } from '@/modules/components/community/tags.js';
 
 import { useAuthStore } from '@/stores/auth';
-const { id } = useAuthStore(); //현재 로그인한 아이디
+const { isLogin, id } = useAuthStore(); //현재 로그인한 아이디
 
 //상세글 데이터 조회
 const route = useRoute();
@@ -120,6 +120,10 @@ const deleteCommunity = async () => {
 //댓글 작성
 const cmtContent = ref(null);
 const postComment = async (communityId) => {
+    if(!isLogin) {
+      alert('댓글을 작성하려면 로그인해주세요.'); return;
+    }
+
     const comment = {
         communityId: communityId,
         memberId: id,
