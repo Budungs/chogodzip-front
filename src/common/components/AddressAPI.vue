@@ -15,6 +15,8 @@ const store = usePostRoomStore();
 
 const extraAddress = ref('');
 
+const emit = defineEmits(['update-address']);  // emit 선언
+
 function execDaumPostcode() {
   new window.daum.Postcode({
     oncomplete: function (data) {
@@ -42,6 +44,9 @@ function execDaumPostcode() {
       store.basicInfo.addr.postcode = data.zonecode;
       store.basicInfo.addr.address = addr;
       extraAddress.value = extraAddr;
+
+      // emit을 통해 부모 컴포넌트로 주소 정보 전달
+      emit('update-address', store.basicInfo.addr.address + " " + (store.basicInfo.addr.detailAddress || ''));
 
       getCoordinates(addr); //위도, 경도
 
