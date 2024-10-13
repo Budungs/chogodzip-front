@@ -10,6 +10,13 @@ export const tagMapping = {
     'LTQS': '분양/청약 질문'
 };
 
+//태그별 뱃지 스타일
+export const matchTagStyle = (tag) => {
+    if(tag === 'REPI' || tag === 'REHT') return 'badge bg-faded-danger'
+    if(tag === 'LNQS' || tag === 'LTQS') return 'badge bg-faded-info'
+    if(tag === 'RERV' || tag === 'CTRV' || tag === 'ITRV') return 'badge bg-faded-success'
+};
+
 export const getTagName = (tag) => {
     return tagMapping[tag] || tag;
 };

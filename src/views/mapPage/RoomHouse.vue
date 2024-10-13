@@ -54,12 +54,20 @@
                   <h5>방 종류</h5>
                   <div class="checkbox-group vertical">
                     <label>
-                      <input type="checkbox" value="1room" v-model="filters.floor" />
-                      &nbsp 원룸/투룸
+                      <input type="checkbox" value="open" v-model="filters.floor" />
+                      &nbsp 원룸(오픈형)
                     </label>
                     <label>
-                      <input type="checkbox" value="opistel" v-model="filters.floor" />
-                      &nbsp 오피스텔
+                      <input type="checkbox" value="another" v-model="filters.floor" />
+                      &nbsp 원룸(분리형)
+                    </label>
+                    <label>
+                      <input type="checkbox" value="2room" v-model="filters.floor" />
+                      &nbsp 투룸
+                    </label>
+                    <label>
+                      <input type="checkbox" value="3room" v-model="filters.floor" />
+                      &nbsp 쓰리룸
                     </label>
 
                   </div>
@@ -68,24 +76,21 @@
 
               <div class="row">
                 <div class="filter-box">
-                  <h5>성별</h5>
+                  <h5>층수</h5>
                   <div class="checkbox-group vertical">
                     <label>
                       <input type="checkbox" value="구분없음" v-model="filters.gender" />
-                      &nbsp 구분없음
+                      &nbsp 반지하
                     </label>
                     <label>
                       <input type="checkbox" value="남녀분리" v-model="filters.gender" />
-                      &nbsp 남녀분리
+                      &nbsp 1층
                     </label>
                     <label>
                       <input type="checkbox" value="여성전용" v-model="filters.gender" />
-                      &nbsp 여성전용
+                      &nbsp 2층이상
                     </label>
-                    <label>
-                      <input type="checkbox" value="남성전용" v-model="filters.gender" />
-                      &nbsp 남성전용
-                    </label>
+                    
                   </div>
                 </div>
                 <div class="filter-box">
@@ -127,18 +132,19 @@
           <div class="sort-dropdown">
             <select v-model="selectedSort" @change="sortProperties">
               <option value="distance">거리순</option>
-              <option value="highPrice">높은가격순</option>
-              <option value="lowPrice">낮은가격순</option>
-              <option value="likes">좋아요순</option>
+              <option value="highPrice">높은월세</option>
+              <option value="lowPrice">낮은월세</option>
+              <option value="highDeposit">높은보증금</option>
+              <option value="lowDeposit">낮은보증금</option>
             </select>
           </div>
         </div>
 
-        <div v-for="(property, index) in filteredProperties" :key="property.roomId" class="card"
-          @mouseover="logRoomId(property.roomId, index)">
+        <div v-for="(property, index) in sortedProperties" :key="property.roomId" class="card"
+          @mouseover="logRoomId(property.room.roomId, index)">
           <!-- 이미지와 판매완료 오버레이 -->
           <div class="image-container">
-            <img :src="property.thumbnail || 'https://via.placeholder.com/150'" class="card-img-top" alt="Property Image">
+            <img :src="property.room.thumbnail || 'https://via.placeholder.com/150'" class="card-img-top" alt="Property Image">
 
             <!-- 판매완료 오버레이 (판매 완료일 때 표시) -->
             <div v-if="property.isSoldOut == '1'" class="sold-overlay">
@@ -154,10 +160,10 @@
           </div>
 
           <div class="card-body">
-            <h5 class="card-title">{{ property.title }}</h5>
-            <p class="card-text fs-sm">월세 {{ property.depositMax }} 만원 | 전세 {{ property.priceMax }} 만원</p>
+            <h5 class="card-title">{{ property.room.address }}</h5>
+            <p class="card-text fs-sm">보증금 {{ property.depositMax }} 만원 | 월세 {{ property.priceMax }} 만원</p>
 
-            <router-link :to="`/houses/gosiwons/${property.roomId}`" class="btn btn-sm btn-primary">상세보기</router-link>
+            <router-link :to="`/houses/gosiwons/${property.room.roomId}`" class="btn btn-sm btn-primary">상세보기</router-link>
 
             <!-- 관심매물 아이콘 -->
             <div class="interest-icon mt-2">
@@ -204,7 +210,7 @@
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue';
 import api from '@/api/mapApi'; // 고시원 데이터를 가져올 api 파일
-import markerImageSrc from '@/assets/img/room/house2.png'; // 마커 이미지
+import markerImageSrc from '@/assets/img/room/house1.png'; // 마커 이미지
 import searchApi from '@/api/searchApi';
 import interestApi from '@/api/interestApi';
 import { useAuthStore } from '@/stores/auth';
@@ -330,14 +336,14 @@ const heartIcons = ref([]);
 // 관심 매물 데이터를 바탕으로 하트 아이콘 초기화
 const updateHeartIcons = () => {
   heartIcons.value = propertiesData.value.map(property => {
-    const isFavorite = interestData.value.some(interest => interest.roomId === property.roomId);
+    const isFavorite = interestData.value.some(interest => interest.roomId === property.room.roomId);
     return isFavorite ? 'fas fa-heart' : 'far fa-heart'; // 색칠된 아이콘과 흰색 아이콘
   });
 };
 const toggleHeartIcon = async (index) => {
   console.log('Selected Room ID: ', propertiesData.value[index].roomId);
   try {
-    const roomId = propertiesData.value[index].roomId;
+    const roomId = propertiesData.value[index].room.roomId;
     const userId = id.value; // 로그인한 사용자의 ID
     
     if (islogin.value && userId) {
@@ -406,18 +412,20 @@ const applyFilters = () => {
     // 대출 필터 적용
     const matchesLoan = filters.loan.length === 0 || property.canLoan;
 
-    const matchesFloor = filters.floor.length === 0 || (
-      (filters.floor.includes('under') && property.type === 0) ||
-      (filters.floor.includes('1floor') && property.type === 1)
+    // 방 종류 필터 적용
+    const matchesRoomType = filters.floor.length === 0 || (
+      (filters.floor.includes('open') && property.roomType === '원룸(오픈형)') ||
+      (filters.floor.includes('another') && property.roomType === '원룸(분리형)') ||
+      (filters.floor.includes('2room') && property.roomType === '투룸') ||
+      (filters.floor.includes('3room') && property.roomType === '쓰리룸 이상')
     );
 
 
-    // 성별 필터 적용
+    // 층수 필터 적용
     const matchesGender = filters.gender.length === 0 || (
-      (filters.gender.includes('구분없음') && property.genderLimit === "0") ||
-      (filters.gender.includes('남녀분리') && property.genderLimit === "1") ||
-      (filters.gender.includes('여성전용') && property.genderLimit === "2") ||
-      (filters.gender.includes('남성전용') && property.genderLimit === "3") 
+      (filters.gender.includes('구분없음') && property.floor < 0) || // 반지하
+      (filters.gender.includes('남녀분리') && property.floor == 1) || // 1층
+      (filters.gender.includes('여성전용') && property.floor >= 2)   // 2층 이상
     );
 
     // 보증금 필터 적용
@@ -427,7 +435,45 @@ const applyFilters = () => {
     const matchesRent = property.priceMin <= (filters.rent / 10000);
 
     // 모든 필터 조건이 일치하는 매물만 반환
-    return matchesFloor && matchesGender && matchesDeposit && matchesRent && matchesLoan;
+    return matchesRoomType && matchesGender && matchesDeposit && matchesRent && matchesLoan;
+  });
+  updateMarkers(filteredProperties.value);
+};
+
+const updateMarkers = (filteredData) => {
+  // 기존 마커 모두 초기화
+  markers.value.forEach((marker) => marker.setMap(null));
+  markers.value = [];
+
+  // 필터링된 매물에 해당하는 마커 생성
+  filteredData.forEach((property) => {
+    const markerPosition = new kakao.maps.LatLng(property.room.roomLat, property.room.roomLong);
+    const marker = new kakao.maps.Marker({
+      position: markerPosition,
+      title: property.roomName,
+      image: new kakao.maps.MarkerImage(markerImageSrc, new kakao.maps.Size(30, 35)),
+    });
+
+    // 마커 지도에 추가
+    marker.setMap(map.value);
+    
+    // 마커 정보창
+    const infoWindow = new kakao.maps.InfoWindow({
+      content: `<div style="padding:5px;font-size:12px;">${property.room.address}<br/>월세: ${property.priceMax} 만원</div>`,
+    });
+
+    // 마커 클릭 이벤트 - 정보창 토글
+    let isInfoWindowVisible = false;
+    kakao.maps.event.addListener(marker, 'click', () => {
+      if (isInfoWindowVisible) {
+        infoWindow.close();
+      } else {
+        infoWindow.open(map.value, marker);
+      }
+      isInfoWindowVisible = !isInfoWindowVisible;
+    });
+
+    markers.value.push(marker);
   });
 };
 
@@ -435,7 +481,6 @@ const applyFilters = () => {
 const submitFilters = () => {
   applyFilters(); // 필터 적용
 };
-
 
 // 정렬 로직
 const selectedSort = ref('distance');
@@ -449,8 +494,10 @@ const sortedProperties = computed(() => {
       return sorted.sort((a, b) => b.priceMax - a.priceMax);
     case 'lowPrice':
       return sorted.sort((a, b) => a.priceMin - b.priceMin);
-    case 'likes':
-      return sorted.sort((a, b) => b.likes - a.likes);
+    case 'highDeposit':
+      return sorted.sort((a, b) => b.depositMax - a.depositMax);
+    case 'lowDeposit':
+      return sorted.sort((a, b) => a.depositMin - b.depositMin);
     default:
       return sorted;
   }
@@ -460,10 +507,10 @@ const sortedProperties = computed(() => {
 const map = ref(null);
 const markers = ref([]);
 
-const fetchGosiwonData = async (lat, lng) => {
+const fetchJachiData = async (lat, lng) => {
   try {
     const params = { lat, lng };
-    const data = await api.getGosiwonList({ params });
+    const data = await api.getJachiList({ params });
 
     propertiesData.value = data; // 받아온 데이터를 상태에 저장
     heartIcons.value = Array(data.length).fill('far fa-heart'); // 하트 아이콘 초기화
@@ -477,7 +524,7 @@ const fetchGosiwonData = async (lat, lng) => {
 
     // 새 마커 생성
     markers.value = data.map((property) => {
-      const markerPosition = new kakao.maps.LatLng(property.roomLat, property.roomLong);
+      const markerPosition = new kakao.maps.LatLng(property.room.roomLat, property.room.roomLong);
       const marker = new kakao.maps.Marker({
         position: markerPosition,
         title: property.roomName,
@@ -486,7 +533,7 @@ const fetchGosiwonData = async (lat, lng) => {
       marker.setMap(map.value);
 
       const infoWindow = new kakao.maps.InfoWindow({
-        content: `<div style="padding:5px;font-size:12px;">${property.title}<br/>월세: ${property.priceMax} 만원</div>`,
+        content: `<div style="padding:5px;font-size:12px;">${property.room.address}<br/>월세: ${property.priceMax} 만원</div>`,
       });
 
       // 마커 클릭 이벤트 - 상태를 내부에서 관리
@@ -510,23 +557,26 @@ const fetchGosiwonData = async (lat, lng) => {
   }
 };
 
+
 // 컴포넌트 마운트 후 지도 초기화 및 고시원 리스트 불러오기
 onMounted(async () => {
   const container = document.getElementById('map');
   const options = {
-    center: new kakao.maps.LatLng(37.5665, 126.9780), // 초기 지도 중심 좌표 (서울 기준)
+    center: new kakao.maps.LatLng(37.4784, 126.9514), // 초기 지도 중심 좌표 (서울 기준)
     level: 5, // 지도 확대 레벨
   };
 
+  
   map.value = new kakao.maps.Map(container, options);
 
+
   const center = map.value.getCenter();
-  await fetchGosiwonData(center.getLat(), center.getLng());
+  await fetchJachiData(center.getLat(), center.getLng());
 
   kakao.maps.event.addListener(map.value, 'dragend', async () => {
     console.log('지도 드래그가 끝났습니다.');
     const center = map.value.getCenter();
-    await fetchGosiwonData(center.getLat(), center.getLng()); // 데이터 가져오기
+    await fetchJachiData(center.getLat(), center.getLng()); // 데이터 가져오기
   });
 
   console.log('ididdid',id.value);
