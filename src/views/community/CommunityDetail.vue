@@ -99,12 +99,12 @@ const fetchDetail = async () => {
 
         if(res.status === 200) {
             post.value = res.data;
+
+            if(post.value.comments === null) post.value.comments = [];
         }   
     } catch (err) {
         console.error('>> 상세글 조회 실패 (T>T) ', err.message);
     }
-
-    console.log('Logged-in user ID:', id);
 }
 onMounted(fetchDetail);
 
@@ -132,6 +132,7 @@ const postComment = async (communityId) => {
 
         if(res.status === 200) {
             post.value.comments.push(res.data);
+
             cmtContent.value = null; //댓글 작성 후 입력창 초기화
         }
     } catch (err) {
@@ -156,13 +157,4 @@ const goToModifyPage = () => {
     
     router.push(`/community/${route.params.id}/modify`);
 }
-
-// 페이지네이션 정보
-const currentPage = ref(1); // 현재 게시글 페이지
-const totalPages = 10; // 전체 게시글 페이지 수
-
-// 페이지 변경 처리
-const handlePageChange = (page) => {
-    currentPage.value = page;
-};
 </script>

@@ -122,6 +122,7 @@ const submitCommunity = async () => {
     //성공 후 상세 페이지로 이동
     if(res.status === 200) {
       router.push(`/community/${res.data}`);
+      removeBindingContents(); //성공 후 바인딩된 데이터 제거
     } 
   } catch (err) {
     console.error('>> 작성 실패 (T o T) 에러:', err.message);
@@ -200,6 +201,13 @@ const bindOriginalContents = () => {
   selectedType.value = localStorage.getItem('tag');
   pics.value = localStorage.getItem('pics');
   $('#summernote').summernote('code', localStorage.getItem('content'));
+}
+
+const removeBindingContents = () => {
+  localStorage.removeItem('title');
+  localStorage.removeItem('tag');
+  localStorage.removeItem('pics');
+  localStorage.removeItem('content');
 }
 
 const goBack = () => {
