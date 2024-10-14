@@ -204,6 +204,7 @@
 
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
 import api from '@/api/mapApi'; // 고시원 데이터를 가져올 api 파일
 import markerImageSrc from '@/assets/img/room/house1.png'; // 마커 이미지
 import searchApi from '@/api/searchApi';
@@ -212,6 +213,7 @@ import { useAuthStore } from '@/stores/auth';
 
 
 const auth = useAuthStore();
+
 
 let islogin = computed(() => auth.isLogin); // islogin 을 직접 바꿀 수는 없음. (computed 속성) - 값을 바꾸려면 auth.isLogin 값을 바꿔야 함.
 console.log('islogin : ' + islogin.value);
@@ -390,11 +392,11 @@ const filters = reactive({
 
 // 필터 초기화
 const resetFilters = () => {
-  tempFilters.gender = [];
-  tempFilters.loan = [];
-  tempFilters.floor = [];
-  tempFilters.deposit = 5000000;
-  tempFilters.rent = 1000000;
+  filters.gender = [];
+  filters.loan = [];
+  filters.floor = [];
+  filters.deposit = 5000000;
+  filters.rent = 1000000;
 };
 
 const filteredProperties = ref([]); // 변경: computed에서 ref로 변경
@@ -527,8 +529,14 @@ const fetchGosiwonData = async (lat, lng) => {
       });
       marker.setMap(map.value);
 
-      const infoWindow = new kakao.maps.InfoWindow({
-        content: `<div style="padding:5px;font-size:12px;">${property.title}<br/>월세: ${property.priceMax} 만원</div>`,
+     const infoWindow = new kakao.maps.InfoWindow({
+        content: `
+          <div style="padding:5px;font-size:12px;">
+            <a href="/houses/gosiwons/${property.roomId}" style="text-decoration:none; color:blue;">
+              ${property.title}<br/>월세: ${property.priceMax} 만원
+            </a>
+          </div>
+        `,
       });
 
       // 마커 클릭 이벤트 - 상태를 내부에서 관리
@@ -542,6 +550,10 @@ const fetchGosiwonData = async (lat, lng) => {
         // 상태를 반대로 변경
         isInfoWindowVisible = !isInfoWindowVisible;
       });
+      // 마커 더블클릭 이벤트 - 매물 상세 페이지로 이동
+      kakao.maps.event.addListener(marker, 'dblclick', () => {
+        router.push(`/houses/gosiwons/${property.roomId}`);
+      });
       return marker;
     });
     updateHeartIcons();
@@ -551,14 +563,19 @@ const fetchGosiwonData = async (lat, lng) => {
     console.error('고시원 데이터를 가져오는 중 오류 발생:', error);
   }
 };
-
+const route = useRoute();
 // 컴포넌트 마운트 후 지도 초기화 및 고시원 리스트 불러오기
 onMounted(async () => {
+  const { query } = route.query;
+  if (query) {
+    searchQuery.value = query; // 검색어 세팅
+  }
   const container = document.getElementById('map');
   const options = {
     center: new kakao.maps.LatLng(37.5665, 126.9780), // 초기 지도 중심 좌표 (서울 기준)
     level: 5, // 지도 확대 레벨
   };
+
 
   map.value = new kakao.maps.Map(container, options);
 

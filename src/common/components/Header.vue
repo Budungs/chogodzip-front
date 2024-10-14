@@ -36,7 +36,9 @@
                     <a class="dropdown-item" href="/mypage/postReviews"><i class="fas fa-pencil-alt opacity-60 me-2"></i>작성 리뷰 목록</a>
                     <a class="dropdown-item" href="/mypage/postRooms"><i class="fas fa-pencil-alt opacity-60 me-2"></i>등록한 매물 목록</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#"><i class="far fa-comments opacity-60 me-2"/>채팅방 목록</a>
+                    <router-link class="dropdown-item" :to="'/chat'">
+                        <i class="far fa-comments opacity-60 me-2"></i>채팅방 목록
+                      </router-link>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="/rooms">방 내놓기</a>
                     <a class="dropdown-item" href="#" @click="signOut">로그아웃</a>
