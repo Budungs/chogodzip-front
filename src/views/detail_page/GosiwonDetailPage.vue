@@ -1,5 +1,4 @@
 <template>
-<<<<<<< HEAD
   <div class="container">
     <section class="container" style="margin-top: 10px">
       <nav aria-label="breadcrumb" style="margin-bottom: 1rem">
@@ -17,37 +16,15 @@
               style="height: 30rem; object-fit: cover"
             />
           </a>
-=======
-    <div class="container">
-        <section class="container" style="margin-top: 10px;">
-            <nav aria-label="breadcrumb" style="margin-bottom:1rem;">
-                <ol class="breadcrumb" style="margin:0px;">
-                    <li class="breadcrumb-item active">{{ houseTypeLabel }}</li>
-                </ol>
-            </nav>
-            <div class="row">
-                <div class="col-md-7">
-                    <a class="gallery-item rounded" :href="house.room.thumbnail">
-                        <img :src="house.room.thumbnail" alt="타이틀 이미지" class="img-fluid rounded"
-                            style="height: 30rem; object-fit: cover;">
-                    </a>
-                </div>
-                <DetailCard :cardData="house" :nearestSubway="nearestSubway" :walkTime="walkTime" :nameStatus="nameStatus"  :favoriteCount="favoriteCount" :isFavorited="isFavorited" @toggleFavorite="handleToggleFavorite"/>
-            </div>
-        </section>
-    </div>
-    <div class="gray-container">
-        <div class="container">
-            <DetailInfo :cardData="house" />
-            <GosiwonTable :cardData="house"/>
-            <DetailMap :cardData="house" :nearestSubway="nearestSubway" :walkTime="walkTime" :nearestUniversity="nearestUniversity"/>
->>>>>>> c7b26b412317c270926ea8b9e40e459baee0949e
         </div>
         <DetailCard
           :cardData="house"
           :nearestSubway="nearestSubway"
           :walkTime="walkTime"
           :nameStatus="nameStatus"
+          :favoriteCount="favoriteCount"
+          :isFavorited="isFavorited"
+          @toggleFavorite="handleToggleFavorite"
         />
       </div>
     </section>
@@ -90,26 +67,26 @@ import interApi from '@/api/interestApi';
 
 // 좋아요 토글 핸들러
 const handleToggleFavorite = async () => {
-    const params = {
-        userId: id.value,
-        roomId: route.params.id
-    };
+  const params = {
+    userId: id.value,
+    roomId: route.params.id,
+  };
 
-    try {
-        if (isFavorited.value) {
-            // 좋아요 상태가 true일 때, 삭제 API 호출
-            await interApi.deleteInterest(params);
-            isFavorited.value = false;
-            favoriteCount.value -= 1;
-        } else {
-            // 좋아요 상태가 false일 때, 추가 API 호출
-            await interApi.addInterest(params);
-            isFavorited.value = true;
-            favoriteCount.value += 1;
-        }
-    } catch (error) {
-        console.error('좋아요 처리 중 오류 발생:', error);
+  try {
+    if (isFavorited.value) {
+      // 좋아요 상태가 true일 때, 삭제 API 호출
+      await interApi.deleteInterest(params);
+      isFavorited.value = false;
+      favoriteCount.value -= 1;
+    } else {
+      // 좋아요 상태가 false일 때, 추가 API 호출
+      await interApi.addInterest(params);
+      isFavorited.value = true;
+      favoriteCount.value += 1;
     }
+  } catch (error) {
+    console.error('좋아요 처리 중 오류 발생:', error);
+  }
 };
 
 // 기존 reactive state 설정
@@ -119,55 +96,54 @@ const nameStatus = reactive({
   avgPrice: '',
   minPrice: '',
 });
-const favoriteCount = ref(0);  // 좋아요 개수
+const favoriteCount = ref(0); // 좋아요 개수
 const isFavorited = ref(false); // 좋아요 상태
 
 const house = reactive({
-    room: {
-        roomId: '',
-        userId: '',
-        roomLat: '',
-        roomLong: '',
-        thumbnail: '',
-        address: '',
-        canLoan: '',  // boolean 값으로 설정
-        createdAt: '',
-        updatedAt: ''
-    },
-    gswId: '', // 고시원 ID
-    title: '', // 고시원 제목
-    postcode: '', // 우편번호
-    detailAddress: '', // 상세 주소
-    priceMin: '', // 최소 가격
-    priceMax: '', // 최대 가격
-    depositMin: '', // 최소 보증금
-    depositMax: '', // 최대 보증금
-    maintenanceFee: '', // 관리비
-    privateFacilities: '', // 개인 시설
-    services: '', // 제공 서비스
-    languages: '', // 지원 언어
-    etc: '', // 기타 사항
-    desc: '', // 설명
-    pics: '', // 이미지
-    genderLimit: '', // 성별 제한
-    type: '', // 고시원 유형
-    contractMin: null, // 최소 계약 기간
-    ageMax: null, // 최대 나이
-    ageMin: null, // 최소 나이
-    facilityHeating: '', // 난방 시설
-    facilityCooling: '', // 냉방 시설
-    facilityLife: '', // 생활 시설
-    facilitySecurity: '', // 보안 시설
-    buildingType: null, // 건물 유형
-    canParking: false, // 주차 가능 여부
-    hasElevator: false, // 엘리베이터 여부
-    isSoldOut: false // 매물 판매 완료 여부
+  room: {
+    roomId: '',
+    userId: '',
+    roomLat: '',
+    roomLong: '',
+    thumbnail: '',
+    address: '',
+    canLoan: '', // boolean 값으로 설정
+    createdAt: '',
+    updatedAt: '',
+  },
+  gswId: '', // 고시원 ID
+  title: '', // 고시원 제목
+  postcode: '', // 우편번호
+  detailAddress: '', // 상세 주소
+  priceMin: '', // 최소 가격
+  priceMax: '', // 최대 가격
+  depositMin: '', // 최소 보증금
+  depositMax: '', // 최대 보증금
+  maintenanceFee: '', // 관리비
+  privateFacilities: '', // 개인 시설
+  services: '', // 제공 서비스
+  languages: '', // 지원 언어
+  etc: '', // 기타 사항
+  desc: '', // 설명
+  pics: '', // 이미지
+  genderLimit: '', // 성별 제한
+  type: '', // 고시원 유형
+  contractMin: null, // 최소 계약 기간
+  ageMax: null, // 최대 나이
+  ageMin: null, // 최소 나이
+  facilityHeating: '', // 난방 시설
+  facilityCooling: '', // 냉방 시설
+  facilityLife: '', // 생활 시설
+  facilitySecurity: '', // 보안 시설
+  buildingType: null, // 건물 유형
+  canParking: false, // 주차 가능 여부
+  hasElevator: false, // 엘리베이터 여부
+  isSoldOut: false, // 매물 판매 완료 여부
 });
 
-
-// const reviews = ref([]);
+//const reviews = ref([]);
 // 새로운 요약 리뷰 상태
-const { reviewSummary, getGPTResponse } = fetchSummaryReviews();
+//const { reviewSummary, getGPTResponse } = fetchSummaryReviews();
 
 // Computed property for house type
 const houseTypeLabel = computed(() => {
@@ -246,18 +222,15 @@ function findNearbyUniversity(latitude, longitude) {
 }
 // 좋아요 개수 및 상태 가져오기
 async function getFavoriteCnt(roomId) {
-    console.log('idiakdfn',roomId);
-    try {
-        const data = await mpApi.getFavoriteCnt(roomId);
-        favoriteCount.value = data;
-        console.log('favorite cntttt : ',favoriteCount.value);
-      
-    } catch (error) {
-        console.error('좋아요 데이터 가져오기 실패:', error);
-    }
+  console.log('idiakdfn', roomId);
+  try {
+    const data = await mpApi.getFavoriteCnt(roomId);
+    favoriteCount.value = data;
+    console.log('favorite cntttt : ', favoriteCount.value);
+  } catch (error) {
+    console.error('좋아요 데이터 가져오기 실패:', error);
+  }
 }
-
-
 
 // 좋아요 토글 기능
 // async function toggleFavorite() {
@@ -275,50 +248,48 @@ async function getFavoriteCnt(roomId) {
 const isOwner = ref(false); // 방의 소유자인지 여부
 // Fetch data and calculate subway info on mount
 onMounted(async () => {
-    try {
-        const roomIds = route.params.id;
-        
-        // 첫 번째 API 호출
-        const data = await api.getOneGosiwon(roomIds); 
-        Object.assign(house, data); 
-        console.log('room loca : ', data.room.address);
-        
-        
-        // 구 이름 추출
-        const addressParts = data.room.address.split(' ');
-        const guIndex = addressParts.findIndex(part => part.includes('구'));
-        const districtName = guIndex !== -1 ? addressParts[guIndex] : '';
-        
-        console.log('구 이름: ', districtName);
+  try {
+    const roomIds = route.params.id;
 
-        await getFavoriteCnt(roomIds);
+    // 첫 번째 API 호출
+    const data = await api.getOneGosiwon(roomIds);
+    Object.assign(house, data);
+    console.log('room loca : ', data.room.address);
 
-        const favoriteStatus = await interApi.isInterest(id.value, roomIds);
-        isFavorited.value = favoriteStatus === 1; 
+    // 구 이름 추출
+    const addressParts = data.room.address.split(' ');
+    const guIndex = addressParts.findIndex((part) => part.includes('구'));
+    const districtName = guIndex !== -1 ? addressParts[guIndex] : '';
 
-        // const isOwnerStatus = await interApi.isOwn(id.value);
-        // isOwner.value = isOwnerStatus === 1;  
+    console.log('구 이름: ', districtName);
 
-        // 두 번째 API 호출 (GosiwonStatus)
-        if (districtName) {
-            const data2 = await api.getGosiwonStatus(districtName);
-            Object.assign(nameStatus, data2);
-            console.log('Status 데이터: ', nameStatus.maxPrice);
-        } else {
-            console.log('유효한 구 이름을 찾을 수 없습니다.');
-        }
+    await getFavoriteCnt(roomIds);
 
-        // 지하철역 및 대학 계산
-        findNearbySubway(house.room.roomLat, house.room.roomLong);
-        findNearbyUniversity(house.room.roomLat, house.room.roomLong);
+    const favoriteStatus = await interApi.isInterest(id.value, roomIds);
+    isFavorited.value = favoriteStatus === 1;
 
-        // 리뷰 데이터 가져오기
-        reviews.value = await api.getAllReview(roomIds);
-        console.log('리뷰 데이터: ', reviews.value);
+    // const isOwnerStatus = await interApi.isOwn(id.value);
+    // isOwner.value = isOwnerStatus === 1;
 
-        // GPT를 사용한 요약 리뷰 가져오기
-        await getGPTResponse();
+    // 두 번째 API 호출 (GosiwonStatus)
+    if (districtName) {
+      const data2 = await api.getGosiwonStatus(districtName);
+      Object.assign(nameStatus, data2);
+      console.log('Status 데이터: ', nameStatus.maxPrice);
+    } else {
+      console.log('유효한 구 이름을 찾을 수 없습니다.');
+    }
 
+    // 지하철역 및 대학 계산
+    findNearbySubway(house.room.roomLat, house.room.roomLong);
+    findNearbyUniversity(house.room.roomLat, house.room.roomLong);
+
+    // 리뷰 데이터 가져오기
+    reviews.value = await api.getAllReview(roomIds);
+    console.log('리뷰 데이터: ', reviews.value);
+
+    // GPT를 사용한 요약 리뷰 가져오기
+    // await getGPTResponse();
   } catch (error) {
     console.log('Gosiwon 데이터를 가져오는 데 실패했습니다:', error);
   }
