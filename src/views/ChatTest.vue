@@ -46,7 +46,7 @@ export default {
 
             try {
                 // 메시지 전송 요청
-                await axios.post("http://localhost:8081/api/chat/message", {
+                await axios.post("/api/chat/message", {
                     chatroomId: this.chatRoomId,
                     senderId: this.senderId,
                     content: this.userMessage
@@ -61,14 +61,14 @@ export default {
         async fetchMessages() {
             try {
                 // 서버에서 메시지 가져오기
-                const response = await axios.get("http://localhost:8081/api/chat/messages", {
+                const response = await axios.get("/api/chat/messages", {
                     params: { chatRoomId: this.chatRoomId }
                 });
 
                 // 서버에서 가져온 메시지 목록 화면에 표시
                 this.messages = response.data.map((message) => ({
                     text: message.content,
-                    isUser: message.senderId === this.senderId
+                    isUser: message.senderId === this.senderId6
                 }));
             } catch (error) {
                 console.error("Failed to fetch messages:", error);

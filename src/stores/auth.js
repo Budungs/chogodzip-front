@@ -8,6 +8,9 @@ const initState = {
     email: '',
     roles: [],
     token: '',
+    address: '',
+    interestArea: '',
+    profileImg: '', // 프로필 이미지 추가
 };
 
 export const useAuthStore = defineStore('auth', () => {
@@ -25,6 +28,9 @@ export const useAuthStore = defineStore('auth', () => {
   const id = computed(() => state.value.id);
   const name = computed(() => state.value.name);
   const email = computed(() => state.value.email);
+  const address = computed(() => state.value.address);
+  const interestArea = computed(() => state.value.interestArea);
+  const profileImg = computed(() => state.value.profileImg); // 프로필 이미지 가져오기
 
   const load = () => {
     const auth = localStorage.getItem('auth');
@@ -46,7 +52,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     // api 호출
     const { data } = await axios.post('/api/auth/login', member);
-    console.log(data);
+    console.log("로그인 응답 데이터:", data);
     state.value = { ...data };
     localStorage.setItem('auth', JSON.stringify(state.value));
   };
@@ -71,6 +77,8 @@ const getToken = () => state.value.token;
   const changeProfile = (member) => {
     state.value.name = member.name;
     state.value.email = member.email;
+    state.value.address = member.address;
+    state.value.interestArea = member.interestArea;
     localStorage.setItem('auth', JSON.stringify(state.value));
   };
 
