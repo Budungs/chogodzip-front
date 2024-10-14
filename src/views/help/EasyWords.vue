@@ -52,6 +52,7 @@
       </div>
 
       <!-- 차트 탭 -->
+    
       <div class="tab-pane fade" :class="{ active: activeTab === 'chart' }" id="nav-chart" role="tabpanel"
         aria-labelledby="nav-chart-tab">
         <div class="dictionary-container">
@@ -751,7 +752,7 @@ const drawDongMap = () => {
       selectedDong.value = true;
 
       console.log(`시: ${adm_si.value}, 구: ${adm_gu.value}, 동: ${adm_dong.value}`)
-      alert(`${d.properties.adm_nm} 클릭됨`);
+      
 
       fetchData();
     });
@@ -786,9 +787,10 @@ watch(activeTab, async (newTab) => {
   }
 });
 
-// mounted 시 구 지도 그리기
 onMounted(() => {
+  
   drawGuMap();
+  
 });
 
 const adm_si = ref(null);
@@ -814,6 +816,32 @@ const createApiUrl = (dongName) => {
 <style scoped>
 @import "../../assets/css/help/easywords.css";
 
+.spinner-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.spinner {
+  border: 8px solid rgba(0, 0, 0, 0.1);
+  border-top: 8px solid #3498db;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 .search-input {
   margin-bottom: 10px;
   padding: 8px 10px 8px 40px;

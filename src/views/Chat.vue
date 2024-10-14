@@ -11,7 +11,7 @@
           @click="selectUser(user)">
           <img :src="user.image || defaultUserImage" alt="" class="icon-user" />
           <div class="user-status" style="">
-            <div class="name">방이름 : {{ user.roomId }}</div>
+            <div class="name">방번호 : {{ user.roomId }}</div>
             <div v-if="user.unreadCount > 0" class="unread-badge">{{ user.unreadCount }}</div>
           </div>
           <hr />
@@ -176,7 +176,11 @@ const sendMessage = async () => {
   }
 
   // 메시지를 화면에 추가
-  messages.value.push({ text: userMessage.value, isUser: true });
+  messages.value.push({
+    text: userMessage.value,
+    isUser: true,
+    timestamp: new Date().toLocaleString() // 메시지 전송 시간을 바로 추가
+  });
 
   try {
     // 메시지 전송 API 호출
