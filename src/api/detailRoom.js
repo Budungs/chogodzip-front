@@ -37,6 +37,30 @@ export default {
         }, { headers });
         console.log('reply eotrmf : ',data);
         return data;
+    },
+    async getOneJachi(no){
+        const {data} = await api.get(`${BASE_URL}/room/${no}`);
+        console.log('jachi dd : ',data);
+        return data;
+    },
+    async getRoomStatus(location){
+        const {data} = await api.get(`${BASE_URL}/roomStatus`,{
+            params: { location }
+        });
+        console.log('JACHI STAT : ',data);
+        return data;
+    },
+    async getOneShare(no){
+        const {data} = await api.get(`${BASE_URL}/sharehouse/${no}`);
+        console.log('share dd : ',data);
+        return data;
+    },
+    async getShareStatus(location){
+        const {data} = await api.get(`${BASE_URL}/roomStatus`,{
+            params: { location }
+        });
+        console.log('SHARE STAT : ',data);
+        return data;
     }
     
 

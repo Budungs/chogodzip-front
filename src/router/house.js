@@ -17,7 +17,7 @@ export default [
   {
     path: "/houses/rooms/:id",
     name: "RoomDetailPage",
-    component: () => import("../views/detail_page/RoomDetailPage.vue"),
+    component: () => import("../views/detail_page/JachiroomDetailPage.vue"),
   },
   {
     path: "/houses/sharehouses/:id",

@@ -8,19 +8,19 @@
                         <tbody>
                             <tr>
                                 <th>임대 유형</th>
-                                <td>{{ (cardData.PRICE_MIN === 0 || cardData.PRICE_MIN === null) && (cardData.PRICE_MAX === 0 || cardData.PRICE_MAX === null) ? '전세' : rent_type }}</td>
+                                <td>{{ (cardData.PRICE_MIN === 0 || cardData.PRICE_MIN === null) && (cardData.PRICE_MAX === 0 || cardData.PRICE_MAX === null) ? '전세' : '월세' }}</td>
                             </tr>
                             <tr>
                                 <th>보증금</th>
-                                <td>{{ cardData.DEPOSIT_MIN }} ~ {{ cardData.DEPOSIT_MAX }}만원</td>
+                                <td>{{ cardData.DEPOSIT_MIN ? cardData.DEPOSIT_MIN + ' ~ ' + cardData.DEPOSIT_MAX + '만원' : '정보 없음' }}</td>
                             </tr>
                             <tr>
                                 <th>월 이용료</th>
-                                <td>{{ cardData.PRICE_MIN }} 만원 ~ {{ cardData.PRICE_MAX }} 만원</td>
+                                <td>{{ cardData.PRICE_MIN ? cardData.PRICE_MIN + ' 만원 ~ ' + cardData.PRICE_MAX + ' 만원' : '정보 없음' }}</td>
                             </tr>
                             <tr>
                                 <th>관리비</th>
-                                <td>{{ cardData.maintenanceFee ? cardData.maintenanceFee+' 만원' : '없음' }} </td>
+                                <td>{{ cardData.maintenanceFee ? cardData.maintenanceFee + ' 만원' : '없음' }} </td>
                             </tr>
                             <tr>
                                 <th>이용기간<br />(계약기간)</th>
@@ -32,7 +32,7 @@
                             </tr>
                             <tr>
                                 <th>방 개수</th>
-                                <td>{{ accomo_cnt }}</td>
+                                <td>{{ cardData.roomCnt ? cardData.roomCnt : '정보 없음' }}</td>
                             </tr>
                             <tr>
                                 <th>남녀구분</th>
@@ -72,7 +72,7 @@
                             </tr>
                             <tr>
                                 <th>생활시설</th>
-                                <td>{{ formattedLifeFacilities}}</td>
+                                <td>{{ formattedLifeFacilities }}</td>
                             </tr>
                             <tr>
                                 <th>제공비품</th>
@@ -96,7 +96,7 @@
                             </tr>
                             <tr>
                                 <th>엘리베이터</th>
-                                <td>{{hasElevatorLabel }}</td>
+                                <td>{{ hasElevatorLabel }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -116,63 +116,48 @@ const props = defineProps({
         required: true
     }
 });
-console.log('adfadsf',props.cardData.priceMax);
-// Parse private facilities and services
-const parsedPrivateFacilities = computed(() => {
-    return props.cardData.privateFacilities && props.cardData.privateFacilities !== 'null' ? props.cardData.privateFacilities.split('|') : [];
-});
 
+// 서비스 파싱
 const parsedServices = computed(() => {
     return props.cardData.services && props.cardData.services !== 'null' ? props.cardData.services.split('|') : [];
 });
 
+// 생활시설
 const formattedLifeFacilities = computed(() => {
     return props.cardData.facilityLife && props.cardData.facilityLife !== 'null' ? props.cardData.facilityLife.split('|').join(', ') : '없음';
 });
 
-const formattedSecurityFacilities = computed(() => {
-    return props.cardData.facilitySecurity && props.cardData.facilitySecurity !== 'null' ? props.cardData.facilitySecurity.split('|').join(', ') : '없음';
-});
-
-// Determine gender type based on genderLimit
+// 성별 제한
 const genderType = computed(() => {
     switch (props.cardData.genderLimit) {
-        case 0:
+        case 'GENDR00001':
             return '성별 무관';
-        case 1:
-            return '남녀 분리';
-        case 2:
-            return '여성 전용';
-        case 3:
+        case 'GENDR00002':
             return '남성 전용';
+        case 'GENDR00003':
+            return '여성 전용';
+        case 'GENDR00004':
+            return '남녀 분리';
         default:
             return '성별무관';
     }
 });
 
+// 건물 형태
 const buildingTypeLabel = computed(() => {
-    switch (props.cardData.buildingType) {
-        case 0:
-            return '상가건물';
-        case 1:
-            return '공동주택';
-        case 2:
-            return '단독주택';   
-        default:
-            return '상가건물';
-    }
+    return props.cardData.buildingType !== null ? (props.cardData.buildingType === 0 ? '상가건물' : '공동주택') : '정보 없음';
 });
 
+// 주차 가능 여부
 const canParkingLabel = computed(() => {
-    return props.cardData.canParking === 0 ? '가능' : '불가능';
+    return props.cardData.canParking !== null ? (props.cardData.canParking === 0 ? '불가능' : '가능') : '정보 없음';
 });
 
+// 엘리베이터
 const hasElevatorLabel = computed(() => {
-    return props.cardData.hasElevator === 0 ? '없음' : '있음';
-})
+    return props.cardData.hasElevator !== null ? (props.cardData.hasElevator === 0 ? '없음' : '있음') : '정보 없음';
+});
 </script>
-
-
 
 <style scoped>
 table {
@@ -191,9 +176,8 @@ th {
     background: #F5F6F7;
     padding-left: 1rem;
     border-right: 1px solid #cdcad45f;
-    border-bottom: 1px solid #cdcad45f
+    border-bottom: 1px solid #cdcad45f;
 }
-
 
 .info-container {
     padding: 2rem;
