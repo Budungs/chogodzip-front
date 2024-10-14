@@ -21,6 +21,15 @@ export default {
     return data;
   },
 
+  ///////////////  회원 kakao id중복 체크   ////////////////////////
+
+  async checkKakaoId(id) {
+    const { data } = await api.get(`${BASE_URL}/checkkakaoid/${id}`);
+    console.log('AUTH GET CHECK ID', data);
+    return data;
+  },
+
+
  ///////////////  회원 정보 조회（ｕｓｅｒｎａｍｅ ＝＝ ｉｄ） ////////////////////////
   async get(id) {
     const { data } = await api.get(`${BASE_URL}/${id}`);
@@ -44,15 +53,19 @@ export default {
     if(member.kakaoId){
       formData.append('kakaoId', member.kakaoId);
     }
-
+    // 프로필 이미지 파일 추가
     if (member.avatar) {
       formData.append('avatar', member.avatar);
     }
+    formData.append('address', member.address); // 주소 추가
+    formData.append('interestArea', '서울시 ' + member.interestArea); // 관심 지역 추가
+
+    
 
      // --------> 회원 정보 post방식 전송  //////////////////////////
     const { data } = await api.post(BASE_URL, formData, headers);
 
-    console.log('AUTH POST: ', data);
+    console.log('AUTH POST(백엔드 응답): ', data);
     return data;
   },
  /////////////// 회원 정보 수정 ///////////////////////////////

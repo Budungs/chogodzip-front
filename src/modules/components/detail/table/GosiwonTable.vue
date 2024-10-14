@@ -7,20 +7,16 @@
                     <table>
                         <tbody>
                             <tr>
-                                <th>임대 유형</th>
-                                <td>월세</td>
-                            </tr>
-                            <tr>
                                 <th>보증금</th>
-                                <td>10만원</td>
+                                <td>{{ cardData.priceMin }} ~ {{ cardData.priceMax }}만원</td>
                             </tr>
                             <tr>
                                 <th>월 이용료</th>
-                                <td>29~41만원</td>
+                                <td>{{ cardData.depositMin }} 만원 ~ {{ cardData.depositMax }} 만원</td>
                             </tr>
                             <tr>
                                 <th>관리비</th>
-                                <td>3~6만원</td>
+                                <td>{{ cardData.maintenanceFee ? cardData.maintenanceFee+' 만원' : '없음' }} </td>
                             </tr>
                             <tr>
                                 <th>이용기간<br />(계약기간)</th>
@@ -28,37 +24,38 @@
                             </tr>
                             <tr>
                                 <th>이용연령</th>
-                                <td>연령제한 없음</td>
+                                <td>{{ cardData.ageMin && cardData.ageMax ? `${cardData.ageMin} ~ ${cardData.ageMax}세` : '연령제한 없음' }}</td>
                             </tr>
                             <tr>
                                 <th>개인화장실 여부</th>
-                                <td>있음</td>
+                                <td>{{ parsedPrivateFacilities.includes('개인화장실') ? '있음' : '없음' }}</td>
                             </tr>
                             <tr>
                                 <th>개인샤워부스 여부</th>
-                                <td>있음</td>
+                                <td>{{ parsedPrivateFacilities.includes('개인샤워실') ? '있음' : '없음' }}</td>
                             </tr>
                             <tr>
                                 <th>남녀구분</th>
-                                <td>성별무관</td>
+                                <td>{{ genderType }}</td>
                             </tr>
                             <tr>
                                 <th>기타사항</th>
-                                <td>주소이전</td>
+                                <td>{{ cardData.etc ? cardData.etc : '없음' }}</td>
                             </tr>
                             <tr>
                                 <th>제공 서비스</th>
-                                <td>청소업체 현금서비스</td>
+                                <td>{{ parsedServices.includes('식사제공') ? '식사제공' : '식사 미제공' }}</td>
                             </tr>
                             <tr>
                                 <th>외국어 응대</th>
-                                <td>영어 일본어</td>
+                                <td>{{ cardData.languages ? cardData.languages : '불가능' }}</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
+
         <div class="col-md-6">
             <div class="table2">
                 <div class="info-container table2">
@@ -67,32 +64,35 @@
                         <tbody>
                             <tr>
                                 <th>난방시설</th>
-                                <td>중앙난방</td>
+                                <td>{{ cardData.facilityHeating ? cardData.facilityHeating : '난방시설 없음' }}
+                                </td>
                             </tr>
                             <tr>
                                 <th>세탁시설</th>
-                                <td>세탁기 건조기 다리미</td>
+                                <td>{{ cardData.facilityLife && cardData.facilityLife.includes('세탁기') ? '세탁기, 건조기' : '세탁시설 없음' }}
+                                </td>
                             </tr>
-
                             <tr>
                                 <th>주방시설</th>
-                                <td>전자레인지 전기밥솥 정수기 가스레인지</td>
+                                <td>{{ cardData.facilityLife && cardData.facilityLife.includes('전자레인지') ? '전자레인지, 전기밥솥' : '주방시설 없음' }}
+                                </td>
                             </tr>
                             <tr>
                                 <th>생활시설</th>
-                                <td></td>
+                                <td>{{ formattedLifeFacilities}}</td>
                             </tr>
                             <tr>
                                 <th>안전시설</th>
-                                <td></td>
+                                <td>{{ formattedSecurityFacilities }}</td>
                             </tr>
                             <tr>
                                 <th>별도 전용공간</th>
-                                <td></td>
+                                <td>{{ cardData.facilityLife && cardData.facilityLife.includes('전용공간') ? '제공' : '없음' }}</td>
                             </tr>
                             <tr>
                                 <th>제공비품</th>
-                                <td></td>
+                                <td>{{ cardData.facilityLife ? '제공' : '없음' }}</td>
+
                             </tr>
                         </tbody>
                     </table>
@@ -104,15 +104,15 @@
                         <tbody>
                             <tr>
                                 <th>건물형태</th>
-                                <td>상가건물</td>
+                                <td>{{ buildingTypeLabel }}</td>
                             </tr>
                             <tr>
                                 <th>주차</th>
-                                <td>불가능</td>
+                                <td>{{ canParkingLabel }}</td>
                             </tr>
                             <tr>
-                                <th>엘레베이터</th>
-                                <td>없음</td>
+                                <th>엘리베이터</th>
+                                <td>{{hasElevatorLabel }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -121,6 +121,73 @@
         </div>
     </div>
 </template>
+
+<script setup>
+import { computed } from 'vue';
+import { defineProps } from 'vue';
+
+const props = defineProps({
+    cardData: {
+        type: Object,
+        required: true
+    },
+});
+console.log('adfadsf',props.cardData.priceMax);
+// Parse private facilities and services
+const parsedPrivateFacilities = computed(() => {
+    return props.cardData.privateFacilities && props.cardData.privateFacilities !== 'null' ? props.cardData.privateFacilities.split('|') : [];
+});
+
+const parsedServices = computed(() => {
+    return props.cardData.services && props.cardData.services !== 'null' ? props.cardData.services.split('|') : [];
+});
+
+const formattedLifeFacilities = computed(() => {
+    return props.cardData.facilityLife && props.cardData.facilityLife !== 'null' ? props.cardData.facilityLife.split('|').join(', ') : '없음';
+});
+
+const formattedSecurityFacilities = computed(() => {
+    return props.cardData.facilitySecurity && props.cardData.facilitySecurity !== 'null' ? props.cardData.facilitySecurity.split('|').join(', ') : '없음';
+});
+
+
+// Determine gender type based on genderLimit
+const genderType = computed(() => {
+    switch (props.cardData.genderLimit) {
+        case 0:
+            return '성별 무관';
+        case 1:
+            return '남녀 분리';
+        case 2:
+            return '여성 전용';
+        case 3:
+            return '남성 전용';
+        default:
+            return '성별무관';
+    }
+});
+
+const buildingTypeLabel = computed(() => {
+    switch (props.cardData.buildingType) {
+        case 0:
+            return '상가건물';
+        case 1:
+            return '공동주택';
+        case 2:
+            return '단독주택';   
+        default:
+            return '상가건물';
+    }
+});
+
+const canParkingLabel = computed(() => {
+    return props.cardData.canParking === 0 ? '가능' : '불가능';
+});
+
+const hasElevatorLabel = computed(() => {
+    return props.cardData.hasElevator === 0 ? '없음' : '있음';
+})
+</script>
 
 <style scoped>
 table {
@@ -139,9 +206,8 @@ th {
     background: #F5F6F7;
     padding-left: 1rem;
     border-right: 1px solid #cdcad45f;
-    border-bottom: 1px solid #cdcad45f
+    border-bottom: 1px solid #cdcad45f;
 }
-
 
 .info-container {
     padding: 2rem;
