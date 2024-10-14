@@ -10,7 +10,7 @@
       <div class="row">
         <div class="col-md-7">
           <a class="gallery-item rounded" :href="house.room.thumbnail">
-            <img :src="house.TITLE_IMAGE" alt="타이틀 이미지" class="img-fluid rounded"
+            <img :src="house.room.thumbnail" alt="타이틀 이미지" class="img-fluid rounded"
               style="height: 30rem; object-fit: cover;">
           </a>
         </div>
@@ -28,7 +28,7 @@
   <ReviewTab :reviews="reviews" :summaryReviews="reviewSummary" :userId="id" :cardData="house"/>
 </template>
 
-<script>
+<script setup>
 import { reactive, computed, onMounted, ref } from 'vue';
 import axios from 'axios'; // axios로 서버 API 호출
 // import fetchReviews from '@/utils/review'; // fetchReviews 함수를 가져옵니다.
@@ -39,7 +39,7 @@ import DetailCard from '@/modules/components/detail/DetailCard.vue';
 import DetailInfo from "@/modules/components/detail/DetailInfo.vue";
 import DetailMap from "@/modules/components/detail/DetailMap.vue";
 import ReviewTab from "@/modules/components/detail/ReviewTab.vue";
-import GosiwonTable from "@/modules/components/detail/table/SharehouseTable.vue";
+import SharehouseTable from "@/modules/components/detail/table/SharehouseTable.vue";
 import api from '@/api/detailRoom';
 import mpApi from '@/api/mapApi';
 import interApi from '@/api/interestApi';
@@ -193,7 +193,7 @@ onMounted(async () => {
         const roomIds = route.params.id;
         
         // 첫 번째 API 호출
-        const data = await api.getOneGosiwon(roomIds); 
+        const data = await api.getOneShare(roomIds); 
         Object.assign(house, data); 
         console.log('room loca : ', data.room.address);
         
@@ -216,7 +216,7 @@ onMounted(async () => {
         
         // 두 번째 API 호출 (Sharehouse status)
         if (districtName) {
-            const data2 = await api.getSharehouseStatus(districtName);
+            const data2 = await api.getShareStatus(districtName);
             Object.assign(nameStatus, data2);
             console.log('Status 데이터: ', nameStatus.maxPrice);
         } else {

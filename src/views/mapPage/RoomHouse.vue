@@ -163,7 +163,7 @@
             <h5 class="card-title">{{ property.room.address }}</h5>
             <p class="card-text fs-sm">보증금 {{ property.depositMax }} 만원 | 월세 {{ property.priceMax }} 만원</p>
 
-            <router-link :to="`/houses/gosiwons/${property.room.roomId}`" class="btn btn-sm btn-primary">상세보기</router-link>
+            <router-link :to="`/houses/rooms/${property.room.roomId}`" class="btn btn-sm btn-primary">상세보기</router-link>
 
             <!-- 관심매물 아이콘 -->
             <div class="interest-icon mt-2">
