@@ -21,9 +21,7 @@ export default {
             return data;
         }catch(e){
             console.log(e);
-        }
-        
-       
+        }       
     }
 
 
