@@ -1,6 +1,5 @@
 <template>
     <div class="container mt-5">
-        <h3 class="mb-3" style="color:var(--grayTitle)">커뮤니티</h3>
         <div class="dictionary-container card card-body border-0 shadow-sm p-5 mt-4 pt-5">
             <form class="form-group"  @submit.prevent="filterList">
                 <!-- 분류 Dropdown -->

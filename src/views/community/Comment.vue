@@ -31,8 +31,8 @@
             </div>
           </div>
 
-          <div v-else>
-            <p> {{ cmt.content }} </p>
+          <div v-else class="py-2">
+            <p class="fs-lg"> {{ cmt.content }} </p>
             <div 
               v-if="isLogin && cmt.memberId === id"
               class="w-100 d-flex justify-content-end gap-2" >

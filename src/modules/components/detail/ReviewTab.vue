@@ -12,36 +12,20 @@
 
           <transition name="fade" mode="out-in">
               <div v-if="activeTab === 'pros'" key="pros" class="content">
-                  <ul>
-                      <li>
-                          <p class="normal">지하철과 버스 정류장이 매우 가까워 대중교통 이용이 편리합니다.</p>
-                          <hr>
-                      </li>
-                      <li>
-                          <p class="normal">근처 1분 거리에 편의점이 있습니다.</p>
-                          <hr>
-                      </li>
-                      <li>
-                          <p class="normal">주차장 공간이 넓습니다.</p>
-                          <hr>
-                      </li>
-                  </ul>
+                <ul>
+                  <li v-for="(pros, index) in positiveReviews" :key="index">
+                    <p class="normal">{{ pros }}</p>
+                    <hr />
+                  </li>
+                </ul>
               </div>
               <div v-else key="cons" class="content">
-                  <ul>
-                      <li>
-                          <p class="normal">지하철과 버스 정류장이 매우 가까워 대중교통 이용이 편리합니다.</p>
-                          <hr>
-                      </li>
-                      <li>
-                          <p class="normal">근처 1분 거리에 편의점이 있습니다.</p>
-                          <hr>
-                      </li>
-                      <li>
-                          <p class="normal">주차장 공간이 넓습니다.</p>
-                          <hr>
-                      </li>
-                  </ul>
+                <ul>
+                  <li v-for="(cons, index) in negativeReviews" :key="index">
+                    <p class="normal">{{ cons }}</p>
+                    <hr />
+                  </li>
+                </ul>
               </div>
           </transition>
       </div>
@@ -98,6 +82,7 @@
 </template>
 
 <script setup>
+// 부모 컴포넌트에서 reviews 데이터를 받아온다.
 import { ref, computed } from 'vue';
 import api from '@/api/detailRoom';
 
@@ -114,7 +99,14 @@ userId: {
   type: String,
   required: false,
 },
+summaryReviews: {
+    type: String,
+    required: true,
+},
 });
+
+console.log('props id : ',props.userId);
+console.log('rooms idsss : ',props.cardData.room.roomId);
 
 const reviewContent = ref('');
 const currentPage = ref(1);
@@ -147,6 +139,34 @@ if (currentPage.value < totalPages.value) {
   currentPage.value += 1;
 }
 };
+
+// GPT로부터 받은 요약 리뷰를 긍정/부정 리뷰로 나누어 출력
+const positiveReviews = computed(() => {
+  if (!props.summaryReviews) return [];
+
+  const summary = props.summaryReviews || '';
+  const splitReviews = summary.split('부정 리뷰:'); // 부정 리뷰 기준으로 나누기
+
+  // 긍정 리뷰 부분 추출
+  const positivePart = splitReviews[0] ? splitReviews[0] : ''; 
+  return positivePart.split('\n')
+    .filter(line => line.trim().startsWith('1.') || line.trim().startsWith('2.') || line.trim().startsWith('3.'))
+    .map(line => line.replace(/^\d+\.\s*/, '')); // 숫자 제거
+});
+
+const negativeReviews = computed(() => {
+  if (!props.summaryReviews) return [];
+
+  const summary = props.summaryReviews || '';
+  const splitReviews = summary.split('부정 리뷰:'); // 부정 리뷰 기준으로 나누기
+
+  // 부정 리뷰 부분 추출
+  const negativePart = splitReviews[1] ? splitReviews[1] : '';
+  return negativePart.split('\n')
+    .filter(line => line.trim().startsWith('1.') || line.trim().startsWith('2.') || line.trim().startsWith('3.'))
+    .map(line => line.replace(/^\d+\.\s*/, '')); // 숫자 제거
+});
+
 
 const submitReview = async () => {
 if (!reviewContent.value.trim()) {
