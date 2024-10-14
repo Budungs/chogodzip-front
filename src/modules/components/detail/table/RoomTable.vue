@@ -8,51 +8,51 @@
                         <tbody>
                             <tr>
                                 <th>임대 유형</th>
-                                <td>월세</td>
+                                <td>{{ (cardData.PRICE_MIN === 0 || cardData.PRICE_MIN === null) && (cardData.PRICE_MAX === 0 || cardData.PRICE_MAX === null) ? '전세' : rent_type }}</td>
                             </tr>
                             <tr>
                                 <th>보증금</th>
-                                <td>5000만원</td>
+                                <td>{{ cardData.DEPOSIT_MIN }} ~ {{ cardData.DEPOSIT_MAX }}만원</td>
                             </tr>
                             <tr>
                                 <th>월 이용료</th>
-                                <td>60만원</td>
+                                <td>{{ cardData.PRICE_MIN }} 만원 ~ {{ cardData.PRICE_MAX }} 만원</td>
                             </tr>
                             <tr>
                                 <th>관리비</th>
-                                <td>3~6만원</td>
+                                <td>{{ cardData.MAINTENANCE_FEE ? cardData.MAINTENANCE_FEE+' 만원' : '없음' }} </td>
                             </tr>
                             <tr>
-                                <th>해당층/전체층</th>
-                                <td>고층/5층</td>
+                                <th>해당 층</th>
+                                <td>{{  FLOOR }}</td>
                             </tr>
                             <tr>
                                 <th>방 구조</th>
-                                <td>원룸(오픈형)</td>
+                                <td>{{ ROOM_TYPE }}</td>
                             </tr>
                             <tr>
                                 <th>방 수/욕실 수</th>
-                                <td>1개/1개</td>
+                                <td>{{ room_cnt }} / {{ toilet_cnt }}</td>
                             </tr>
                             <tr>
-                                <th>면적</th>
-                                <td>전용 6평 공급 0평</td>
+                                <th>전용/공급면적</th>
+                                <td>{{ realsize ? realsize + '㎡' : '정보 없음' }} / {{ roomsize ? roomsize + '㎡' : '정보 없음' }}</td>
                             </tr>
                             <tr>
                                 <th>주실 방향</th>
-                                <td>남향(안방기준)</td>
+                                <td>{{ sun_dir }}</td>
                             </tr>
                             <tr>
                                 <th>최소계약기간</th>
-                                <td>24개월 이상</td>
+                                <td>{{ DURATION_MIN }}</td>
                             </tr>
                             <tr>
                                 <th>입주가능일</th>
-                                <td>즉시 입주 가능(협의 가능)</td>
+                                <td>{{ AVA_MOVIN_DATE }}</td>
                             </tr>
                             <tr>
                                 <th>주차</th>
-                                <td>가능(5만원)</td>
+                                <td>{{ canParking }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -67,7 +67,7 @@
                         <tbody>
                             <tr>
                                 <th>가능한 대출</th>
-                                <td>HUG 중기청80%</td>
+                                <td>{{LOAN_ID}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -78,19 +78,19 @@
                         <tbody>
                             <tr>
                                 <th>난방시설</th>
-                                <td>중앙난방</td>
+                                <td>{{ cardData.facilityHeating ? cardData.facilityHeating : '난방시설 없음' }}</td>
                             </tr>
                             <tr>
                                 <th>냉방시설</th>
-                                <td>벽걸이에어컨</td>
+                                <td>{{ cardData.facilityCooling ? cardData.facilityCooling : '냉방시설 없음' }}</td>
                             </tr>
                             <tr>
                                 <th>생활시설</th>
-                                <td>침대 책상 의자</td>
+                                <td>{{ formattedLifeFacilities}}</td>
                             </tr>
                             <tr>
                                 <th>안전시설</th>
-                                <td></td>
+                                <td>{{ formattedSecurityFacilities }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -101,16 +101,20 @@
                     <table>
                         <tbody>
                             <tr>
-                                <th>엘레베이터</th>
-                                <td>있음(1대)</td>
+                                <th>호수</th>
+                                <td>{{ NAME === 0 ? '정보 없음' : NAME + ' 호' }}</td>
                             </tr>
                             <tr>
-                                <th>총 주차 대수</th>
-                                <td>총 5대</td>
+                                <th>방 형태</th>
+                                <td>{{ ROOM_TYPE }}</td>
                             </tr>
                             <tr>
-                                <th>건축물 구분</th>
-                                <td>단독주택</td>
+                                <th>엘리베이터</th>
+                                <td>{{ hasElevatorLabel }}</td>
+                            </tr>
+                            <tr>
+                                <th>건물 형태</th>
+                                <td>{{ buildingTypeLabel }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -119,6 +123,55 @@
         </div>
     </div>
 </template>
+
+<script setup>
+import { computed } from 'vue';
+import { defineProps } from 'vue';
+
+const props = defineProps({
+    cardData: {
+        type: Object,
+        required: true
+    }
+});
+
+console.log('adfadsf',props.cardData.priceMax);
+
+// Parse private facilities and services
+const parsedPrivateFacilities = computed(() => {
+    return props.cardData.privateFacilities && props.cardData.privateFacilities !== 'null' ? props.cardData.privateFacilities.split('|') : [];
+});
+
+const formattedLifeFacilities = computed(() => {
+    return props.cardData.facilityLife && props.cardData.facilityLife !== 'null' ? props.cardData.facilityLife.split('|').join(', ') : '없음';
+});
+
+const formattedSecurityFacilities = computed(() => {
+    return props.cardData.facilitySecurity && props.cardData.facilitySecurity !== 'null' ? props.cardData.facilitySecurity.split('|').join(', ') : '없음';
+});
+
+const buildingTypeLabel = computed(() => {
+    switch (props.cardData.buildingType) {
+        case 0:
+            return '상가건물';
+        case 1:
+            return '공동주택';
+        case 2:
+            return '단독주택';   
+        default:
+            return '상가건물';
+    }
+});
+
+const canParkingLabel = computed(() => {
+    return props.cardData.canParking === 0 ? '불가능' : '가능';
+});
+
+const hasElevatorLabel = computed(() => {
+    return props.cardData.hasElevator === 0 ? '없음' : '있음';
+})
+</script>
+
 
 <style scoped>
 table {

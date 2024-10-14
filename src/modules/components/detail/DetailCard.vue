@@ -21,7 +21,7 @@
                     <span>{{ favoriteCount }}</span>
                 </button>
                 <!-- 다른 버튼들 -->
-                <button class="s-btn"><i class="s-icon far fa-comments" /></button>
+                <button class="s-btn" @click="goToChat"><i class="s-icon far fa-comments" /></button>
                 <button class="s-btn"><i class="s-icon far fa-edit" /></button>
             </div>
         </div>
@@ -50,6 +50,9 @@
 <script setup>
 import { defineProps, computed } from 'vue';
 import subway_3 from '@/assets/img/subway_3.png';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 // Props
 const props = defineProps({
@@ -86,6 +89,10 @@ const districtName = computed(() => {
     const guIndex = addressParts.findIndex(part => part.includes('구'));
     return guIndex !== -1 ? addressParts[guIndex] : '';
 });
+
+const goToChat = () => {
+    router.push('/chat'); // Navigate to '/chat' route
+};
 </script>
 
 <style scoped>
