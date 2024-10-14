@@ -179,6 +179,8 @@ export const usePostRoomStore = defineStore('postRoom', {
             hasElevator: null, //GOSIWON - HAS_ELEVATOR - TINYINT(1)
         },
 
+        //선택이미지
+        selectedFiles: [],
     }),
 
     actions: {
@@ -356,6 +358,7 @@ export const usePostRoomStore = defineStore('postRoom', {
 
         //유효성 검사
         checkGosiwonValue() {
+            if(this.selectedFiles.length === 0) alert('사진을 최소 1장 등록해주세요.');
             if (this.basicInfo.title === null || this.basicInfo.title.trim() === '') throw new Error('이름을 입력해주세요.');
             if (this.basicInfo.addr.postcode === null || this.basicInfo.addr.address === null) throw new Error('주소를 모두 입력해주세요.');
             if (this.basicInfo.price.priceMin <= 0 || this.basicInfo.price.priceMax <= 0
@@ -374,11 +377,33 @@ export const usePostRoomStore = defineStore('postRoom', {
             if (this.buildingInfo.hasElevator === null) throw new Error('엘리베이터 유무를 선택해주세요.');
         },
 
+        //이미지 파일 처리
+        handleFile(e) {
+            const files = e.target.files;
+            if(files.length > 3) {
+                alert('사진은 최대 3장까지 가능합니다.');
+                e.target.files = null;
+                files = null;
+                return;
+            } 
+
+            const limitsize = 1024 ** 2 * 3;
+            for(let file of files) {
+                if(file.size > limitsize) {
+                    alert('이미지 파일의 용량은 3MB를 초과할 수 없습니다.'); 
+                    e.target.files = null;
+                    files = null;
+                    return;
+                }
+            }
+            this.selectedFiles = Array.from(files);
+        },
+
         //폼 제출
         async submitForm() {
             this.convertTo();
             this.convertFalseToZero();
-            // this.checkGosiwonValue();
+            this.checkGosiwonValue();
         
             const authStore = useAuthStore();
 
@@ -391,17 +416,27 @@ export const usePostRoomStore = defineStore('postRoom', {
                 writerId: authStore.id, //작성자 아이디
             };
 
-            console.log(`넘어온 데이터 확인: ${JSON.stringify(data, null, 2)}`);
+            let formData = new FormData();
+            formData.append('dto', JSON.stringify(data));
+
+            //파일 추가
+            this.selectedFiles.forEach((file) => {
+                formData.append('pics', file);
+            });
 
             try {
                 //체크목록 문자열화 (값|값|값)
                 this.convertTo();
-                // this.checkGosiwonValue();
+                this.checkGosiwonValue();
 
-                const response = await axios.post('/api/rooms', data);
+                const res = await axios.post('/api/rooms', formData, {
+                    headers: {
+                      'Content-Type': 'multipart/form-data'
+                    }
+                });
 
-                if (response.status === 200) {
-                    router.push(`/houses/rooms/${response.data}`);
+                if (res.status === 200) {
+                    router.push(`/houses/gosiwons/${res.data}`);
                 }
             } catch (err) {
                 console.error('>>>>>>>>    ROOM SUBMIT FAILED  (- ^ -)    <<<<<<<<<', err);

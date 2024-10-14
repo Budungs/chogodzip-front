@@ -341,8 +341,9 @@
             <!-- 사진 첨부 -->
             <div class="mb-4">
               <label class="form-label fw-bold" for="r-pics">사진 첨부<span class="text-danger">*</span></label>
-              <input class="file-uploader file-uploader-grid mx-3" id="r-pics" type="file" multiple data-max-files="4" >
-              <p class="fs-sm">사진은 각 5MB 용량 이하 파일으로 최대 3장 첨부 가능합니다. (JPG, PNG, IMG)</p>
+              <input class="file-uploader file-uploader-grid mx-3" id="r-pics" type="file" multiple data-max-files="4" 
+                @change="store.handleFile">
+              <p class="fs-sm">사진은 각 3MB 용량 이하 파일으로 최대 3장 첨부 가능합니다. (JPG, PNG, IMG)</p>
             </div>
         </div>
     </section>
