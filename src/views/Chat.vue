@@ -9,9 +9,9 @@
         </div>
         <div v-for="(user, index) in users" :key="index" class="user" style="margin-bottom: 1.5rem"
           @click="selectUser(user)">
-          <img :src="user.image" alt="" class="icon-user" />
+          <img :src="user.image || defaultUserImage" alt="" class="icon-user" />
           <div class="user-status" style="">
-            <div class="name">{{ user.name }}</div>
+            <div class="name">방이름 : {{ user.roomId }}</div>
             <div v-if="user.unreadCount > 0" class="unread-badge">{{ user.unreadCount }}</div>
           </div>
           <hr />
@@ -35,15 +35,15 @@
         </div>
 
         <!-- 메시지 표시 영역 -->
-        <div class="message" ref="messageContainer">
-          <div v-for="(message, index) in messages" :key="index" class="solo-message">
-            <div :class="['message-text', message.isUser ? 'right' : 'left']">
-              {{ message.text }}
-              <div class="timestamp">{{ message.timestamp }}</div>
-            </div>
-
+        <!-- 메시지 표시 영역 -->
+      <div class="message" ref="messageContainer">
+        <div v-for="(message, index) in messages" :key="index" class="solo-message">
+          <div :class="['message-text', message.isUser ? 'right' : 'left']">
+            {{ message.text }}
+            <div class="timestamp">{{ message.timestamp }}</div>
           </div>
         </div>
+      </div>
 
         <!-- 메시지 입력 및 추가 버튼 -->
         <div class="line-input">
@@ -59,211 +59,201 @@
   </div>
 </template>
 
-<script>
-import { ref, onMounted, computed, reactive } from 'vue';
+<script setup>
+import { ref, onMounted, computed, reactive, nextTick } from 'vue';
 import { useAuthStore } from '@/stores/auth';
-import axios from "axios";
+import { useRoute } from 'vue-router';
+import axios from 'axios';
+import api from '@/api/chatApi';
 
+// Accessing route parameters
+const route = useRoute();
 
-export default {
-  data() {
-    return {
-      roomId: 1,
-      senderId: null,
-      receiverId: 2,
-      userMessage: "",
-      selectedUserName: "",
-      selectedUserImage: "",
-      messages: [],
-      users: reactive([
-        {
-          name: "하츄핑",
-          userId: 2,
-          image: "https://i.namu.wiki/i/U6e2CQUpk8s-HxMQNWJPF_vfzlqLAsuRCeI68CHOk8GvuagcVU0TjhuZ7o0WwpQEG7hk6Ck207c1EpIgb3E3qA.webp",
-          unreadCount: 0,
-        },
-      ]),
-    };
-  },
-  computed: {
-    islogin() {
-      const auth = useAuthStore();
-      return auth.isLogin;
-    },
-    loggedInUserId() {
-      const auth = useAuthStore();
-      return auth.id;
-    }
-  },
-  methods: {
-    async fetchLoggedInUser() {
-      try {
-        const response = await axios.get(`http://localhost:8080/api/member/${this.loggedInUserId}`);
-        console.log("Response data:", response.data); // 응답 데이터 확인
+// Refs
+const roomId = ref(route.query.roomId); // Get roomId from the route query
+const senderId = ref(null);
+const receiverId = ref(route.query.userId); // Get userId from the route query
+const userMessage = ref('');
+const selectedUserName = ref('');
+const selectedUserImage = ref('');
+const chatRoomId = ref(null);
+const messages = ref([]);
+const defaultUserImage = 'https://img.freepik.com/free-photo/white-wall-background-with-scratches_1154-667.jpg?size=626&ext=jpg&ga=GA1.1.1395991368.1728518400&semt=ais_hybrid';
 
-        this.senderId = response.data.mno; // 사용자 ID 설정
-        this.selectedUserName = response.data.name;
-        this.selectedUserImage = response.data.avatar || 'default-avatar-url';
-      } catch (error) {
-        console.error("Failed to fetch logged-in user:", error);
-      }
-    },
+// Reactive Data
+const users = reactive([]); // 서버에서 받아온 채팅방 목록을 저장할 배열
 
-    async sendMessage() {
-      if (!this.userMessage.trim()) return; // 빈 메시지 방지
-      if (!this.chatRoomId) {
-        console.error(
-          "chatRoomId가 설정되지 않았습니다. 메시지를 전송할 수 없습니다."
-        );
-        return;
-      }
-      // 메시지 추가
-      this.messages.push({ text: this.userMessage, isUser: true });
+// Computed Properties
+const auth = useAuthStore();
+const islogin = computed(() => auth.isLogin);
+const loggedInUserId = computed(() => auth.id);
 
-      try {
-        // 메시지 전송 API 호출
-        await axios.post("http://localhost:8080/api/chat/message", {
-          chatroomId: this.chatRoomId,
-          senderId: this.senderId,
-          content: this.userMessage,
-        });
+// Call the provided API with receiverId
+const fetchChatRooms = async () => {
+  try {
+    const chatRooms = await api.getAllChatRoom(loggedInUserId.value); // Call your API with loggedInUserId
+    console.log("Fetched chat rooms: ", chatRooms);
 
-        this.userMessage = ""; // 입력 필드 초기화
-        this.fetchMessages(); // 메시지 목록 갱신
-      } catch (error) {
-        console.error("Failed to send message:", error);
-      }
-
-      this.scrollToBottom();
-    },
-    async fetchUnreadCounts(chatRoomId = this.roomId) {
-      try {
-        for (let i = 0; i < this.users.length; i++) {
-          const response = await axios.get(
-            "http://localhost:8080/api/chat/messages/unread-count",
-            {
-              params: {
-                chatroomId: chatRoomId,
-                senderId: this.senderId,
-                receiverId: this.users[i].userId
-              }
-            }
-          );
-          console.log("Chatroom ID:", chatRoomId);
-          console.log("Sender ID:", this.senderId);
-          console.log("Receiver ID:", this.users[i].userId);
-          const unreadCount = response.data;
-          console.log(`User ${this.users[i].userId} unread count: ${unreadCount}`);
-          this.users[i].unreadCount = unreadCount;
-        }
-      } catch (error) {
-        console.error("Failed to fetch unread message counts:", error);
-      }
-    },
-
-    async fetchMessages() {
-      if (!this.chatRoomId) return;
-
-      try {
-        // 메시지 조회 API 호출
-        const response = await axios.get(
-          "http://localhost:8080/api/chat/messages",
-          {
-            params: { chatRoomId: this.chatRoomId },
-
-          }
-        );
-
-        // 메시지 목록 갱신
-        this.messages = response.data.map((message) => ({
-          text: message.content,
-          isUser: message.senderId === this.senderId, // 발신자인지 확인
-          timestamp: new Date(message.sendTime).toLocaleString(),
-        }));
-        this.markMessagesAsRead();
-      } catch (error) {
-        console.error("Failed to fetch messages:", error);
-      }
-      this.$nextTick(() => {
-        this.scrollToBottom();
-      });
-    },
-    async markMessagesAsRead() {
-      if (!this.chatRoomId || !this.senderId) return;
-
-      try {
-        // 읽음 상태 업데이트 API 호출
-        await axios.post("http://localhost:8080/api/chat/messages/mark-read", null, {
-          params: { chatRoomId: this.chatRoomId, senderId: this.senderId }
-        });
-        console.log("Messages marked as read.");
-
-      } catch (error) {
-        console.error("Failed to mark messages as read:", error);
-      }
-    },
-    async deleteChatRoom() {
-      try {
-        await axios.delete(
-          `http://localhost:8080/api/chat/room/${this.chatRoomId}`
-        );
-        this.messages = []; // 삭제 후 메시지 목록 초기화
-        alert("채팅방이 삭제되었습니다.");
-      } catch (error) {
-        console.error("Failed to delete chat room:", error);
-      }
-    },
-    async selectUser(user) {
-      await this.fetchLoggedInUser();
-
-      this.receiverId = user.userId;
-      this.selectedUserName = user.name;
-      this.selectedUserImage = user.image;
-      try {
-        // 채팅방 ID를 확인하고 없는 경우 생성 요청을 보냅니다.
-        const response = await axios.get(
-          "http://localhost:8080/api/chat/room",
-          {
-            params: {
-              roomId: this.roomId, // 해당 매물 ID 
-              senderId: this.senderId,
-              receiverId: user.userId, // 상대방 사용자 ID
-            },
-          }
-        );
-
-        this.chatRoomId = response.data.chatroomId;
-        console.log("채팅방 ID:", response.data.chatroomId);
-        console.log(this.chatRoomId, this.senderId, this.receiverId);
-
-
-        if (this.chatRoomId) {
-          await this.fetchMessages();
-          await this.fetchUnreadCounts(this.chatRoomId);
-        } else {
-          console.error("채팅방 ID가 설정되지 않았습니다.");
-        }
-      } catch (error) {
-        console.error("Failed to fetch or create chat room:", error);
-      }
-      this.scrollToBottom();
-    },
-    scrollToBottom() {
-      const messageContainer = this.$refs.messageContainer;
-      messageContainer.scrollTop = messageContainer.scrollHeight;
-    },
-  },
-  async mounted() {
-    await this.fetchLoggedInUser();
-    await this.fetchMessages().then(() => {
-      this.$nextTick(() => {
-        this.scrollToBottom();
+    // 서버에서 받은 채팅방 목록을 users 배열에 추가
+    chatRooms.forEach(room => {
+      users.push({
+        roomId: room.roomId,
+        userId: room.receiverId,
+        image: defaultUserImage, // 임시 기본 이미지
+        unreadCount: 0 // 기본적으로 읽지 않은 메시지 수는 0
       });
     });
-    this.fetchUnreadCounts(this.roomId);
+  } catch (error) {
+    console.error('Failed to fetch chat rooms:', error);
   }
 };
+
+// Methods
+const fetchLoggedInUser = async () => {
+  try {
+    const response = await axios.get(`http://localhost:8080/api/member/${loggedInUserId.value}`);
+    senderId.value = response.data.mno;
+    selectedUserName.value = response.data.name;
+    selectedUserImage.value = response.data.avatar || defaultUserImage;
+  } catch (error) {
+    console.error('Failed to fetch logged-in user:', error);
+  }
+};
+const chatRooms = ref([]); // chatRooms 데이터를 저장하는 ref로 선언
+
+const selectUser = async (user) => {
+  console.log("Selecting user:", user);
+
+  receiverId.value = user.userId;  // user.userId로 설정
+  selectedUserName.value = `${user.roomId}`;  // roomId를 화면에 표시
+
+  try {
+    // findchatRoomNum API를 호출하여 chatRoomId를 얻음
+    const chatRoomIdData = await api.getRoomNum({
+      roomId: user.roomId, // user에서 roomId 가져옴
+      userName: loggedInUserId.value // 현재 로그인한 사용자의 userName 사용
+    });
+    
+    if (chatRoomIdData) {
+      chatRoomId.value = chatRoomIdData;
+      console.log("Chat Room ID:", chatRoomId.value);
+      
+      // chatRoomId로 채팅방의 모든 메시지를 가져오는 API 호출
+      const messagesData = await api.getAllMessage(chatRoomId.value);
+      console.log('Messages Data:', messagesData);
+      
+      // 메시지 데이터를 화면에 표시
+      messages.value = messagesData.map(message => ({
+        text: message.content,
+        isUser: message.senderId === senderId.value,
+        timestamp: new Date(message.sendTime).toLocaleString()
+      }));
+
+      // 읽지 않은 메시지가 있으면 카운트 초기화
+      user.unreadCount = 0;
+    } else {
+      console.error('chatRoomId를 찾을 수 없습니다.');
+    }
+
+  } catch (error) {
+    console.error('Failed to fetch chat room number:', error);
+  }
+
+  scrollToBottom();
+};
+
+
+
+
+const sendMessage = async () => {
+  if (!userMessage.value.trim()) return; // 빈 메시지 방지
+
+  console.log("Sending message:", userMessage.value);
+
+  if (!chatRoomId.value) {
+    console.error('chatRoomId가 설정되지 않았습니다.');
+    return;
+  }
+
+  // 메시지를 화면에 추가
+  messages.value.push({ text: userMessage.value, isUser: true });
+
+  try {
+    // 메시지 전송 API 호출
+    await axios.post('http://localhost:8080/api/chat/message', {
+      chatroomId: chatRoomId.value, // 현재 선택된 chatRoomId 사용
+      senderId: senderId.value,
+      content: userMessage.value,
+    });
+
+    // 메시지 입력 필드 초기화
+    userMessage.value = '';
+    
+    // 메시지를 다시 불러와 화면을 업데이트
+    await fetchMessages();
+
+  } catch (error) {
+    console.error('Failed to send message:', error);
+  }
+
+  scrollToBottom();
+};
+
+
+// 메시지 목록을 스크롤 하단으로 이동
+const scrollToBottom = () => {
+  const messageContainer = document.querySelector('.message');
+  messageContainer.scrollTop = messageContainer.scrollHeight;
+};
+
+onMounted(async () => {
+  // route에서 roomId와 userId를 가져옴
+  const roomId = ref(route.query.roomId);  // 특정 매물의 roomId
+  const receiverId = ref(route.query.userId);  // 대화 상대방의 userId
+
+  // 로그인된 사용자 정보 가져오기
+  await fetchLoggedInUser();
+
+  try {
+    // 채팅방이 있는지 확인하고, 없으면 새로 생성하는 API 호출
+    const response = await axios.get('http://localhost:8080/api/chat/room', {
+      params: {
+        roomId: roomId.value,  // 매물 ID
+        senderId: senderId.value,  // 로그인한 사용자 ID
+        receiverId: receiverId.value  // 대화 상대방 ID
+      }
+    });
+
+    const chatRoom = response.data;
+    if (chatRoom && chatRoom.chatroomId) {
+      chatRoomId.value = chatRoom.chatroomId;  // chatRoomId 설정
+      selectedUserName.value = ` ${chatRoom.roomId}`;  // 방 번호를 selectedUserName에 설정
+      console.log("Chat Room ID:", chatRoomId.value);
+
+      // 채팅방의 모든 메시지를 가져오는 API 호출
+      const messagesData = await api.getAllMessage(chatRoomId.value);
+      console.log('Messages Data:', messagesData);
+
+      // 메시지 데이터를 화면에 표시
+      messages.value = messagesData.map(message => ({
+        text: message.content,
+        isUser: message.senderId === senderId.value,
+        timestamp: new Date(message.sendTime).toLocaleString()
+      }));
+    } else {
+      console.error('채팅방 생성에 실패했습니다.');
+    }
+  } catch (error) {
+    console.error('Failed to fetch or create chat room:', error);
+  }
+
+  // 채팅방 목록 가져오기
+  await fetchChatRooms();
+});
+
+
 </script>
+
 
 <style scoped>
 * {
