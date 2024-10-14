@@ -6,12 +6,12 @@ export default [
   },
   {
     path: '/houses/maps/sharehouses',
-    name: 'houses/maps/sharehouses',
+    name: 'Sharehouse',
     component: () => import('../views/mapPage/Sharehouse.vue'),
   },
   {
     path: '/houses/maps/room',
-    name: 'houses/maps/room',
+    name: 'Jachiroom',
     component: () => import('../views/mapPage/RoomHouse.vue'),
   },
   {

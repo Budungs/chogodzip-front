@@ -1,27 +1,28 @@
 <template>
     <div class="container">
-        <input type="radio" name="type" id="gosiwon" checked>
-        <input type="radio" name="type" id="jachiroom">
-        <input type="radio" name="type" id="sharehouse">
-
-        <nav>
-            <div class="slider"></div>
-            <label class="gosiwon" for="gosiwon">
-                고시원
-            </label>
-            <label class="jachiroom" for="jachiroom">
-                자취방
-            </label>
-            <label class="sharehouse" for="sharehouse">
-                공유주거공간
-            </label>
-        </nav>
+      <input type="radio" name="type" id="gosiwon" @change="updateCategory('gosiwon')" checked>
+      <input type="radio" name="type" id="jachiroom" @change="updateCategory('jachiroom')">
+      <input type="radio" name="type" id="sharehouse" @change="updateCategory('sharehouse')">
+  
+      <nav>
+        <div class="slider"></div>
+        <label class="gosiwon" for="gosiwon">고시원</label>
+        <label class="jachiroom" for="jachiroom">자취방</label>
+        <label class="sharehouse" for="sharehouse">공유주거공간</label>
+      </nav>
     </div>
-</template>
-
-<script setup>
-
-</script>
+  </template>
+  
+  <script setup>
+  import { defineEmits } from 'vue';
+  
+  const emit = defineEmits(['updateCategory']);
+  
+  // 선택된 카테고리 정보를 부모 컴포넌트로 전달하는 함수
+  const updateCategory = (category) => {
+    emit('updateCategory', category);
+  };
+  </script>
 
 <style scoped>
 * {

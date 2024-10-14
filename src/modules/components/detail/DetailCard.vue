@@ -23,6 +23,7 @@
                 <!-- 다른 버튼들 -->
                 <button class="s-btn" @click="goToChat"><i class="s-icon far fa-comments" /></button>
                 <button class="s-btn"><i class="s-icon far fa-edit" /></button>
+                <button class="s-btn" @click="goToPayment"><i class="s-icon fas fa-wallet" /> 결제하기</button>
             </div>
         </div>
         <div class="market-price d-flex flex-column align-items-center">
@@ -99,6 +100,16 @@ const goToChat = () => {
             userId :props.cardData.room.userId
          }  // roomId를 쿼리 파라미터로 전달
 
+    });
+};
+const goToPayment = () => {
+    router.push({
+        path: '/payment',
+        query: {
+            roomId: props.cardData.room.roomId,
+            deposit: props.cardData.depositMin,
+            price: props.cardData.priceMin
+        }  // roomId와 가격 정보를 쿼리 파라미터로 전달
     });
 };
 </script>
