@@ -14,49 +14,26 @@
 
 <script setup>
 import RoomCard from '@/common/components/RoomCard.vue';
+import axios from 'axios';
+import { ref, onMounted } from 'vue';
 
-const regionItemList = [
-    {
-        hrefUrl: '/houses/sharehouses/info/:id',
-        imgUrl: "src/assets/images/backgrounds/home-1.png",
-        roomType: "원룸",
-        houseType: "오피스텔",
-        price: "전세 1억 8000천",
-        majorDesc: "계약 면적 28평 | 2층 | 관리비 17만",
-        desc: "깔끔하고 공간 좋은 오픈형 원룸",
-        address: "서울특별시 강남구 역삼동",
-    },
-    {
-        hrefUrl: '/houses/sharehouses/info/:id',
-        imgUrl: "src/assets/images/backgrounds/home-1.png",
-        roomType: "원룸",
-        houseType: "오피스텔",
-        price: "전세 1억 8000천",
-        majorDesc: "계약 면적 28평 | 2층 | 관리비 17만",
-        desc: "깔끔하고 공간 좋은 오픈형 원룸",
-        address: "서울특별시 강남구 역삼동",
-    },
-    {
-        hrefUrl: '/houses/sharehouses/info/:id',
-        imgUrl: "src/assets/images/backgrounds/home-1.png",
-        roomType: "원룸",
-        houseType: "오피스텔",
-        price: "전세 1억 8000천",
-        majorDesc: "계약 면적 28평 | 2층 | 관리비 17만",
-        desc: "깔끔하고 공간 좋은 오픈형 원룸",
-        address: "서울특별시 강남구 역삼동",
-    },
-    {
-        hrefUrl: '/houses/sharehouses/info/:id',
-        imgUrl: "src/assets/images/backgrounds/home-1.png",
-        roomType: "원룸",
-        houseType: "오피스텔",
-        price: "전세 1억 8000천",
-        majorDesc: "계약 면적 28평 | 2층 | 관리비 17만",
-        desc: "깔끔하고 공간 좋은 오픈형 원룸",
-        address: "서울특별시 강남구 역삼동",
-    },
-]
+const regionItemList = ref(null);
+
+onMounted(async () => {
+    try {
+        const res = await axios.get(`/api/home/rooms/area`, {
+            params: {
+                area: '서울 광진구'
+            }
+        });
+
+        if(res.status === 200) {
+            regionItemList.value = res.data;
+        }
+    } catch (err) {
+        console.error('>>>>> 데이터 조회 실패: ', err.message);
+    }
+})
 </script>
 
 <style scoped>
