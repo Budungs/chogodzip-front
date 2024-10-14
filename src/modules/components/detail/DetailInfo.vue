@@ -20,7 +20,7 @@
             </div>
             <div class="feature">
                 <img :src="DepartmentIcon" alt="Area Icon" />
-                <span>방 개수 정보 없음</span>
+                <span>{{cardData.roomCnt || 'N/A'}}개</span>
             </div>
             <div class="feature">
                 <img :src="ParkingIcon" alt="Parking Icon" />
