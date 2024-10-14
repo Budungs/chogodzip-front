@@ -32,7 +32,7 @@
   <div class="gray-container">
     <div class="container">
       <DetailInfo :cardData="house" />
-      <GosiwonTable :cardData="house" />
+      <RoomTable :cardData="house" />
       <DetailMap
         :cardData="house"
         :nearestSubway="nearestSubway"
@@ -245,7 +245,6 @@ async function getFavoriteCnt(roomId) {
   }
 }
 
-// 좋아요 토글 기능
 // async function toggleFavorite() {
 //     try {
 //         isFavorited.value = !isFavorited.value;
@@ -263,6 +262,7 @@ const isOwner = ref(false); // 방의 소유자인지 여부
 onMounted(async () => {
   try {
     const roomIds = route.params.id;
+
 
     // 첫 번째 API 호출
     const data = await api.getOneJachi(roomIds);
@@ -286,7 +286,7 @@ onMounted(async () => {
 
     // 두 번째 API 호출 (Jachi Status)
     if (districtName) {
-      const data2 = await api.getGosiwonStatus(districtName);
+      const data2 = await api.getRoomStatus(districtName);
       Object.assign(nameStatus, data2);
       console.log('Status 데이터: ', nameStatus.maxPrice);
     } else {
