@@ -436,6 +436,7 @@ export const usePostRoomStore = defineStore('postRoom', {
                 });
 
                 if (res.status === 200) {
+                    this.$reset();
                     router.push(`/houses/gosiwons/${res.data}`);
                 }
             } catch (err) {
