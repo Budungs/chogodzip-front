@@ -130,7 +130,7 @@ const props = defineProps({
     cardData: {
         type: Object,
         required: true
-    }
+    },
 });
 console.log('adfadsf',props.cardData.priceMax);
 // Parse private facilities and services
