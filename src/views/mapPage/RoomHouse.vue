@@ -214,6 +214,7 @@ import markerImageSrc from '@/assets/img/room/house1.png'; // 마커 이미지
 import searchApi from '@/api/searchApi';
 import interestApi from '@/api/interestApi';
 import { useAuthStore } from '@/stores/auth';
+import { useRoute } from 'vue-router';
 
 
 const auth = useAuthStore();
@@ -558,8 +559,13 @@ const fetchJachiData = async (lat, lng) => {
 };
 
 
+const route = useRoute();
 // 컴포넌트 마운트 후 지도 초기화 및 고시원 리스트 불러오기
 onMounted(async () => {
+  const { query } = route.query;
+  if (query) {
+    searchQuery.value = query; // 검색어 세팅
+  }
   const container = document.getElementById('map');
   const options = {
     center: new kakao.maps.LatLng(37.4784, 126.9514), // 초기 지도 중심 좌표 (서울 기준)
