@@ -90,8 +90,16 @@ const districtName = computed(() => {
     return guIndex !== -1 ? addressParts[guIndex] : '';
 });
 
+// 채팅 페이지로 이동
 const goToChat = () => {
-    router.push('/chat'); // Navigate to '/chat' route
+    router.push({
+        path: '/chat',
+        query: {
+            roomId : props.cardData.room.roomId,
+            userId :props.cardData.room.userId
+         }  // roomId를 쿼리 파라미터로 전달
+
+    });
 };
 </script>
 
