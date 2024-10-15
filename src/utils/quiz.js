@@ -13,7 +13,6 @@ const fetchQuizs = () => {
       // 이미 퀴즈가 존재하면 중지
       if (storedQuizs) {
         quizs.value = JSON.parse(storedQuizs);
-        console.log("기존 퀴즈 데이터가 존재합니다.", quizs.value);
         return;
       } 
 
