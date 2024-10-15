@@ -33,7 +33,7 @@
         </div>
 
         <div class="description">
-            <p>{{ cardData.desc }}</p>
+            <p>{{ cardData.description }}</p>
             <!-- <div class="more-button main1 mt-2" type="button"><strong>소개 더보기</strong></div> -->
         </div>
     </div>
