@@ -2,7 +2,7 @@
     <div>
         <SearchHouse />
         <div class="container">
-            <LikeRegionState />
+            <LikeRegionState :position="position" :isPositionReady="isPositionReady" />
         </div>
         <LikeRegionLatest />
         <div class="container">
@@ -18,6 +18,13 @@ import LikeRegionState from '@/modules/components/home/home02/LikeRegionState.vu
 import LottosInfo from '@/modules/components/home/home04/LottosInfo.vue';
 import SearchHouse from '@/modules/components/home/home01/SearchHouse.vue';
 import TodayLecture from '@/modules/components/home/home05/TodayLecture.vue';
+import { useGeolocation } from '@/api/useLocation';
+const { position, isPositionReady, getCurrentLocation } = useGeolocation();
+import { onMounted } from 'vue';
+
+onMounted(() => {
+    getCurrentLocation(); //현재 위치
+})
 </script>
 
 <style scoped> 
