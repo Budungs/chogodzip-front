@@ -48,7 +48,16 @@ export default {
         const {data} = await api.get(`${BASE_URL}/isOwn`,{params : {
             userName : userId
         }});
-        console('mnonnonon : ',data);
+        console.log('mnonnonon : ',data);
+        return data;
+    },
+    async myInterestPage(userName){
+        const {data} = await api.get(`${BASE_URL}/myInterest`,{
+            params :{
+                userName
+            }
+        });
+        console.log('dfiadfikadfi : ',data);
         return data;
     }
 
