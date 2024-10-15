@@ -67,11 +67,11 @@
               <label class="form-check-label px-2" for="no-deposit-fee">즉시 입주 가능(협의 가능)</label>
             </div>
 
-            <!-- 자취방: 최소 계약 기간 -->
-            <label v-if="category === 'jachiroom'" class="form-label fw-bold" for="r-min-period">최소 계약 기간<span class="text-danger">*</span></label>
-            <div v-if="category === 'jachiroom'" class="input-group mb-5">
-                <input class="form-control range-slider-value-max" type="number" v-model="store.basicInfo.jachi.contractMin">
-                <span class="input-group-text fs-base">개월</span>
+            <!-- 최소 계약 기간:일수 -->
+            <label class="form-label fw-bold" for="r-min-period">최소 계약 기간<span class="text-danger">*</span></label>
+            <div class="input-group mb-5">
+                <input class="form-control range-slider-value-max" type="number" v-model="store.basicInfo.contractMin">
+                <span class="input-group-text fs-base">일</span>
             </div>
           
             <!-- 자취방: 방 종류 -->
@@ -157,27 +157,15 @@
               </select>
             </div>
 
-            
-            <!-- 고시원 & 공유주거: 최소 계약 기간 -->
-            <div v-if="category === 'gosiwon' || category === 'sharehouse'" class="col-sm-6 mb-4 w-100">
-              <div class="form-label pt-3 pb-2 fw-bold">최소 계약 기간<span class="text-danger">*</span></div>
-              <div class="container row w-100">
-                    <div class="form-check col-lg-3" v-for="num in 4" :key="num">
-                        <input class="form-check-input" type="radio" :id="'period-' + num" name="r-min-period" v-model="store.basicInfo.jachiElse.contractMin" :value="num">
-                        <label class="form-check-label" :for="'period-' + num">{{ num }}개월</label>
-                    </div>
-              </div>
-            </div>
-
             <!-- 고시원 & 공유: 이용 가능 연령 -->
             <div v-if="category !== 'jachiroom'" class="mb-1 row">
               <div class="col-sm-6 mb-3">
                 <label class="form-label fw-bold" for="r-min-age">최소 이용 연령<span class="text-danger">*</span></label>
-                <input class="form-control" type="number" id="r-min-age" min="0" v-model="store.basicInfo.jachiElse.age.ageMin" value="0" :disabled="store.basicInfo.jachiElse.age.isNoAgeLimit">
+                <input class="form-control" type="number" id="r-min-age" v-model="store.basicInfo.jachiElse.age.ageMin" :disabled="store.basicInfo.jachiElse.age.isNoAgeLimit">
               </div>
               <div class="col-sm-6 mb-3">
                 <label class="form-label fw-bold" for="r-max-age">최대 이용 연령<span class="text-danger">*</span></label>
-                <input class="form-control" type="number" id="r-max-age" min="0" v-model="store.basicInfo.jachiElse.age.ageMax" value="0" :disabled="store.basicInfo.jachiElse.age.isNoAgeLimit">
+                <input class="form-control" type="number" id="r-max-age" v-model="store.basicInfo.jachiElse.age.ageMax" :disabled="store.basicInfo.jachiElse.age.isNoAgeLimit">
               </div>
               <div class="form-check d-flex justify-content-end pt-2 fs-sm">
                   <input class="form-check-input" type="checkbox" id="no-age-limit" name="no-age-limit" v-model="store.basicInfo.jachiElse.age.isNoAgeLimit">
@@ -347,14 +335,15 @@
             <!-- 상세 사항 -->
             <div class="mb-4">
               <label class="form-label fw-bold" for="r-description">상세 설명<span class="text-danger">*</span></label>
-              <textarea class="form-control" id="r-description" rows="5" placeholder="매물에 대한 상세 정보를 입력하세요" v-model="store.basicInfo.desc"></textarea>
+              <textarea class="form-control" id="r-description" rows="5" placeholder="매물에 대한 상세 정보를 입력하세요" v-model="store.basicInfo.description"></textarea>
             </div>
 
             <!-- 사진 첨부 -->
             <div class="mb-4">
               <label class="form-label fw-bold" for="r-pics">사진 첨부<span class="text-danger">*</span></label>
-              <input class="file-uploader file-uploader-grid mx-3" id="r-pics" type="file" multiple data-max-files="4" >
-              <p class="fs-sm">사진은 30MB 용량 이하에서 여러 장 첨부 가능합니다.</p>
+              <input class="file-uploader file-uploader-grid mx-3" id="r-pics" type="file" multiple data-max-files="4" 
+                @change="store.handleFile">
+              <p class="fs-sm">사진은 각 3MB 용량 이하 파일으로 최대 3장 첨부 가능합니다. (JPG, PNG, IMG)</p>
             </div>
         </div>
     </section>
