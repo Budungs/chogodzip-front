@@ -59,6 +59,15 @@ export default {
         });
         console.log('dfiadfikadfi : ',data);
         return data;
+    },
+    async myRoomSold(userName){
+        const {data} = await api.get(`${BASE_URL}/isSoldOut`,{
+            params : {
+                userName
+            }
+        });
+        console.log('asidfdaihfaodfiua : ',data);
+        return data;
     }
 
 }
