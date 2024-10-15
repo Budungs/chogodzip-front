@@ -2,7 +2,7 @@
     <aside class="col-md-5" style="display: flex; flex-direction: column;">
         <div style="margin-left: 1rem; flex-grow: 1;">
             <p class="fs-lg">매물 이름 : {{ cardData.title }}</p>
-            <h4>월세 {{ cardData.depositMin }}-{{ cardData.depositMax }} / 보증금 {{ cardData.priceMin }}-{{ cardData.priceMax }} 만원</h4>
+            <h4>보증금 {{ cardData.depositMin }}-{{ cardData.depositMax }} / 월세 {{ cardData.priceMin }}-{{ cardData.priceMax }} 만원</h4>
             <div>관리비 {{ cardData.maintenanceFee }} 만원</div>
             <hr class="mt-3 mb-3" style="height:2px; border-color:#0C0C0C;">
              <div class="fs-6" style="color:black;">{{ cardData.location }}</div>
@@ -14,17 +14,17 @@
                 </span>
                 <span v-if="walkTime" style="margin-left:1rem;">도보 {{ walkTime }}분 </span>
             </div>
-            <div class="d-flex justify-content-end">
-                <!-- 좋아요 버튼 -->
-                <button class="s-btn" @click="toggleFavorite">
-                    <i :class="['s-icon', isFavorited ? 'fas fa-heart' : 'far fa-heart']" style="margin-right:0.5rem;" />
-                    <span>{{ favoriteCount }}</span>
-                </button>
-                <!-- 다른 버튼들 -->
-                <button class="s-btn" @click="goToChat"><i class="s-icon far fa-comments" /></button>
-                <button class="s-btn"><i class="s-icon far fa-edit" /></button>
-                <button class="s-btn" @click="goToPayment"><i class="s-icon fas fa-wallet" /> 결제하기</button>
-            </div>
+        </div>
+        <div class="d-flex justify-content-end">
+            <!-- 좋아요 버튼 -->
+            <button class="s-btn" @click="toggleFavorite">
+                <i :class="['s-icon', isFavorited ? 'fas fa-heart' : 'far fa-heart']" style="margin-right:0.5rem;" />
+                <span>{{ favoriteCount }}</span>
+            </button>
+            <!-- 다른 버튼들 -->
+            <button class="s-btn" @click="goToChat"><i class="s-icon far fa-comments" /></button>
+            <!-- <button class="s-btn"><i class="s-icon far fa-edit" /></button> -->
+            <button class="s-btn" @click="goToPayment"><i class="s-icon fas fa-wallet" /> 결제하기</button>
         </div>
         <div class="market-price d-flex flex-column align-items-center">
             <h6 class="main1 mt-3" style="margin-left: 7px; font-weight: bolder; color: #D85F5F;">
@@ -47,6 +47,7 @@
         </div>
     </aside>
 </template>
+
 
 <script setup>
 import { defineProps, computed } from 'vue';
