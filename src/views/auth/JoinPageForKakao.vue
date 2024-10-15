@@ -8,23 +8,22 @@ import { useAuthStore } from '@/stores/auth'; // auth 스토어 가져오기
 
 const router = useRouter();
 const route = useRoute();
-const avatar = ref(null);
+const avatar = ref('');
 const checkError = ref('');
 const auth = useAuthStore(); // auth 스토어 사용
 
-//////////////////////////////////////////////////////////
 const member = reactive({
-  id: 'test',
-  name: '홍길동',
-  email: 'hong@gmail.com',
+  id: '',
+  name: '',
+  email: '',
   password: '1212',
   password2: '1212',
-  avatar: null,
+  avatar: '',
   kakaoId:'',
   address:'',
   interestArea:'',
 });
-//////////////////////////////////////////////////////////
+
 const disableSubmit = ref(true);
 const checkId = async () => {
   if (!member.id) {
@@ -32,7 +31,6 @@ const checkId = async () => {
   }
 
   disableSubmit.value = await authApi.checkId(member.id);
-  console.log(disableSubmit.value, typeof disableSubmit.value);
   checkError.value = disableSubmit.value ? '이미 사용중인 ID입니다.' : '사용가능한 ID입니다.';
 };
 
@@ -50,26 +48,17 @@ const join = async () => {
     return alert('비밀번호가 일치하지 않습니다.');
   }
 
-  const formData = new FormData(); // formData 객체 생성
-  
-  if (avatar.value.files.length > 0) {
-    member.avatar = avatar.value.files[0];
-    formData.append('avatar', avatar.value.files[0]);
-  }
-
   try {
-    console.log('회원가입 요청 시작');
     await authApi.create(member); // 회원가입 요청
 
     // 회원가입 성공 후, 로그인 요청
     await auth.login({ id: member.id, password: member.password });
-
-    console.log('회원가입 성공');
     router.push({ name: 'home' });
+
   } catch (e) {
      // 응답 데이터 확인
      if (e.response) {
-      console.error('응답 데이터:', e.response.data); // 서버에서 반환한 데이터
+      // console.error('응답 데이터:', e.response.data); // 서버에서 반환한 데이터
       console.error('응답 상태 코드:', e.response.status); // 상태 코드
       console.error('응답 헤더:', e.response.headers); // 응답 헤더
     } else if (e.request) {
@@ -79,8 +68,6 @@ const join = async () => {
     }
     router.push({ path: '/error' });
   }
-
-
 };
 
 const updateAddress = (address) => {
@@ -102,64 +89,64 @@ onMounted(async () => {
       return;
     }
 
-    console.log(data.email)
     member.email = data.email;
     member.name = data.nickname;
     member.kakaoId = data.id;
   } 
-
 });
-
-
 </script>
 
 <template>
-  <div class="mt-5 mx-auto" style="width: 500px">
-    <h1 class="my-5">
-      <i class="fa-solid fa-user-plus"></i>
-      회원 가입
-    </h1>
 
-    <form @submit.prevent="join">
+  <div class="outer-container py-5 mb-5 h-100 w-100">
+    <div class="container h-100 d-flex flex-column w-50 py-5 px-5 mb-5 rounded d-flex justify-content-center align-items-center" style="height: 60vh;">
+      <div class="w-100 mt-5 mb-4 pt-5 text-center">
+        <h1 class="h1">회원가입</h1>
+      </div>
+
+      <form @submit.prevent="join" class="w-100 d-flex flex-column gap-4">
       
-      <div class="mb-3 mt-3">
-        <label for="id" class="form-label">
-          <i class="fa-solid fa-user"></i>
-          사용자 ID :
-          <button type="button" class="btn btn-success btn-sm py-0 me-2" @click="checkId">ID 중복 확인</button>
-          <span :class="disableSubmit.value ? 'text-primary' : 'text-danger'">{{ checkError }}</span>
-        </label>
-        <input type="text" class="form-control" placeholder="사용자 ID" id="id" @input="changeId" v-model="member.id" />
-      </div>
+        <div class="mb-3 mt-3 w-100 align-items-center">
+          <label for="id" class="form-label d-flex align-items-center" style="height:40px">
+            사용자 ID
+            <button type="button" class="btn btn-translucent-accent py-0 mx-2" style="height:30px" @click="checkId">중복 확인</button>
+          </label>
+          <input type="text" class="form-control" id="id" @input="changeId" v-model="member.id" />
+          <div class="w-100 d-flex justify-content-end" style="margin-left:auto" :class="disableSubmit.value ? 'text-primary' : 'text-danger'">{{ checkError }}</div>
+        </div>
 
-      <div>
-        <label for="avatar" class="form-label">
-          <i class="fa-solid fa-user-astronaut"></i>
-          아바타 이미지:
-        </label>
-        <input type="file" class="form-control" ref="avatar" id="avatar" accept="image/png, image/jpeg" />
-      </div>
+        <div>
+          <label for="avatar" class="form-label">
+            프로필 사진
+          </label>
+          <!-- <input type="file" class="form-control" ref="avatar" id="avatar" accept="image/png, image/jpeg" /> -->
+          <div class="image-grid">
+            <div v-for="item in ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10']" class="form-check" :key="item">
+              <input type="radio" :id="`image${item}`" :value="`https://chogodzip.s3.ap-northeast-2.amazonaws.com/DF${item}.png`" v-model="member.avatar" class="form-check-input" />
+              <label :for="`image${item}`" class="form-check-label">
+                <img :src="`https://chogodzip.s3.ap-northeast-2.amazonaws.com/DF${item}.png`" width="60" class="rounded-image" />
+              </label>
+            </div>
+          </div>
+        </div>
 
-      <div class="mb-3 mt-3">
-        <label for="email" class="form-label">
-          <i class="fa-solid fa-envelope"></i>
-          email
-        </label>
-        <input type="email" class="form-control" placeholder="Email" id="email" v-model="member.email" />
-      </div>
+        <div class="mb-3 mt-3">
+          <label for="email" class="form-label">
+            이메일
+          </label>
+          <input type="email" class="form-control" placeholder="이메일을 입력하세요" id="email" v-model="member.email" readonly />
+        </div>
 
-      <div class="mb-3 mt-3">
-        <label for="name" class="form-label">
-          <i class="fa-solid fa-user"></i>
-          name
-        </label>
-        <input type="text" class="form-control" placeholder="Name" id="name" v-model="member.name" />
-      </div>
+        <div class="mb-3 mt-3">
+          <label for="name" class="form-label">
+            닉네임(이름)
+          </label>
+          <input type="text" class="form-control" placeholder="Name" id="name" v-model="member.name" />
+        </div>
 
-      <div class="mb-3">
+      <!-- <div class="mb-3">
         <label for="password" class="form-label">
-          <i class="fa-solid fa-lock"></i>
-          비밀번호:
+          비밀번호
         </label>
         <input type="password" class="form-control" placeholder="비밀번호" id="password" v-model="member.password" />
       </div>
@@ -167,29 +154,27 @@ onMounted(async () => {
       <div class="mb-3">
         <label for="password" class="form-label">
           <i class="fa-solid fa-lock"></i>
-          비밀번호 확인:
+          비밀번호 확인
         </label>
         <input type="password" class="form-control" placeholder="비밀번호 확인" id="password2" v-model="member.password2" />
-      </div>
+      </div> -->
+
       <!-- 실거주지 주소 입력 -->
       <label for="password" class="form-label">
-        <i class="fa-solid fa-lock"></i>
         실거주지 주소
       </label>
-          <!-- daum map search -->
       <div class="mb-3 pb-3">
         <AddressAPI  @update-address="updateAddress" />
       </div>
 
       <!-- 관심 지역 -->
       <label for="password" class="form-label">
-        <i class="fa-solid fa-lock"></i>
         관심 지역
       </label>
       <div class="d-flex mb-3">
           <div class="input-group input-group-sm mb-3">
-              <input placeholder="시/군" class="form-control" name="interestArea" aria-label="Sizing example input"
-                  aria-describedby="inputGroup-sizing-default" value="서울시" readonly>
+              <input placeholder="시/군" class="form-control" name="interestAreaSi" value="서울시" aria-label="Sizing example input"
+                  aria-describedby="inputGroup-sizing-default" disabled>
           </div>
           <div class="input-group input-group-sm mb-3">
               <select v-model="member.interestArea" class="form-control" aria-label="Sizing example select" aria-describedby="inputGroup-sizing-default">
@@ -220,16 +205,34 @@ onMounted(async () => {
                   <option value="중구">중구</option>
                   <option value="중랑구">중랑구</option>
                 </select>
-                
           </div>
         </div>
 
-      <!-- 확인 버튼 -->
-      <button type="submit" class="btn btn-primary mt-4" :disabled="disableSubmit">
-        <i class="fa-solid fa-user-plus"></i>
-        확인
-      </button>
-    </form>
-
+        <!-- 확인 버튼 -->
+        <button type="submit" class="btn btn-primary mt-2 py-4" :disabled="disableSubmit">
+          확인
+        </button>
+      </form>
+    </div>
   </div>
+
 </template>
+<style>
+  .image-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* 이미지 간 간격 */
+  }
+  
+  .form-check {
+    flex: 0 0 calc(20% - 10px); /* 한 줄에 5개씩 배치 */
+    text-align: center; /* 라벨과 이미지를 중앙 정렬 */
+  }
+
+  .rounded-image {
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    object-fit: cover; /* 이미지가 원 안에 꽉 차도록 */
+  }
+</style>
