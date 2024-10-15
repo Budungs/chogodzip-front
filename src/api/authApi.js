@@ -58,7 +58,7 @@ export default {
       formData.append('avatar', member.avatar);
     }
     formData.append('address', member.address); // 주소 추가
-    formData.append('interestArea', '서울시 ' + member.interestArea); // 관심 지역 추가
+    formData.append('interestArea', member.interestArea); // 관심 지역 추가
 
     
 

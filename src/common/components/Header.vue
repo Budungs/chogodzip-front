@@ -26,8 +26,8 @@
                         alt="User"
                         >
                         <div class="ps-2">
-                            <h6 class="fs-base mb-0">{{id}}</h6>
-                            <div class="fs-xs py-0">관심지역: {{interstLocation}}</div>
+                            <h6 class="fs-base mb-0">{{name}}</h6>
+                            <div class="fs-xs py-0">관심지역: 서울시 {{interstLocation}}</div>
                         </div>
                     </div>
                     <a class="dropdown-item" href="/mypage/info"><i class="far fa-user-circle opacity-60 me-2"/>내 프로필</a>
@@ -96,6 +96,7 @@ const auth = useAuthStore();
 
 let islogin = computed(() => auth.isLogin); // islogin 을 직접 바꿀 수는 없음. (computed 속성) - 값을 바꾸려면 auth.isLogin 값을 바꿔야 함.
 const id = computed(() => auth.id); // id 을 직접 바꿀 수는 없음. (computed 속성)  - 값을 바꾸려면 auth.id 값을 바꿔야 함.
+const name = computed(() => auth.name); // id 을 직접 바꿀 수는 없음. (computed 속성)  - 값을 바꾸려면 auth.id 값을 바꿔야 함.
 const profileImg = computed(() => auth.state.profileImg); // 프로필 이미지 가져오기
 const interstLocation = computed(() => auth.state.interestArea); // 프로필 이미지 가져오기
 

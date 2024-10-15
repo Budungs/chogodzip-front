@@ -1,51 +1,36 @@
-<script setup>
-import { computed, reactive, ref } from 'vue';
-import { useAuthStore } from '@/stores/auth';
-import { useRoute, useRouter } from 'vue-router';
-
-const route = useRoute();
-const router = useRouter();
-const auth = useAuthStore();
-
-  //////////////////////////////////////////////////////////
-const member = reactive({
-  id: '',
-  password: '',
-});
-
-const error = ref('');
-
-const disableSubmit = computed(() => !(member.id && member.password));
-
-const login = async () => {
-  console.log(member);
-  try {
-    await auth.login(member);
-    alert('로그인을 완료하였습니다.');
-    router.push('/');
-  } catch (e) {
-    // 로그인 에러
-    console.log('에러=======', e);
-    error.value = e.response.data;
-  }
-};
-
-  //////////////////////////////////////////////////////////
-</script>
-
 <template>
-  <div class="mt-5 mx-auto" style="width: 500px">
-    <h1 class="my-5">
-      <i class="fa-solid fa-right-to-bracket"></i>
-      로그인
-    </h1>
 
-          <!-- kakaologin 구현 -->
-    <!-- REST API 키 =  client_id / 카카오로 시작하기 button-->
+  <div class="outer-container py-5 mb-5">
+    <div class="container d-flex flex-column w-25 py-5 px-5 mb-5 rounded d-flex justify-content-center align-items-center" style="height: 60vh">
+      <div class="mb-2" style="width:85%">
+        <img class="w-100 mb-4" src="@/assets/img/chogod.png" width="250" alt="Chogodzip">
+      </div>
+      <div class="w-100 text-center">
+        <div class="w-100 fs-lg mb-2" style="font-weight:bold">로그인하시고</div>
+        <div class="w-100 fs-lg" style="font-weight:bold"><span class="text-primary">초갓집</span>과 함께 방 찾기 여정을 떠나보세요 !</div>
+      </div>
+
+      <div class="w-100 d-flex justify-content-center align-items-center mt-5" >
+        <a href="https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=07df78249e73e0bcac8ddfe9af045b0a&redirect_uri=http://localhost:5173/auth/kakaojoin">
+            <img class="w-100" src="@/assets/img/kakaologin/kakao_login_medium_narrow.png">
+        </a>
+      </div>
+
+      <div class="w-100 d-flex justify-content-center align-items-center mt-2">
+        <a class="mb-5" href="https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=07df78249e73e0bcac8ddfe9af045b0a&redirect_uri=http://localhost:5173/auth/kakaologin">
+            <img class="w-100" src="@/assets/img/kakaologin/kakao_login_medium_narrow_login.png">
+        </a>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <!-- <div class="mt-5 mx-auto" style="width: 500px">
     <a class="order-lg-3" href="https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=07df78249e73e0bcac8ddfe9af045b0a&redirect_uri=http://localhost:5173/auth/kakaojoin">
         <img src="@/assets/img/kakaologin/kakao_login_medium_narrow.png">
     </a>
-        <!-- REST API 키 =  client_id / 카카오 로그인 button -->
     <a class="order-lg-3" href="https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=07df78249e73e0bcac8ddfe9af045b0a&redirect_uri=http://localhost:5173/auth/kakaologin">
         <img src="@/assets/img/kakaologin/kakao_login_medium_narrow_login.png" >
     </a>
@@ -74,6 +59,5 @@ const login = async () => {
         로그인
       </button>
     </form>
-
-  </div>
+  </div> -->
 </template>
