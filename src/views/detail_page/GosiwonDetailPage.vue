@@ -53,7 +53,7 @@
   import { reactive, computed, onMounted, ref } from 'vue';
   import axios from 'axios'; // axios로 서버 API 호출
   // import fetchReviews from '@/utils/review'; // fetchReviews 함수를 가져옵니다.
-  // import fetchSummaryReviews from '@/utils/review'; // review.js에서 요약 리뷰 함수 가져오기
+  import fetchSummaryReviews from '@/utils/review'; // review.js에서 요약 리뷰 함수 가져오기
   import { useRoute } from 'vue-router';
   import { useAuthStore } from '@/stores/auth';
   import DetailCard from '@/modules/components/detail/DetailCard.vue';
@@ -91,6 +91,7 @@
   
   // 기존 reactive state 설정
   const route = useRoute();
+  const roomId = route.params.id; // roomId 가져오기
   const nameStatus = reactive({
     maxPrice: '',
     avgPrice: '',
@@ -143,7 +144,7 @@
   
   //const reviews = ref([]);
   // 새로운 요약 리뷰 상태
-  //const { reviewSummary, getGPTResponse } = fetchSummaryReviews();
+  const { reviewSummary, getGPTResponse } = fetchSummaryReviews(roomId);
   
   // Computed property for house type
   const houseTypeLabel = computed(() => {
@@ -297,7 +298,7 @@
       console.log('리뷰 데이터: ', reviews.value);
   
       // GPT를 사용한 요약 리뷰 가져오기
-      // await getGPTResponse();
+      await getGPTResponse();
     } catch (error) {
       console.log('Gosiwon 데이터를 가져오는 데 실패했습니다:', error);
     }

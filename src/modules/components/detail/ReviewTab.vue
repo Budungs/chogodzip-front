@@ -11,6 +11,7 @@
           </div>
 
           <transition name="fade" mode="out-in">
+                    <!-- 장점 탭 -->
               <div v-if="activeTab === 'pros'" key="pros" class="content">
                 <ul>
                   <li v-for="(pros, index) in positiveReviews" :key="index">
@@ -19,6 +20,8 @@
                   </li>
                 </ul>
               </div>
+
+                      <!-- 단점 탭 -->
               <div v-else key="cons" class="content">
                 <ul>
                   <li v-for="(cons, index) in negativeReviews" :key="index">
@@ -83,7 +86,7 @@
 
 <script setup>
 // 부모 컴포넌트에서 reviews 데이터를 받아온다.
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import api from '@/api/detailRoom';
 
 const props = defineProps({
@@ -136,18 +139,55 @@ if (currentPage.value < totalPages.value) {
   currentPage.value += 1;
 }
 };
+// ------------------- 기존 리뷰 요약 1안 -------------------------------------------------------
 
-// GPT로부터 받은 요약 리뷰를 긍정/부정 리뷰로 나누어 출력
+// // GPT로부터 받은 요약 리뷰를 긍정/부정 리뷰로 나누어 출력
+// const positiveReviews = computed(() => {
+//   if (!props.summaryReviews) return [];
+
+//   const summary = props.summaryReviews || '';
+//   const splitReviews = summary.split('부정 리뷰:'); // 부정 리뷰 기준으로 나누기
+
+//   // 긍정 리뷰 부분 추출
+//   const positivePart = splitReviews[0] ? splitReviews[0] : ''; 
+//   return positivePart.split('\n')
+//     .filter(line => line.trim().startsWith('1.') || line.trim().startsWith('2.') || line.trim().startsWith('3.'))
+//     .map(line => line.replace(/^\d+\.\s*/, '')); // 숫자 제거
+// });
+
+// const negativeReviews = computed(() => {
+//   if (!props.summaryReviews) return [];
+
+//   const summary = props.summaryReviews || '';
+//   const splitReviews = summary.split('부정 리뷰:'); // 부정 리뷰 기준으로 나누기
+
+//   // 부정 리뷰 부분 추출
+//   const negativePart = splitReviews[1] ? splitReviews[1] : '';
+//   return negativePart.split('\n')
+//     .filter(line => line.trim().startsWith('1.') || line.trim().startsWith('2.') || line.trim().startsWith('3.'))
+//     .map(line => line.replace(/^\d+\.\s*/, '')); // 숫자 제거
+// });
+
+// -----------------기존 리뷰 요약 2안 (안정화된 버전 - 검증 완료) ------------------------
+// 요약된 긍정/부정 리뷰를 긍정/부정 탭에 맞게 분리
+// 페이지 로드 시 콘솔에 summaryReviews 출력
+
+// 요약된 긍정/부정 리뷰를 긍정/부정 탭에 맞게 분리
 const positiveReviews = computed(() => {
+  console.log("summaryReviews 초기값: ", props.summaryReviews);
+  
+  // summary가 null이거나 빈 문자열이면 빈 배열 반환
   if (!props.summaryReviews) return [];
 
   const summary = props.summaryReviews || '';
-  const splitReviews = summary.split('부정 리뷰:'); // 부정 리뷰 기준으로 나누기
+  
+  // "부정 리뷰 요약 결과:"로 분리하지만, 없을 경우 예외 처리
+  const splitReviews = summary.includes('부정 리뷰 요약 결과:') ? summary.split('부정 리뷰 요약 결과:') : [summary, ''];
 
   // 긍정 리뷰 부분 추출
-  const positivePart = splitReviews[0] ? splitReviews[0] : ''; 
+  const positivePart = splitReviews[0] ? splitReviews[0].replace('긍정 리뷰 요약 결과:', '').trim() : ''; 
   return positivePart.split('\n')
-    .filter(line => line.trim().startsWith('1.') || line.trim().startsWith('2.') || line.trim().startsWith('3.'))
+    .filter(line => line.trim()) // 빈 줄 필터링
     .map(line => line.replace(/^\d+\.\s*/, '')); // 숫자 제거
 });
 
@@ -155,12 +195,12 @@ const negativeReviews = computed(() => {
   if (!props.summaryReviews) return [];
 
   const summary = props.summaryReviews || '';
-  const splitReviews = summary.split('부정 리뷰:'); // 부정 리뷰 기준으로 나누기
+  const splitReviews = summary.includes('부정 리뷰 요약 결과:') ? summary.split('부정 리뷰 요약 결과:') : ['', ''];
 
   // 부정 리뷰 부분 추출
-  const negativePart = splitReviews[1] ? splitReviews[1] : '';
+  const negativePart = splitReviews[1] ? splitReviews[1].trim() : '';
   return negativePart.split('\n')
-    .filter(line => line.trim().startsWith('1.') || line.trim().startsWith('2.') || line.trim().startsWith('3.'))
+    .filter(line => line.trim()) // 빈 줄 필터링
     .map(line => line.replace(/^\d+\.\s*/, '')); // 숫자 제거
 });
 
