@@ -204,7 +204,7 @@
 
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import api from '@/api/mapApi'; // 고시원 데이터를 가져올 api 파일
 import markerImageSrc from '@/assets/img/room/house1.png'; // 마커 이미지
 import searchApi from '@/api/searchApi';
@@ -503,6 +503,7 @@ const sortedProperties = computed(() => {
 // Kakao 지도 설정 및 마커 데이터 관리
 const map = ref(null);
 const markers = ref([]);
+const router = useRouter();
 
 const fetchGosiwonData = async (lat, lng) => {
   try {
