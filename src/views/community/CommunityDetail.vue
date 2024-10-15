@@ -2,18 +2,18 @@
     <div class="outer-container py-5">
         <div class="container py-5 px-5 rounded box-shadow">
             <!-- 게시글 제목 -->
-             <div class="w-100 mb-5">
+             <div class="w-100 mb-3">
                 <span class="mb-3" :class="matchTagStyle(post.tag)" style="padding:1% 1.5%; font-size: 1rem">{{ getTagName(post.tag) }}</span> 
                 <h1 class="h2" style="color: #333d4b">{{ post.title }}</h1>
              </div>
         
             <!-- 게시글 작성자 및 작성 시간 -->
             <div class="d-flex justify-content-between gap-5">
-                <p style="color:var(--gray1)" class="w-25">
-                    <i class="fa-solid fa-user me-2"></i>
+                <p style="color:var(--gray1);" class="w-50 d-flex gap-3 align-items-center">
+                    <img class="rounded-circle" :src="post.memberPic" width="48" alt="Comment author" />
                     {{ post.nickname }}
                 </p>
-                <div class="w-25 d-flex justify-content-end gap-3">
+                <div class="w-50 d-flex justify-content-end gap-3  align-items-end mb-2">
                     <p style="color:var(--gray1)"><i class="far fa-eye"/> <span style="font-weight:bold">{{ post.views }}</span></p>
                     <p style="color:var(--gray1)">{{ formatDate(post.createdAt) }}</p>
                 </div>
@@ -97,7 +97,6 @@ const fetchDetail = async () => {
 
         if(res.status === 200) {
             post.value = res.data;
-
             if(post.value.comments === null) post.value.comments = [];
         }   
     } catch (err) {
