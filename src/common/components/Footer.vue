@@ -1,19 +1,19 @@
 <template>
     <footer class="footer">
         <div class="footer-container">
-            <div class="footer-left">
+            <div class="footer-left w-100">
                 <img class="logo" src="@/assets/img/logo.png" alt="Logo" />
-                <div class="info">
-                    <h3 style="color: white; margin-bottom: 20px;">KB IT's Your Life 5기 부동이들</h3>
-                    <p style="margin-bottom: 5px;">서울 광진구 능동로 195-16 6층 (멀티캠퍼스 세종대)</p>
-                    <p style="margin-bottom: 5px;">Developed by 김태희, 박민지, 신동의, 홍세영, 황현석</p>
-                    <p>Designed by 김태희, 박민지, 신동의, 홍세영, 황현석</p>
+                <div class="w-100">
+                    <h3 class="h3" style="color: white">KB IT's Your Life 5기 BUDUNGS</h3>
+                    <div class="fs-sm mb-1">서울 광진구 능동로 195-16 6층 (멀티캠퍼스 세종대)</div>
+                    <div class="fs-sm mb-1">Designed by 김태희, 박민지, 신동의, 홍세영, 황현석</div>
+                    <div class="fs-sm mb-1 w-100 d-flex">
+                        <div>Developed by 김태희, 박민지, 신동의, 홍세영, 황현석</div>
+                        <div style="margin-left:auto">
+                            <a href="https://github.com/Budungs" class="github-link" target="_blank"><i class="fab fa-github"></i> 프로젝트 보러가기</a>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="footer-right">
-                <a href="https://github.com/your-repo-link" class="github-link" target="_blank">
-                    <i class="fab fa-github"></i> 프로젝트 보러가기
-                </a>
             </div>
         </div>
     </footer>
@@ -53,19 +53,6 @@ export default {
     height: 150px;
     border-radius: 50%;
     margin-right: 50px;
-}
-
-.info {
-    font-size: 14px;
-}
-
-h3 {
-    font-weight: bold;
-    margin-bottom: 5px;
-}
-
-.footer-right {
-    font-size: 16px;
 }
 
 .github-link {
