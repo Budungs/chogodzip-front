@@ -379,7 +379,7 @@ export const usePostRoomStore = defineStore('postRoom', {
 
         //이미지 파일 처리
         handleFile(e) {
-            const files = e.target.files;
+            let files = e.target.files;
             if(files.length > 3) {
                 alert('사진은 최대 3장까지 가능합니다.');
                 e.target.files = null;
