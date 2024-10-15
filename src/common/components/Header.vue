@@ -3,7 +3,7 @@
         <div class="container">
             <!-- 로고 -->
             <a class="navbar-brand me-3 me-xl-4" href="/">
-                <img class="d-block" src="@/assets/images/logo1.png" width="200" alt="Chogodzip">
+                <img class="d-block" src="@/assets/img/chogod.png" width="200" alt="Chogodzip">
             </a>
 
             <!-- 로그인했을 경우 마이페이지 라우터 모달: 닉네임, 프로필 사진 표시 -->
