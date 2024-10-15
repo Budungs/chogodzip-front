@@ -102,5 +102,12 @@ export default {
     console.log('AUTH PUT: ', data);
     return data;
   },
+  async joinMember(userName){
+    const {data} = await api.get(`${BASE_URL}/join`,{
+      params : {userName}
+    });
+    console.log('MEMBER INFO : ',data);
+    return data;
+  }
 
 };
