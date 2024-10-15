@@ -61,6 +61,13 @@ export default {
         });
         console.log('SHARE STAT : ',data);
         return data;
+    },
+    async getMyRegist(userName){
+        const {data} = await api.get(`${BASE_URL}/myRegist`,{
+            params: {userName}
+        });
+        console.log('dfadfaei : ',data);
+        return data;
     }
     
 

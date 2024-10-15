@@ -15,6 +15,7 @@ import Chat from '@/views/Chat.vue';
 import ChatTest from '@/views/ChatTest.vue';
 import Payment from '@/views/Payment.vue';
 import errorRoutes from './error';
+import kakaoPaySuccess from '@/views/kakaoPaySuccess.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,6 +27,7 @@ const router = createRouter({
     { path: '/chat', name: 'chat', component: Chat },
     { path: '/chatTest', name: 'chatTest', component: ChatTest },
     { path: '/payment', name: 'payment', component: Payment},
+    { path: '/kakaopay/kakaoPaySuccess',name : 'kakaoSuccess', component: kakaoPaySuccess},
     // 2안 ) 여러개의 경로를 묶을 수도 있다.
     ...houseRoutes,
     ...lottoRoutes,
