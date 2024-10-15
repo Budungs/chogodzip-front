@@ -45,6 +45,7 @@
     "tiny-slider": "^2.9.4",
     "vue": "^3.4.29",
     "vue-router": "^4.3.3",
+    "vue3-geolocation": "^1.0.0",
     "vue3-kakao-maps": "^2.3.9"
   },
   "devDependencies": {

@@ -48,10 +48,10 @@
                 <div class="d-flex justify-content-between">
                   <div class="d-flex align-items-center">
                     <img class="rounded-circle me-1"
-                      src="https://i.namu.wiki/i/Vj5qbEFSnNirgU_WzuKbQmLd20hbM6QyNGHb8f87wB4iUuMA-OliDHoQMBnxu7jSowmBl5R-wBKXIb5Voe1bxw.webp"
+                      :src="review.userPic"
                       width="40" height="40" alt="Avatar" style="width:50px; height:50px;">
                     <div class="ps-2">
-                      <h6 class="fs-base mb-0">{{ review.userId }}</h6> <!-- 사용자 ID -->
+                      <h6 class="fs-base mb-0">{{ review.userName }}</h6> <!-- 사용자 ID -->
                       <span class="text-muted fs-sm">{{ formatDate(review.createdAt) }}</span> 
                    </div>
                   </div>
@@ -87,26 +87,23 @@ import { ref, computed } from 'vue';
 import api from '@/api/detailRoom';
 
 const props = defineProps({
-cardData: {
-  type: Object,
-  required: true,
-},
-reviews: {
-  type: Array,
-  default: () => [],
-},
-userId: {
-  type: String,
-  required: false,
-},
-summaryReviews: {
-    type: String,
+  cardData: {
+    type: Object,
     required: true,
-},
+  },
+  reviews: {
+    type: Array,
+    default: () => [],
+  },
+  userId: {
+    type: String,
+    required: false,
+  },
+  summaryReviews: {
+      type: String,
+      required: true,
+  },
 });
-
-console.log('props id : ',props.userId);
-console.log('rooms idsss : ',props.cardData.room.roomId);
 
 const reviewContent = ref('');
 const currentPage = ref(1);
@@ -114,14 +111,14 @@ const commentsPerPage = 5;
 
 // Paginated reviews 계산
 const paginatedReviews = computed(() => {
-const start = (currentPage.value - 1) * commentsPerPage;
-const end = start + commentsPerPage;
-return props.reviews.slice(start, end);
+  const start = (currentPage.value - 1) * commentsPerPage;
+  const end = start + commentsPerPage;
+  return props.reviews.slice(start, end);
 });
 
 // 총 페이지 계산
 const totalPages = computed(() => {
-return Math.ceil(props.reviews.length / commentsPerPage);
+  return Math.ceil(props.reviews.length / commentsPerPage);
 });
 
 const goToPage = (page) => {

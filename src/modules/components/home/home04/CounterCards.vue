@@ -3,21 +3,21 @@
         <div class="col-md-4">
             <div class="counter-box d-flex flex-column pt-5 pb-4 rounded-3 shadow">
                 <i class="fas fa-bullhorn display-6"></i>
-                <span class="counter display-5">120</span>
+                <span class="counter display-5">57</span>
                 <p class="h4 mt-1">공고중</p>
             </div>
         </div>
         <div class="col-md-4">
             <div class="counter-box d-flex flex-column pt-5 pb-4 rounded-3 shadow">
                 <i class="fas fa-flag-checkered display-6"></i>
-                <span class="counter display-5" style="color:var(--caution)">22</span>
+                <span class="counter display-5" style="color:var(--caution)">11</span>
                 <p class="h4 mt-1">접수중</p>
             </div>
         </div>
         <div class="col-md-4">
             <div class="counter-box d-flex flex-column pt-5 pb-4 rounded-3 shadow">
                 <i class="fas fa-pencil-alt display-6"></i>
-                <span class="counter display-5">10</span>
+                <span class="counter display-5">0</span>
                 <p class="h4 mt-1">오늘 등록</p>
             </div>
         </div>

@@ -46,7 +46,6 @@
             </div>
 
             <!-- 로그인 / 회원가입 버튼 -->
-            <!-- 임시 상태변화용 요소 -->
             <a v-if="islogin == false" class="btn btn btn-outline-accent btn-sm rounded-pill ms-2 order-lg-3" href="/auth/login">
                 로그인 | <span class='d-none d-sm-inline'>회원 가입</span>
             </a>
@@ -62,23 +61,23 @@
                             <li><a class="dropdown-item" href="/houses/maps/sharehouses">공유주거공간</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item dropdown">
+                    <!-- <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">청약</a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="/lottos/calendars">청약 캘린더</a></li>
                             <li><a class="dropdown-item" href="/lottos/lists">청약 목록</a></li>
                             <li><a class="dropdown-item" href="/lottos/news">청약 뉴스</a></li>
                         </ul>
-                    </li>
+                    </li> -->
                     <li class="nav-item dropdown">
                         <a class="nav-link" href="/community">커뮤니티</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" aria-expanded="false">도움말</a>
-                        <ul class="dropdown-menu">
+                        <a class="nav-link dropdown-toggle" href="/help/easyDictionary" role="button" aria-expanded="false">도움말</a>
+                        <!-- <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="/help/easyDictionary">쉬운 말 사전</a></li>
                             <li><a class="dropdown-item" href="#">별별 통계</a></li>
-                        </ul>
+                        </ul> -->
                     </li>
                 </ul>
             </div>
@@ -96,23 +95,15 @@ import defaultProfileImage from "@/assets/images/pfp/pfp01.png";
 const auth = useAuthStore();
 
 let islogin = computed(() => auth.isLogin); // islogin 을 직접 바꿀 수는 없음. (computed 속성) - 값을 바꾸려면 auth.isLogin 값을 바꿔야 함.
-console.log('islogin : ' + islogin.value);
 const id = computed(() => auth.id); // id 을 직접 바꿀 수는 없음. (computed 속성)  - 값을 바꾸려면 auth.id 값을 바꿔야 함.
-console.log('id : ' + id.value);
 const profileImg = computed(() => auth.state.profileImg); // 프로필 이미지 가져오기
-console.log('profileImg : ' + profileImg.value);
 const interstLocation = computed(() => auth.state.interestArea); // 프로필 이미지 가져오기
-console.log('interstLocation : ' + interstLocation.value);
 
 // 프로필 이미지 URL 계산 (없으면 기본 이미지 사용, 공백, null, undefined 모두 기본 이미지 처리)
 const profileImgUrl = computed(() => {
   // profileImg.value 가 null, undefined 또는 빈 문자열인 경우 기본 이미지 사용
-  if (profileImg.value == null) {
-    console.log("공백인듯?");
-    return defaultProfileImage; // 기본 프로필 이미지 경로
-  }
-  // profileImg.value 가 유효한 경우 이미지 URL 계산
-  return `/api/member/profile/image/${profileImg.value.split('/').pop()}`;
+  if (profileImg.value == null) return defaultProfileImage; // 기본 프로필 이미지 경로
+  else return profileImg.value;
 });
 // (임시) 로그아웃
 // const signOut = () => {
@@ -122,7 +113,7 @@ const profileImgUrl = computed(() => {
 
 const signOut = () => {
     auth.logout(); // Pinia의 logout action 호출 (stores/auth.js)
-    console.log("로그아웃했음");
+    window.location.href = '/'; 
 };
 
 </script>
