@@ -2,8 +2,8 @@
     <div class="pb-4 pt-5 mb-4 mt-5">
         <!-- 타이틀 -->
         <div class="d-flex w-100 justify-content-center justify-content-lg-start mt-4 mb-4">
-            <div v-if="id.trim() === '' || id === null" class="h3 mb-4 d-flex w-100 justify-content-center">주변 매물을 확인해보세요 👾</div>
-            <div v-else class="h3 mb-4 d-flex w-100 justify-content-center"><span id="home-user-nickname">{{ id }}</span>의 관심 지역 매물을 확인해보세요 👾</div>
+            <div v-if="name.trim() === '' || name === null" class="h3 mb-4 d-flex w-100 justify-content-center">주변 매물을 확인해보세요 👾</div>
+            <div v-else class="h3 mb-4 d-flex w-100 justify-content-center"><span id="home-user-nickname">{{ name }}</span>의 관심 지역 매물을 확인해보세요 👾</div>
         </div>
 
         <!-- 본문 박스 -->
@@ -47,7 +47,7 @@ import RouterButton from './RouterButton.vue';
 import StatsForLikeRegion from './StatsForLikeRegion.vue';
 import LikedMap from './LikedMap.vue';
 import { useAuthStore } from '@/stores/auth';
-const { id, interestArea } = useAuthStore();
+const { name, interestArea } = useAuthStore();
 
 const props = defineProps({
     position: {

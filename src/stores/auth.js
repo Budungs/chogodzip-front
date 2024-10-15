@@ -34,7 +34,6 @@ export const useAuthStore = defineStore('auth', () => {
 
   const load = () => {
     const auth = localStorage.getItem('auth');
-    console.log();
     if (auth != null) {
       state.value = JSON.parse(auth);
     }
@@ -52,7 +51,6 @@ export const useAuthStore = defineStore('auth', () => {
 
     // api 호출
     const { data } = await axios.post('/api/auth/login', member);
-    console.log("로그인 응답 데이터:", data);
     state.value = { ...data };
     localStorage.setItem('auth', JSON.stringify(state.value));
   };
@@ -89,5 +87,5 @@ const getToken = () => state.value.token;
 // changeProfile(member): 사용자의 이메일을 주어진 member.email로 변경하고, 변경된 상태를 localStorage에 저장합니다.
 // load(): 페이지가 로드될 때 localStorage에서 저장된 인증 정보를 불러와 state에 설정
 
-  return { state, id, name, email, isLogin, changeProfile, login, logout, getToken, interestArea };
+  return { state, id, name, email, isLogin, changeProfile, login, logout, getToken, interestArea, profileImg };
 });
