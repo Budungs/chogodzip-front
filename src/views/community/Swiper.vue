@@ -47,7 +47,6 @@ const fetchArticles = async () => {
     const res = await axios.get('/api/community/articles');
 
     if(res.status === 200) {
-      console.log('데이터 조회 완료: ', res.data);
       articles.value = res.data;
     }
   } catch (err) {

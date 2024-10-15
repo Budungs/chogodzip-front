@@ -10,13 +10,13 @@
                 <div class="row">
                   <div class="col-sm-4">
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="h-in-center" v-model="storeFac.facilityHeating.center" >
+                      <input class="form-check-input" type="checkbox" id="h-in-center" v-model="storeFac.facilityHeating.hotCenter" >
                       <label class="form-check-label" for="h-in-center">중앙난방</label>
                     </div>
                   </div>
                   <div class="col-sm-4">
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="h-in-personal" v-model="storeFac.facilityHeating.personal" >
+                      <input class="form-check-input" type="checkbox" id="h-in-personal" v-model="storeFac.facilityHeating.hotPeronsal" >
                       <label class="form-check-label" for="h-in-personal">개인난방</label>
                     </div>
                   </div>
@@ -29,13 +29,13 @@
                 <div class="row">
                   <div class="col-sm-4">
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="c-in-center" v-model="storeFac.facilityCooling.center">
+                      <input class="form-check-input" type="checkbox" id="c-in-center" v-model="storeFac.facilityCooling.coolCenter">
                       <label class="form-check-label" for="c-in-center">중앙냉방</label>
                     </div>
                   </div>
                   <div class="col-sm-4">
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="c-in-personal" v-model="storeFac.facilityCooling.personal">
+                      <input class="form-check-input" type="checkbox" id="c-in-personal" v-model="storeFac.facilityCooling.coolPersonal">
                       <label class="form-check-label" for="c-in-personal">개인냉방</label>
                     </div>
                   </div>
