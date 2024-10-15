@@ -9,11 +9,11 @@
                     <span class="d-table badge bg-accent mb-1">{{ item.type }}</span>
                 </div>
                 <!-- 위시리스트 버튼 -->
-                <div class="content-overlay end-0 top-0 pt-3 pe-3 zindex-10">
+                <!-- <div class="content-overlay end-0 top-0 pt-3 pe-3 zindex-10">
                     <button class="btn btn-icon btn-light btn-xs text-primary rounded-circle" type="button" data-bs-toggle="tooltip" data-bs-placement="left" title="Add to Wishlist">
                         <i class="far fa-heart" />
                     </button>
-                </div>
+                </div> -->
                 <!-- 이미지 삽입 -->
                 <img :src="item.thumbnail" alt="Image" class="img-fluid w-100 h-100 position-absolute" 
                 style="height:17vh; object-fit: cover;">
