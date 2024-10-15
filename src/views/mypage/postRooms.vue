@@ -16,11 +16,15 @@
                     <p class="room-location">{{ room.dongliNm }}</p>
                     <p class="room-loan">대출 가능 여부: {{ room.canLoan ? '가능' : '불가능' }}</p>
                     <p class="room-created-at">등록일자: {{ formatDate(room.createdAt) }}</p>
+                    <button class="sold-out-btn" :class="{ 'sold-out': isRoomSoldOut(room.roomId) }">
+                        {{ isRoomSoldOut(room.roomId) ? '판매 완료' : '판매 중' }}
+                    </button>
                 </div>
             </div>
             <!-- 빈 자리 채우기 -->
             <div v-for="n in emptySlots" :key="'empty-' + n" class="card empty-card"></div>
         </div>
+        
 
         <!-- Pagination Controls -->
         <div class="pagination">
@@ -35,6 +39,7 @@
 import { ref, computed, onMounted } from 'vue';
 import MyPageTab from '@/modules/components/mypage/MyPageTab.vue';
 import api from '@/api/detailRoom';
+import interApi from '@/api/interestApi';
 import { useAuthStore } from '@/stores/auth';
 
 const auth = useAuthStore();
@@ -96,6 +101,24 @@ const formatDate = (timestamp) => {
     return date.toLocaleDateString();
 }
 
+const soldData = ref([]);
+
+// 판매 완료 여부를 확인하는 함수
+const isRoomSoldOut = (roomId) => {
+  const soldRoom = soldData.value.find(sold => sold.roomId === roomId);
+  return soldRoom ? soldRoom.isSoldOut === 1 : false;
+};
+
+
+const fetchMySold = async(userId) => {
+  try {
+    const data = await interApi.myRoomSold(userId);
+    soldData.value = data;
+  } catch (error) {
+    console.error('fct : ', error);
+  }
+}
+
 const fetchMyRegistRoom = async(userId) => {
   try {
     const data = await api.getMyRegist(userId);
@@ -107,7 +130,9 @@ const fetchMyRegistRoom = async(userId) => {
 
 onMounted(async () => {
   await fetchMyRegistRoom(id.value);
+  await fetchMySold(id.value);
 });
+
 </script>
 
 <style scoped>
@@ -215,4 +240,26 @@ h1 {
 .pagination button:hover:not(:disabled) {
     background-color: #0056b3;
 }
+/* 판매완료/판매중 버튼 스타일 */
+.sold-out-btn {
+    padding: 10px;
+    margin-top: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    width: 100%;
+}
+
+.sold-out-btn.sold-out {
+    background-color: #ff6b6b;
+    color: white;
+}
+
+.sold-out-btn:not(.sold-out) {
+    background-color: #28a745;
+    color: white;
+}
+
 </style>
