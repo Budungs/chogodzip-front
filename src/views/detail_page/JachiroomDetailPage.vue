@@ -205,25 +205,31 @@ function findNearbySubway(latitude, longitude) {
 function findNearbyUniversity(latitude, longitude) {
   const ps = new kakao.maps.services.Places();
 
-  // 대학교 키워드 검색
-  ps.keywordSearch(
-    '대학교',
+  // 대학교 카테고리 코드 (SC4)
+  const categoryCode = 'SC4';
+
+  // 카테고리 검색
+  ps.categorySearch(
+    categoryCode,
     function (data, status) {
       if (status === kakao.maps.services.Status.OK) {
         data.forEach((university) => {
-          const distance = calculateDistance(
-            latitude,
-            longitude,
-            university.y,
-            university.x
-          );
+          // 장소 이름에 '대학교'가 포함된 것만 필터링
+          if (university.place_name.includes('대학교')) {
+            const distance = calculateDistance(
+              latitude,
+              longitude,
+              university.y,
+              university.x
+            );
 
-          // 가장 가까운 대학교 업데이트
-          if (distance < nearestUniversity.value.distance) {
-            nearestUniversity.value = {
-              name: university.place_name,
-              distance: distance,
-            };
+            // 가장 가까운 대학 업데이트
+            if (distance < nearestUniversity.value.distance) {
+              nearestUniversity.value = {
+                name: university.place_name,
+                distance: distance,
+              };
+            }
           }
         });
       } else {
