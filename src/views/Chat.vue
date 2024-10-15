@@ -9,7 +9,7 @@
         </div>
         <div v-for="(user, index) in users" :key="index" class="user" style="margin-bottom: 1.5rem"
           @click="selectUser(user)">
-          <img :src="user.image || defaultUserImage" alt="" class="icon-user" />
+          <img :src="user.image" alt="" class="icon-user" />
           <div class="user-status" style="">
             <div class="name">방번호 : {{ user.roomId }}</div>
             <div v-if="user.unreadCount > 0" class="unread-badge">{{ user.unreadCount }}</div>
@@ -21,9 +21,7 @@
       <!-- 오른쪽 채팅 화면 -->
       <div class="chat-right">
         <div class="chating">
-          <img :src="selectedUserImage ||
-            'https://img.freepik.com/free-photo/white-wall-background-with-scratches_1154-667.jpg?size=626&ext=jpg&ga=GA1.1.1395991368.1728518400&semt=ais_hybrid'
-            " alt="Selected User Image" />
+          <img :src="selectedUserImage" alt="Selected User Image" />
           <div class="chating-with">
             <div class="name-chat">
               <b>{{ selectedUserName || "" }}</b>
@@ -48,7 +46,7 @@
         <!-- 메시지 입력 및 추가 버튼 -->
         <div class="line-input">
           <div class="input">
-            <input type="text" v-model="userMessage" @keypress.enter="sendMessage" placeholder="Type a message..." />
+            <input type="text" v-model="userMessage" @keypress.enter="sendMessage" placeholder="메세지를 입력하세요" />
           </div>
           <button class="add btn btn-outline-secondary" @click="sendMessage">
             Send
@@ -92,17 +90,17 @@ const loggedInUserId = computed(() => auth.id);
 const fetchChatRooms = async () => {
   try {
     const chatRooms = await api.getAllChatRoom(loggedInUserId.value); // Call your API with loggedInUserId
-    console.log("Fetched chat rooms: ", chatRooms);
 
     // 서버에서 받은 채팅방 목록을 users 배열에 추가
     chatRooms.forEach(room => {
       users.push({
         roomId: room.roomId,
         userId: room.receiverId,
-        image: defaultUserImage, // 임시 기본 이미지
+        image: room.receiverPic,
         unreadCount: 0 // 기본적으로 읽지 않은 메시지 수는 0
       });
     });
+
   } catch (error) {
     console.error('Failed to fetch chat rooms:', error);
   }
@@ -112,9 +110,10 @@ const fetchChatRooms = async () => {
 const fetchLoggedInUser = async () => {
   try {
     const response = await axios.get(`http://localhost:8080/api/member/${loggedInUserId.value}`);
+    
     senderId.value = response.data.mno;
     selectedUserName.value = response.data.name;
-    selectedUserImage.value = response.data.avatar || defaultUserImage;
+    selectedUserImage.value = response.data.profileImg;
   } catch (error) {
     console.error('Failed to fetch logged-in user:', error);
   }
@@ -122,10 +121,9 @@ const fetchLoggedInUser = async () => {
 const chatRooms = ref([]); // chatRooms 데이터를 저장하는 ref로 선언
 
 const selectUser = async (user) => {
-  console.log("Selecting user:", user);
-
   receiverId.value = user.userId;  // user.userId로 설정
   selectedUserName.value = `${user.roomId}`;  // roomId를 화면에 표시
+  selectedUserImage.value = `${user.image}`;
 
   try {
     // findchatRoomNum API를 호출하여 chatRoomId를 얻음
@@ -140,7 +138,6 @@ const selectUser = async (user) => {
       
       // chatRoomId로 채팅방의 모든 메시지를 가져오는 API 호출
       const messagesData = await api.getAllMessage(chatRoomId.value);
-      console.log('Messages Data:', messagesData);
       
       // 메시지 데이터를 화면에 표시
       messages.value = messagesData.map(message => ({
@@ -167,8 +164,6 @@ const selectUser = async (user) => {
 
 const sendMessage = async () => {
   if (!userMessage.value.trim()) return; // 빈 메시지 방지
-
-  console.log("Sending message:", userMessage.value);
 
   if (!chatRoomId.value) {
     console.error('chatRoomId가 설정되지 않았습니다.');
@@ -236,7 +231,6 @@ onMounted(async () => {
 
       // 채팅방의 모든 메시지를 가져오는 API 호출
       const messagesData = await api.getAllMessage(chatRoomId.value);
-      console.log('Messages Data:', messagesData);
 
       // 메시지 데이터를 화면에 표시
       messages.value = messagesData.map(message => ({
@@ -485,7 +479,7 @@ img {
 
 .timestamp {
   font-size: 10px;
-  color: gray;
+  color: white;
   text-align: right;
   display: block;
   margin-top: 5px;

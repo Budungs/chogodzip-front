@@ -5,17 +5,11 @@
         <!-- Comment -->
         <div class="border-bottom py-4 mt-2 mb-4">
           <div class="d-flex align-items-center pb-1 mb-3">
-            <img
-              class="rounded-circle"
-              src="@/assets/img/comment/curbi.jpg"
-              width="48"
-              alt="Comment author"
-            />
+            <img class="rounded-circle" :src="cmt.memberPic" width="48" alt="Comment author" />
             <div class="ps-3">
               <h6 class="mb-0"> {{ cmt.memberName }}</h6>
               <span class="fs-sm text-muted"> {{ formatDate(cmt.createdAt) }}</span>
             </div>
-
           </div>
 
           <!-- 댓글 수정 영역 -->

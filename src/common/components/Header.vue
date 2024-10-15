@@ -107,12 +107,8 @@ console.log('interstLocation : ' + interstLocation.value);
 // 프로필 이미지 URL 계산 (없으면 기본 이미지 사용, 공백, null, undefined 모두 기본 이미지 처리)
 const profileImgUrl = computed(() => {
   // profileImg.value 가 null, undefined 또는 빈 문자열인 경우 기본 이미지 사용
-  if (profileImg.value == null) {
-    console.log("공백인듯?");
-    return defaultProfileImage; // 기본 프로필 이미지 경로
-  }
-  // profileImg.value 가 유효한 경우 이미지 URL 계산
-  return `/api/member/profile/image/${profileImg.value.split('/').pop()}`;
+  if (profileImg.value == null) return defaultProfileImage; // 기본 프로필 이미지 경로
+  else return profileImg.value;
 });
 // (임시) 로그아웃
 // const signOut = () => {

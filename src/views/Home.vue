@@ -28,7 +28,7 @@ onMounted(() => {
 
 watch(isPositionReady, (ready) => {
     if (ready) {
-        revertToGu(); // 위시 -> 주소 변환 실행
+        revertToGu(); // 위시 -> 주소 변환
     }
 });
 </script>
