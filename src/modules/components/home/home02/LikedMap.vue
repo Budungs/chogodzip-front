@@ -1,4 +1,9 @@
 <template>
+    <div v-if="isLoading" class="loading-spinner w-100 h-100 d-flex justify-content-center align-items-center">
+        <div class="spinner-border text-primary me-2" role="status" style="width: 1.5rem; height: 1.5rem;">
+        </div>
+        <span>지도를 그리는 중... ⚒️</span>
+    </div>
     <div id="map" class="map rounded box-shadow h-100 mt-0"></div>
 </template>
 
@@ -8,6 +13,7 @@ import { ref, onMounted, watch } from 'vue';
 
 const map = ref(null);
 const markers = ref([]);
+const isLoading = ref(true);
 
 const props = defineProps({
     position: {
@@ -33,6 +39,8 @@ onMounted(() => {
 });
 
 const initializeMap = async (lat, lng) => {
+    isLoading.value = true; 
+
     const container = document.getElementById('map');
     
     const options = {
@@ -59,21 +67,12 @@ const initializeMap = async (lat, lng) => {
             if(res.data.length === 0) {
                 console.log('주변에 매물이 없습니다.'); return;
             }
-
+            
             const data = res.data;
             data.forEach((item) => {
                 const markerPosition = new kakao.maps.LatLng(item.roomLat, item.roomLong);
                 const marker = new kakao.maps.Marker({
                     position: markerPosition,
-                    // title: item.title,
-                });
-
-                kakao.maps.event.addListener(marker, 'click', () => {
-                    const infoWindow = new kakao.maps.InfoWindow({
-                        // content: `<div style="padding:5px;font-size:12px;">${item.title}</div>`
-                    });
-
-                    infoWindow.open(map.value, marker);
                 });
 
                 markers.value.push(marker);
@@ -83,6 +82,8 @@ const initializeMap = async (lat, lng) => {
         }
     } catch (error) {
         console.error('마커 데이터 조회 실패:', error);
+    } finally {
+        isLoading.value = false;
     }
 }
 </script>
