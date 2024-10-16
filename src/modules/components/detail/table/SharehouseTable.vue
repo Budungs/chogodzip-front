@@ -8,15 +8,15 @@
                         <tbody>
                             <tr>
                                 <th>임대 유형</th>
-                                <td>{{ (cardData.PRICE_MIN === 0 || cardData.PRICE_MIN === null) && (cardData.PRICE_MAX === 0 || cardData.PRICE_MAX === null) ? '전세' : '월세' }}</td>
+                                <td>{{ (cardData.priceMin === 0 || cardData.priceMin === null) && (cardData.priceMax === 0 || cardData.priceMax === null) ? '전세' : '월세' }}</td>
                             </tr>
                             <tr>
                                 <th>보증금</th>
-                                <td>{{ cardData.DEPOSIT_MIN ? cardData.DEPOSIT_MIN + ' ~ ' + cardData.DEPOSIT_MAX + '만원' : '정보 없음' }}</td>
+                                <td>{{ cardData.depositMin ? cardData.depositMin + ' ~ ' + cardData.depositMax + '만원' : '정보 없음' }}</td>
                             </tr>
                             <tr>
                                 <th>월 이용료</th>
-                                <td>{{ cardData.PRICE_MIN ? cardData.PRICE_MIN + ' 만원 ~ ' + cardData.PRICE_MAX + ' 만원' : '정보 없음' }}</td>
+                                <td>{{ cardData.priceMin ? cardData.priceMin + ' 만원 ~ ' + cardData.priceMax + ' 만원' : '정보 없음' }}</td>
                             </tr>
                             <tr>
                                 <th>관리비</th>
@@ -36,7 +36,7 @@
                             </tr>
                             <tr>
                                 <th>남녀구분</th>
-                                <td>{{ genderType }}</td>
+                                <td>{{ genderLimit }}</td>
                             </tr>
                             <tr>
                                 <th>기타사항</th>
@@ -128,7 +128,7 @@ const formattedLifeFacilities = computed(() => {
 });
 
 // 성별 제한
-const genderType = computed(() => {
+const genderLimit = computed(() => {
     switch (props.cardData.genderLimit) {
         case 'GENDR00001':
             return '성별 무관';

@@ -160,8 +160,9 @@ const house = reactive({
 
 // Computed property for house type
 const houseTypeLabel = computed(() => {
-  return house.type === 0 ? '원룸/투룸' : '오피스텔';
+  return house.room.houseTypeNm;
 });
+
 
 // Reactive state for subway data
 const nearestSubway = ref({ name: '', distance: Infinity });
@@ -239,6 +240,8 @@ function findNearbyUniversity(latitude, longitude) {
     { location: new kakao.maps.LatLng(latitude, longitude), radius: 2000 }
   );
 }
+
+console.log('대학교 : ',nearestUniversity.value);
 // 좋아요 개수 및 상태 가져오기
 async function getFavoriteCnt(roomId) {
   console.log('idiakdfn', roomId);
