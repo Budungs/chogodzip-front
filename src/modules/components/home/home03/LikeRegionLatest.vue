@@ -34,6 +34,7 @@ onMounted(async () => {
         if(interestArea !== null) {
             params.area = `서울 ${interestArea}`;
         } else {
+            console.log('Region: 관심지역있음')
             params.area = `${props.siGuPosition.si} ${props.siGuPosition.gu}`;
         }
 

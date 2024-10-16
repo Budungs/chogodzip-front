@@ -2,7 +2,7 @@
     <div>
         <SearchHouse />
         <div class="container">
-            <LikeRegionState :position="position" :isPositionReady="isPositionReady" :siGuPosition="siGuPosition"  />
+            <LikeRegionState :lat="lat" :long="long" :si="si" :gu="gu" :isPositionReady2="isPositionReady2"  />
         </div>
         <LikeRegionLatest :siGuPosition="siGuPosition" />
         <div class="container">
@@ -19,18 +19,25 @@ import LottosInfo from '@/modules/components/home/home04/LottosInfo.vue';
 import SearchHouse from '@/modules/components/home/home01/SearchHouse.vue';
 import TodayLecture from '@/modules/components/home/home05/TodayLecture.vue';
 import { useGeolocation } from '@/api/useLocation';
-const { position, isPositionReady, getCurrentLocation, revertToGu, siGuPosition } = useGeolocation();
 import { onMounted, watch } from 'vue';
+import { useAuthStore } from '@/stores/auth';
+
+
+//현재 위치, 관심 지역 관련 
+const { position, lat, long, si, gu, isPositionReady, isPositionReady2, getCurrentLocation, revertToGu, siGuPosition } = useGeolocation();
 
 onMounted(() => {
-    getCurrentLocation(); // 현재 위치 
+    const auth = useAuthStore();
+    getCurrentLocation(auth.interestArea); // 현재 위치 
 });
 
-watch(isPositionReady, (ready) => {
-    if (ready) {
+
+watch(isPositionReady2, (ready) => {
+    if (ready && useAuthStore().interestArea === null) {
         revertToGu(); // 위시 -> 주소 변환
     }
 });
+
 </script>
 
 <style scoped> 

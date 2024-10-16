@@ -23,7 +23,7 @@
                         <div class="card h-100 bg-size-cover bg-position-center border-0 overflow-hidden mb-4 mt-0 px-5 pb-0 shadow rounded-3" style="background-image: url(src/assets/images/backgrounds/home-3.jpg);"><span class="img-gradient-overlay"></span>
                             <div class="card-body content-overlay pb-0 mt-2">
                                 <!-- <a href="#"><span class="badge bg-dark fs-sm">지역 변경</span></a> -->
-                                <div class="h1 text-light mb-0 mt-3"> {{ interestArea === null || interestArea.trim() === '' ? `${siGuPosition.si}시 ${siGuPosition.gu}`:'서울시 ' + interestArea }}</div>
+                                <div class="h1 text-light mb-0 mt-3"> {{ interestArea === null || interestArea.trim() === '' ? `${si}시 ${gu}`:'서울시 ' + interestArea }}</div>
                             </div>
                             <div class="card-footer content-overlay border-0 pt-1 pb-4 d-flex flex-row justify-content-between">
                                 <StatsForLikeRegion buildingType="오피스텔" changeRateOfJeonse="0.921" changeRateOfRent="0.2" />
@@ -36,7 +36,7 @@
 
             <!-- 오른쪽 -->
             <div class="col-md-6 h-100 pb-4">
-                <LikedMap :position="position" :isPositionReady="isPositionReady"/>
+                <LikedMap :lat="lat" :long="long" :isPositionReady2="isPositionReady2"/>
             </div>
         </div>
     </div>
@@ -49,20 +49,30 @@ import LikedMap from './LikedMap.vue';
 import { useAuthStore } from '@/stores/auth';
 const { name, interestArea } = useAuthStore();
 
+
 const props = defineProps({
-    position: {
-        type: Object,
+    lat: {
+        type: String,
         required: true,
     },
-    isPositionReady: {
+    long: {
+        type: String,
+        required: true,
+    },
+    si: {
+        type: String,
+        required: true,
+    },
+    gu: {
+        type: String,
+        required: true,
+    },
+    isPositionReady2: {
         type: Boolean,
         required: true,
     },
-    siGuPosition: {
-        type: Object,
-        required: true,
-    }
 })
+
 </script>
 
 <style scoped>
