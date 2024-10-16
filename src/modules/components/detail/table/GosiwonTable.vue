@@ -7,11 +7,11 @@
                     <table>
                         <tbody>
                             <tr>
-                                <th>보증금</th>
+                                <th>월 이용료</th>
                                 <td>{{ cardData.priceMin }} ~ {{ cardData.priceMax }}만원</td>
                             </tr>
                             <tr>
-                                <th>월 이용료</th>
+                                <th>보증금</th>
                                 <td>{{ cardData.depositMin }} 만원 ~ {{ cardData.depositMax }} 만원</td>
                             </tr>
                             <tr>
