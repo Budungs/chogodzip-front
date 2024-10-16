@@ -16,11 +16,15 @@ const markers = ref([]);
 const isLoading = ref(true);
 
 const props = defineProps({
-    position: {
-        type: Object,
+    lat: {
+        type: String,
         required: true,
     },
-    isPositionReady: {
+    long: {
+        type: String,
+        required: true,
+    },
+    isPositionReady2: {
         type: Boolean,
         required: true,
     },
@@ -28,10 +32,10 @@ const props = defineProps({
 
 onMounted(() => {
     const unwatch = watch(
-        () => props.isPositionReady, 
+        () => props.isPositionReady2, 
         (ready) => {
             if (ready) {
-                initializeMap(props.position.lat, props.position.long);
+                initializeMap(props.lat, props.long);
                 unwatch();
             }
         }
@@ -61,24 +65,25 @@ const initializeMap = async (lat, lng) => {
 
     try {
         const params = { lat, lng };
+
         const res = await axios.get(`/api/home/rooms/map`, {params});
 
         if(res.status === 200) {
             if(res.data.length === 0) {
-                console.log('주변에 매물이 없습니다.'); return;
-            }
-            
-            const data = res.data;
-            data.forEach((item) => {
-                const markerPosition = new kakao.maps.LatLng(item.roomLat, item.roomLong);
-                const marker = new kakao.maps.Marker({
-                    position: markerPosition,
-                });
+                console.log('주변에 매물이 없습니다.');
+            } else {
+                const data = res.data;
+                data.forEach((item) => {
+                    const markerPosition = new kakao.maps.LatLng(item.roomLat, item.roomLong);
+                    const marker = new kakao.maps.Marker({
+                        position: markerPosition,
+                    });
 
-                markers.value.push(marker);
-            });
-    
-            clusterer.addMarkers(markers.value);
+                    markers.value.push(marker);
+                });
+        
+                clusterer.addMarkers(markers.value);
+            }
         }
     } catch (error) {
         console.error('마커 데이터 조회 실패:', error);
