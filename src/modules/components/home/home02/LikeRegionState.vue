@@ -26,8 +26,18 @@
                                 <div class="h1 text-light mb-0 mt-3"> {{ interestArea === null || interestArea.trim() === '' ? `${si}시 ${gu}`:'서울시 ' + interestArea }}</div>
                             </div>
                             <div class="card-footer content-overlay border-0 pt-1 pb-4 d-flex flex-row justify-content-between">
-                                <StatsForLikeRegion buildingType="오피스텔" changeRateOfJeonse="0.921" changeRateOfRent="0.2" />
-                                <StatsForLikeRegion buildingType="연립/다세대" changeRateOfJeonse="-0.921" changeRateOfRent="0.129" />
+
+                                <StatsForLikeRegion 
+                                buildingType="오피스텔" 
+                                :changeRateOfJeonse="interestArea === '광진구' ? 0.67 : interestArea === '강남구' ? 1.13 : 0.6" 
+                                :changeRateOfRent="interestArea === '광진구' ? 0.25 : interestArea === '강남구' ? 0.32 : 0.2" 
+                                />
+                                <StatsForLikeRegion 
+                                buildingType="연립/다세대" 
+                                :changeRateOfJeonse="interestArea === '광진구' ? 0.32 : interestArea === '강남구' ? 1.67 : 1.25" 
+                                :changeRateOfRent="interestArea === '광진구' ? 0.76 : interestArea === '강남구' ? 0.7 : 0.29" 
+                                />
+                                
                             </div>
                         </div>
                     </div>
