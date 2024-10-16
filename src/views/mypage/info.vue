@@ -163,7 +163,10 @@ const execDaumPostcode = () => {
 console.log('ujpdate : ',userName.value);
 // 프로필 수정
 const updateProfile = async () => {
+
   try {
+
+  auth.changeImage(profileImgUrl.value)
     const updatedData = {
       profileImg: profileImgUrl.value,
       name: userName.value,
@@ -172,21 +175,21 @@ const updateProfile = async () => {
     };
 
     const response = await axios.put(`/api/member/change/${auth.state.id}`, updatedData);
+
     if (response.status === 200) {
       alert('프로필이 성공적으로 수정되었습니다.');
-
       auth.state.value.profileImg = updatedData.profileImg;
       auth.state.value.name = updatedData.name;
       auth.state.value.address = updatedData.address;
-      auth.state.value.interestArea = updatedData.interestArea;
-      localStorage.setItem('auth', JSON.stringify(auth));
-
+      auth.state.value.profileImg= updatedData.profileImg;
+      localStorage.setItem('auth', JSON.stringify(auth.state.value));
       auth.load();
       await fetchJoinMember(userId.value);
     } else {
       alert('프로필 수정에 실패했습니다.');
     }
   } catch (error) {
+    console.error(error);
     console.error('프로필 수정 중 오류 발생:', error);
     alert('프로필 수정 중 오류가 발생했습니다.');
   }
