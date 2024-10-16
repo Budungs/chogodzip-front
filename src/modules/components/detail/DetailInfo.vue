@@ -16,11 +16,11 @@
             </div>
             <div class="feature">
                 <img :src="DepartmentIcon" alt="Room Icon" />
-                <span>{{ cardData.floor || 'N/A' }}층</span>
+                <span>{{ cardData.floor !== null && cardData.floor !== undefined ? cardData.floor + '층' : '정보없음' }}</span>
             </div>
             <div class="feature">
                 <img :src="DepartmentIcon" alt="Area Icon" />
-                <span>{{cardData.roomCnt || 'N/A'}}개</span>
+                <span>{{ cardData.roomCnt !== null && cardData.roomCnt !== undefined ? cardData.roomCnt + '개' : '정보없음' }}</span>
             </div>
             <div class="feature">
                 <img :src="ParkingIcon" alt="Parking Icon" />
