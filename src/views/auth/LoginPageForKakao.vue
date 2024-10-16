@@ -24,7 +24,7 @@ onMounted(async () => {
   } catch (e) {
     // 로그인 에러
     console.log('에러=======', e);
-    error.value = e.response.data;
+    e.value = e.response.data;
   }
 });
 </script>
