@@ -9,10 +9,11 @@
             </span>
         </div>
 
-        <div class="mb-3">
+        <div class="mb-3" v-if="nearestUniversity.name">
             <i class="fas fa-school" />
             <span style="margin-left:1rem;">{{ nearestUniversity.name }}</span>
         </div>
+
 
         <div class="position-relative mt-4">
             <DetailMap class="rounded-3" :latitude="cardData.room.roomLat" :longitude="cardData.room.roomLong" />
