@@ -33,7 +33,7 @@
                     <a class="dropdown-item" href="/mypage/info"><i class="far fa-user-circle opacity-60 me-2"/>내 프로필</a>
                     <!-- <a class="dropdown-item" href="/mypage/favoriteLottos"><i class="fas fa-heart opacity-60 me-2"/>관심 청약 목록</a> -->
                     <a class="dropdown-item" href="/mypage/favoriteRooms"><i class="fas fa-heart opacity-60 me-2"></i>관심 매물 목록</a>
-                    <a class="dropdown-item" href="/mypage/postReviews"><i class="fas fa-pencil-alt opacity-60 me-2"></i>작성 리뷰 목록</a>
+                    <!-- <a class="dropdown-item" href="/mypage/postReviews"><i class="fas fa-pencil-alt opacity-60 me-2"></i>작성 리뷰 목록</a> -->
                     <a class="dropdown-item" href="/mypage/postRooms"><i class="fas fa-pencil-alt opacity-60 me-2"></i>등록한 매물 목록</a>
                     <div class="dropdown-divider"></div>
                     <router-link class="dropdown-item" :to="'/chat'">
@@ -97,8 +97,8 @@ const auth = useAuthStore();
 let islogin = computed(() => auth.isLogin); // islogin 을 직접 바꿀 수는 없음. (computed 속성) - 값을 바꾸려면 auth.isLogin 값을 바꿔야 함.
 const id = computed(() => auth.id); // id 을 직접 바꿀 수는 없음. (computed 속성)  - 값을 바꾸려면 auth.id 값을 바꿔야 함.
 const name = computed(() => auth.name); // id 을 직접 바꿀 수는 없음. (computed 속성)  - 값을 바꾸려면 auth.id 값을 바꿔야 함.
-const profileImg = computed(() => auth.state.profileImg); // 프로필 이미지 가져오기
-const interstLocation = computed(() => auth.state.interestArea); // 프로필 이미지 가져오기
+const profileImg = computed(() => auth.profileImg); // 프로필 이미지 가져오기
+const interstLocation = computed(() => auth.interestArea); // 프로필 이미지 가져오기
 
 // 프로필 이미지 URL 계산 (없으면 기본 이미지 사용, 공백, null, undefined 모두 기본 이미지 처리)
 const profileImgUrl = computed(() => {

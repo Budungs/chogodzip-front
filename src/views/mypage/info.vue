@@ -3,17 +3,26 @@
     <h1 class="mt-5 mb-5" style="font-weight: 900;">MY PAGE</h1>
     <div class="tabs">
       <MyPageTab v-for="tab in tabs" :key="tab.name" :name="tab.name" :label="tab.label"
-        :isActive="isActiveTab(tab.name)" @tab-click="setActiveTab" />
+        :isActive="isActiveTab(tab.name)" @tab-click="setActiveTab" class="mb-3" />
     </div>
 
     <div class="profile-section mt-5 mb-5">
       <div class="profile-image">
-        <!-- 프로필 이미지가 없으면 기본 이미지를 사용 -->
-        <img :src="profileImgUrl" alt="Profile Image" />
-        <button class="edit-button">
-          <img :src="editImage" alt="Edit" />
-        </button>
+        <img :src="profileImgUrl" alt="Profile Image" class="rounded-image" />
       </div>
+    
+      <!-- 프로필 이미지 밑에 이미지 선택 -->
+      <div class="container w-75 h-25 px-4 py-2 mt-3 rounded" style="background-color: var(--gray2);">
+        <div class="image-grid mt-3">
+          <div v-for="item in ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10']" :key="item" class="form-check">
+            <input type="radio" :id="`image${item}`" :value="`https://chogodzip.s3.ap-northeast-2.amazonaws.com/DF${item}.png`" v-model="profileImgUrl" class="form-check-input" />
+            <label :for="`image${item}`" class="form-check-label">
+              <img :src="`https://chogodzip.s3.ap-northeast-2.amazonaws.com/DF${item}.png`" class="rounded-image" style="width:50%"/>
+            </label>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <div class="form-section">
@@ -21,7 +30,7 @@
         <div class="mypage-form-group">
           <label for="nickname">닉네임</label>
           <!-- 유저의 이름을 표시 -->
-          <input type="text" id="nickname" v-model="userId" readonly />
+          <input type="text" id="nickname" v-model="userName" />
         </div>
 
         <!-- 주소 입력 필드 -->
@@ -29,7 +38,7 @@
           <label for="address">실거주지</label>
           <div class="input-group">
             <!-- 유저의 주소를 표시 -->
-            <input type="text" id="address" v-model="userAddress" readonly/>
+            <input type="text" id="address" v-model="userAddress" readonly />
             <button class="btn btn-outline-secondary" type="button" @click="execDaumPostcode">검색</button>
           </div>
         </div>
@@ -42,7 +51,7 @@
           </select>
           <select id="region-gu" v-model="selectedGu">
             <!-- 선택된 구 출력 -->
-            <option value="" disabled selected>{{ guOnly }}</option>
+            <option value="" disabled selected>{{ selectedGu }}</option>
             <option value="강남구">강남구</option>
             <option value="강동구">강동구</option>
             <option value="강북구">강북구</option>
@@ -84,21 +93,30 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import MyPageTab from '@/modules/components/mypage/MyPageTab.vue';
 import { useAuthStore } from '@/stores/auth';
 import axios from 'axios';
-import api from '@/api/authApi';  // Import your API module
-import editImage from '@/assets/img/edit.png';
-import defaultProfileImage from '@/assets/images/pfp/pfp01.png'; 
+import api from '@/api/authApi'; 
 
 // 컴포넌트 상태 및 데이터
 const auth = useAuthStore();
-const userId = ref(auth.state.id); // 유저의 이름
-const userAddress = ref(''); // 유저의 주소를 빈 값으로 초기화
+
+const userId = ref(auth.id); // 유저 로그인 아이디 (중복불가) --고정
+
+//수정목록
+const userName = ref(auth.name); // 유저의 이름(닉네임)
+const profileImgUrl = ref(auth.profileImg);
+const userAddress = ref(auth.address); // 유저의 주소
+const selectedGu = ref(auth.interestArea); // 구 선택
+
+console.log('userName:',userName.value);
+console.log('profileImgUrl:',profileImgUrl.value);
+console.log('userAddress:',userAddress.value);
+console.log('selectedGu:',selectedGu.value);
+
 const extraAddress = ref(''); // 추가 주소
 const selectedSi = ref('서울시'); // 시 선택
-const selectedGu = ref(''); // 구 선택
 const isDaumScriptLoaded = ref(false); // Daum 스크립트 로드 여부
 const activeTab = ref('info'); // 현재 활성화된 탭
 
@@ -107,13 +125,6 @@ const tabs = [
   { name: 'favoriteRooms', label: '관심 매물 목록' },
   { name: 'postRooms', label: '등록한 매물 목록' }
 ];
-
-// 프로필 이미지 처리
-const profileImgUrl = computed(() => {
-  return auth.state.profileImg
-    ? `/api/member/profile/image/${auth.state.profileImg.split('/').pop()}`
-    : defaultProfileImage;
-});
 
 // Daum 우편번호 검색 API 실행
 const execDaumPostcode = () => {
@@ -130,7 +141,6 @@ const execDaumPostcode = () => {
         userAddress.value = addr; // 주소 설정
         extraAddress.value = extraAddr; // 추가 주소 설정
 
-        getCoordinates(addr);
       }
     }).open();
   } else {
@@ -139,29 +149,40 @@ const execDaumPostcode = () => {
 };
 
 // Kakao 지도 API: 주소의 위도 & 경도 추출
-const getCoordinates = (address) => {
-  const geocoder = new window.daum.maps.services.Geocoder();
-  geocoder.addressSearch(address, (result, status) => {
-    if (status === window.daum.maps.services.Status.OK) {
-      const { y: lat, x: lon } = result[0];
-      console.log(`위도: ${lat}, 경도: ${lon}`);
-    } else {
-      console.error('Geocode was not successful: ' + status);
-    }
-  });
-};
-console.log('ujpdate : ',userId.value);
+// const getCoordinates = (address) => {
+//   const geocoder = new window.daum.maps.services.Geocoder();
+//   geocoder.addressSearch(address, (result, status) => {
+//     if (status === window.daum.maps.services.Status.OK) {
+//       const { y: lat, x: lon } = result[0];
+//       console.log(`위도: ${lat}, 경도: ${lon}`);
+//     } else {
+//       console.error('Geocode was not successful: ' + status);
+//     }
+//   });
+// };
+console.log('ujpdate : ',userName.value);
 // 프로필 수정
 const updateProfile = async () => {
   try {
     const updatedData = {
-      name: userId.value,
+      profileImg: profileImgUrl.value,
+      name: userName.value,
       address: userAddress.value,
-      interestArea: `${selectedGu.value}`
+      interestArea: selectedGu.value,
     };
-    const response = await axios.put(`/api/member/change/${userId.value}`, updatedData);
+
+    const response = await axios.put(`/api/member/change/${auth.state.id}`, updatedData);
     if (response.status === 200) {
       alert('프로필이 성공적으로 수정되었습니다.');
+
+      auth.state.value.profileImg = updatedData.profileImg;
+      auth.state.value.name = updatedData.name;
+      auth.state.value.address = updatedData.address;
+      auth.state.value.interestArea = updatedData.interestArea;
+      localStorage.setItem('auth', JSON.stringify(auth));
+
+      auth.load();
+      await fetchJoinMember(userId.value);
     } else {
       alert('프로필 수정에 실패했습니다.');
     }
@@ -184,8 +205,12 @@ const fetchJoinMember = async(userId) => {
   try {
     const data = await api.joinMember(userId);
     // 받아온 데이터를 userAddress와 selectedGu에 각각 설정
+    
+    userName.value = data.name;
     userAddress.value = data.address;
     selectedGu.value = data.interestArea;
+    profileImgUrl.value = data.profileImg;
+
     console.log('FJM : ', data);
   } catch (error) {
     console.error('fct : ', error);
@@ -386,5 +411,36 @@ button.btn {
   color: white;
   border-radius: 5px;
   cursor: pointer;
+}
+
+.image-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.form-check {
+  flex: 1 0 18%; /* 각 이미지는 18%의 너비를 가집니다 (5개 배치 가능) */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-check img {
+  max-width: 100%;
+  border-radius: 8px;
+}
+
+.rounded-image {
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 이미지가 원 안에 꽉 차도록 */
+  }
+
+.edit-button img {
+  width: 24px;
+  height: 24px;
 }
 </style>
