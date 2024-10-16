@@ -4,7 +4,7 @@
         <div class="container">
             <LikeRegionState :lat="lat" :long="long" :si="si" :gu="gu" :isPositionReady2="isPositionReady2"  />
         </div>
-        <LikeRegionLatest :siGuPosition="siGuPosition" />
+        <LikeRegionLatest :si="si" :gu="gu" />
         <div class="container">
             <LottosInfo />
         </div>
