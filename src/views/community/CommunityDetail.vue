@@ -137,8 +137,7 @@ const postComment = async (communityId) => {
 
         if(res.status === 200) {
             post.value.comments.push(res.data);
-
-            cmtContent.value = null; //댓글 작성 후 입력창 초기화
+            cmtContent.value = ''; //댓글 작성 후 입력창 초기화
         }
     } catch (err) {
         console.error('>> 댓글 작성 실패 (T>T) ', err.message);
