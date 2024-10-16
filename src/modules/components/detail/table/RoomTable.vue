@@ -12,7 +12,7 @@
                             </tr>
                             <tr>
                                 <th>보증금</th>
-                                <td>{{ cardData.depositMin ? cardData.depositMin + ' ~ ' + cardData.depositMax + '만원' : '정보 없음' }}</td>
+                                <td>{{ cardData.depositMin ? cardData.depositMin + ' 만원 ~ ' + cardData.depositMax + '만원' : '정보 없음' }}</td>
                             </tr>
                             <tr>
                                 <th>월 이용료</th>
