@@ -80,6 +80,14 @@ const getToken = () => state.value.token;
     localStorage.setItem('auth', JSON.stringify(state.value));
   };
 
+  const changeImage = (updateImage) => {
+    state.value.profileImg = updateImage;
+    profileImg.value = updateImage;
+    localStorage.setItem('auth', JSON.stringify(state.value));
+
+  };
+
+
   load();
 
 // 토큰을 가져오고, 사용자의 이메일을 업데이트하며, 초기 상태를 불러오는 기능을 수행
@@ -87,5 +95,5 @@ const getToken = () => state.value.token;
 // changeProfile(member): 사용자의 이메일을 주어진 member.email로 변경하고, 변경된 상태를 localStorage에 저장합니다.
 // load(): 페이지가 로드될 때 localStorage에서 저장된 인증 정보를 불러와 state에 설정
 
-  return { state, id, name, email, isLogin, changeProfile, login, logout, getToken, interestArea, profileImg, address };
+  return { state, id, name, email, isLogin, changeImage, changeProfile, login, logout, getToken, interestArea, profileImg, address };
 });
