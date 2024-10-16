@@ -67,7 +67,7 @@
                         <tbody>
                             <tr>
                                 <th>가능한 대출</th>
-                                <td>{{ cardData.LOAN_ID ? cardData.LOAN_ID : '정보 없음' }}</td>
+                                <td>{{ cardData.loanId ? cardData.loanId : '정보 없음' }}</td>
                             </tr>
                         </tbody>
                     </table>
