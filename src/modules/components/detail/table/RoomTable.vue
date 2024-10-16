@@ -12,23 +12,23 @@
                             </tr>
                             <tr>
                                 <th>보증금</th>
-                                <td>{{ cardData.DEPOSIT_MIN ? cardData.DEPOSIT_MIN + ' ~ ' + cardData.DEPOSIT_MAX + '만원' : '정보 없음' }}</td>
+                                <td>{{ cardData.depositMin ? cardData.depositMin + ' ~ ' + cardData.depositMax + '만원' : '정보 없음' }}</td>
                             </tr>
                             <tr>
                                 <th>월 이용료</th>
-                                <td>{{ cardData.PRICE_MIN ? cardData.PRICE_MIN + ' 만원 ~ ' + cardData.PRICE_MAX + ' 만원' : '정보 없음' }}</td>
+                                <td>{{ cardData.priceMin? cardData.priceMin+ ' 만원 ~ ' + cardData.priceMin + ' 만원' : '정보 없음' }}</td>
                             </tr>
                             <tr>
                                 <th>관리비</th>
-                                <td>{{ cardData.MAINTENANCE_FEE ? cardData.MAINTENANCE_FEE + ' 만원' : '없음' }}</td>
+                                <td>{{ cardData.maintenanceFee ? cardData.maintenanceFee + ' 만원' : '없음' }}</td>
                             </tr>
                             <tr>
                                 <th>해당 층</th>
-                                <td>{{ cardData.FLOOR ? cardData.FLOOR : '정보 없음' }}</td>
+                                <td>{{ cardData.floor ? cardData.floor: '정보 없음' }}</td>
                             </tr>
                             <tr>
                                 <th>방 구조</th>
-                                <td>{{ cardData.ROOM_TYPE ? cardData.ROOM_TYPE : '정보 없음' }}</td>
+                                <td>{{ cardData.roomType ? cardData.roomType : '정보 없음' }}</td>
                             </tr>
                             <tr>
                                 <th>방 수/욕실 수</th>
@@ -44,7 +44,7 @@
                             </tr>
                             <tr>
                                 <th>최소계약기간</th>
-                                <td>{{ cardData.DURATION_MIN ? cardData.DURATION_MIN : '정보 없음' }}</td>
+                                <td>{{ cardData.durationMin ? cardData.durationMin + '일' : '정보 없음' }}</td>
                             </tr>
                             <tr>
                                 <th>입주가능일</th>
@@ -52,7 +52,7 @@
                             </tr>
                             <tr>
                                 <th>주차</th>
-                                <td>{{ canParkingLabel }}</td>
+                                <td>{{ canParkingLabel === 0 ? '주차 가능' : '주차 불가능' }}</td>
                             </tr>
                         </tbody>
                     </table>
