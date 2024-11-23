@@ -25,6 +25,7 @@ const fetchSummaryReviews = (roomId) => {
         ${reviewContents}
         긍정 리뷰 결과를 출력할 때는 '긍정 리뷰 요약 결과:' 로 시작하도록 해주고, 부정 리뷰 결과를 출력할 때는 '부정 리뷰 요약 결과:' 로 시작하도록 해줘.
       `;
+      // console.log("질의 내용 : " + prompt);
 
       const response = await openai.chat.completions.create({
         messages: [{ role: 'user', content: prompt }],
@@ -33,6 +34,7 @@ const fetchSummaryReviews = (roomId) => {
 
       // GPT의 응답을 텍스트로 처리
       reviewSummary.value = response.choices[0].message.content;
+      // console.log("응답 내용 : " + reviewSummary.value);
 
     } catch (error) {
       console.log('chatGPT: 🚨 에러가 발생했습니다.', error.message);
